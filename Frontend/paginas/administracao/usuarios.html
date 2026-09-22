@@ -1106,7 +1106,7 @@
 
     const CAMPOS_PERSISTENTES_GERENCIAMENTO = [
       'email-novo', 'nome-novo', 'papel-novo', 'curso-novo', 'ativo-novo',
-      'course-name', 'arquivados-pacientes-busca', 'arquivados-usuarios-busca'
+      'course-name'
     ];
 
     function salvarRascunhoGerenciamento() {
@@ -1131,6 +1131,8 @@
 
       const aplicar = () => {
         Object.entries(estado.campos || {}).forEach(([id, valor]) => {
+          if (!CAMPOS_PERSISTENTES_GERENCIAMENTO.includes(id)) return;
+
           const el = document.getElementById(id);
           if (!el) return;
           if (el.type === 'checkbox') el.checked = Boolean(valor);
