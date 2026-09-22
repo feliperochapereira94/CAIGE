@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadastro de Perguntas</title>
+  <link rel="stylesheet" href="../../recursos/css/base.css" />
+  <link rel="stylesheet" href="../../recursos/css/componentes.css" />
+  <link rel="stylesheet" href="../../recursos/css/layout.css" />
+  <link rel="stylesheet" href="../../recursos/css/responsive.css" />
+  <link rel="stylesheet" href="../../recursos/css/paginas/prontuarios.css" />
+  <script src="../../recursos/js/text-normalizer.js"></script>
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#123a78" />
+    <meta name="application-name" content="CAIGE" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="CAIGE" />
+    <link rel="apple-touch-icon" href="/recursos/images/pwa/apple-touch-icon.png" />
+  </head>
+<body data-page-title="Cadastro de Perguntas" data-page-subtitle="Gerencie as perguntas disponíveis para montar prontuários por curso.">
+  <div class="dashboard">
+    <div id="shell-sidebar"></div>
+
+    <main class="content">
+      <div id="shell-header"></div>
+
+      <!-- Subnavegação em telas móveis (Cadastro de Perguntas / Prontuários Cadastrados) -->
+      <nav class="subnav-tabs subnav-tabs--mobile-only largura-pagina" aria-label="Navegação de Prontuários">
+        <a href="questionarios.html" class="subnav-tab subnav-tab--active" aria-current="page">Cadastro de Perguntas</a>
+        <a href="questionario-detalhes.html" class="subnav-tab">Prontuários Cadastrados</a>
+      </nav>
+
+      <section class="largura-pagina painel-stack">
+        <section class="panel painel-retratil is-collapsed" id="question-create-accordion"
+          data-painel-retratil-rotulo="área de cadastro de pergunta" aria-labelledby="question-create-title">
+          <div class="section__header cabecalho-destaque cabecalho-destaque--encaixado painel-retratil__header"
+            data-painel-retratil-header>
+            <div>
+              <h3 id="question-create-title">Nova Pergunta</h3>
+              <p>Perguntas ficam disponíveis para montar prontuários dos cursos selecionados.</p>
+            </div>
+
+            <button class="cabecalho-destaque__toggle" id="btn-toggle-question-create"
+              data-painel-retratil-toggle type="button" aria-expanded="false" aria-controls="question-create-body"
+              aria-label="Expandir área de cadastro de pergunta" title="Expandir">
+              <span class="cabecalho-destaque__toggle-icon" aria-hidden="true"></span>
+            </button>
+          </div>
+
+          <div class="painel-retratil__conteudo" id="question-create-body" data-painel-retratil-content>
+            <div class="painel-retratil__conteudo-inner">
+              <form id="form-question">
+                <div class="grid-2 question-config-grid">
+                  <div class="field" id="field-supervisor-courses">
+                    <label id="question-courses-label">Cursos da pergunta</label>
+                    <details class="seletor-multiplo" id="question-courses-select">
+                      <summary class="seletor-multiplo__controle" aria-labelledby="question-courses-label">
+                        <span id="question-courses-summary">Selecione um ou mais cursos</span>
+                      </summary>
+                      <div class="seletor-multiplo__menu">
+                        <label class="checkbox-field seletor-multiplo__opcao seletor-multiplo__todos"
+                          id="all-question-courses-label">
+                          <input type="checkbox" id="all-question-courses" />
+                          <span>Todos os cursos</span>
+                        </label>
+                        <div id="question-courses" class="seletor-multiplo__opcoes"></div>
+                      </div>
+                    </details>
+                    <p class="form-hint">Selecione os cursos em que esta pergunta ficará disponível.</p>
+                  </div>
+
+                  <div class="field" id="field-professor-courses" hidden>
+                    <label id="question-scope-label">Utilização da pergunta</label>
+                    <div class="seletor-escopo-radio" role="radiogroup" aria-labelledby="question-scope-label">
+                      <label class="radio-field" id="label-scope-proprio">
+                        <input type="radio" name="escopoPergunta" id="escopo-curso-proprio" value="proprio" checked />
+                        <span id="label-curso-proprio-texto">Somente meu curso</span>
+                      </label>
+                      <label class="radio-field" id="label-scope-todos">
+                        <input type="radio" name="escopoPergunta" id="escopo-todos-cursos" value="todos" />
+                        <span>Todos os cursos</span>
+                      </label>
+                    </div>
+                    <p class="form-hint">Defina se esta pergunta será exclusiva do seu curso ou compartilhada com todos os cursos.</p>
+                  </div>
+
+                  <div class="field">
+                    <label for="question-type">Tipo de pergunta</label>
+                    <select id="question-type" required>
+                      <option value="texto_livre">Texto livre</option>
+                      <option value="multipla_escolha">Múltipla escolha</option>
+                      <option value="sim_nao">Sim/não</option>
+                      <option value="escala">Escala (1 a 5)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label for="question-title">Título</label>
+                  <input id="question-title" type="text" maxlength="255" required />
+                </div>
+
+                <div class="field">
+                  <label for="question-description">Descrição</label>
+                  <textarea id="question-description" placeholder="Opcional"></textarea>
+                </div>
+
+                <section class="configuracao-resposta" aria-labelledby="question-response-config-title">
+                  <div class="configuracao-resposta__header">
+                    <div>
+                      <h4 id="question-response-config-title">Configuração da resposta</h4>
+                      <p>A prévia abaixo muda conforme o tipo de pergunta selecionado.</p>
+                    </div>
+                  </div>
+                  <div id="question-response-config-content" class="configuracao-resposta__conteudo"></div>
+                </section>
+
+                <div class="actions">
+                  <button class="btn-main" id="btn-save-question" type="submit">Salvar Pergunta</button>
+                  <button class="btn-alt" id="btn-close-question-create" type="button">Voltar para lista</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="questions-list-title">
+          <div class="section__header cabecalho-destaque cabecalho-destaque--encaixado">
+            <div>
+              <h3 id="questions-list-title">Perguntas por Curso</h3>
+              <p>Consulte as perguntas cadastradas e use o menu de três pontos para as ações.</p>
+            </div>
+          </div>
+
+          <div class="list-toolbar">
+            <div class="list-toolbar__main">
+              <div class="search-box">
+                <span class="search-box__icon icone icone--sm" data-icone="buscar" aria-hidden="true"></span>
+                <input class="search-box__input" id="questions-search" type="search"
+                  placeholder="Buscar por título ou descrição" />
+              </div>
+
+              <select class="filter-select" id="questions-course-filter" aria-label="Filtrar perguntas por curso">
+                <option value="">Todos os cursos</option>
+              </select>
+
+              <select class="filter-select" id="questions-type-filter" aria-label="Filtrar por tipo de pergunta">
+                <option value="all">Todos os tipos</option>
+                <option value="texto_livre">Texto livre</option>
+                <option value="multipla_escolha">Múltipla escolha</option>
+                <option value="sim_nao">Sim/Não</option>
+                <option value="escala">Escala (1 a 5)</option>
+              </select>
+            </div>
+
+            <div class="list-toolbar__actions">
+              <span class="list-meta" id="questions-count">0 pergunta(s)</span>
+            </div>
+          </div>
+
+          <div id="questions-list" class="lista-entidades">
+            <div class="lista-entidades__vazio">Carregando perguntas...</div>
+          </div>
+          <div class="pagination-bar--integrated" id="questions-pagination" hidden>
+            <label class="pagination-page-size"><span>Registros por página</span><select id="questions-page-size" aria-label="Registros por página"></select></label>
+            <div class="pagination-navigation">
+              <button class="pagination-nav-button" id="questions-first-page" type="button" aria-label="Primeira página"><span class="icone icone--sm" data-icone="primeira-pagina" aria-hidden="true"></span></button>
+              <button class="pagination-nav-button" id="questions-prev-page" type="button" aria-label="Página anterior"><span class="icone icone--sm" data-icone="chevron-esquerda" aria-hidden="true"></span></button>
+              <span class="pagination-page-info" id="questions-page-indicator">0 registros</span>
+              <button class="pagination-nav-button" id="questions-next-page" type="button" aria-label="Próxima página"><span class="icone icone--sm" data-icone="chevron-direita" aria-hidden="true"></span></button>
+              <button class="pagination-nav-button" id="questions-last-page" type="button" aria-label="Última página"><span class="icone icone--sm" data-icone="ultima-pagina" aria-hidden="true"></span></button>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script src="../../recursos/js/icones.js"></script>
+  <script src="../../recursos/js/notificacoes.js"></script>
+  <script src="../../recursos/js/modal-confirmacao.js"></script>
+  <script src="../../recursos/js/util-jwt.js"></script>
+  <script src="../../recursos/js/shell-global.js"></script>
+  <script src="../../recursos/js/sidebar-menu.js"></script>
+  <script src="../../recursos/js/menu-usuario.js"></script>
+  <script src="../../recursos/js/menu-acoes.js"></script>
+  <script src="../../recursos/js/painel-retratil.js"></script>
+  <script src="../../recursos/js/paginacao.js"></script>
+  <script src="../../recursos/js/configurador-tipo-pergunta.js"></script>
+  <script>
+    const API_BASE = '/api/questionarios';
+    const API_CURSOS = '/api/cursos';
+    const sessaoValida = UtilJWT.exigirSessao();
+    const usuarioSessao = sessaoValida ? UtilJWT.obterUsuario() : null;
+    const userEmail = usuarioSessao?.email || '';
+    
+    let cursos = []; // Será carregado da API
+    let selectedFilterCourseId = '';
+    let currentUserRole = null;
+    let currentUserCourseId = null; // ID do curso do professor (se aplicável)
+    let currentUserId = null;
+    let cachedQuestions = [];
+    let questionsPagination = null;
+    let painelCriacaoPergunta = null;
+    let configuradorTipoPergunta = null;
+    let editingQuestionId = null;
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/\"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function formatQuestionType(type) {
+      const labels = {
+        texto_livre: 'Texto livre',
+        multipla_escolha: 'Múltipla escolha',
+        sim_nao: 'Sim/Não',
+        escala: 'Escala (1 a 5)'
+      };
+
+      return labels[type] || type || 'Tipo não informado';
+    }
+
+    function authHeaders() {
+      return {
+        'Content-Type': 'application/json'
+      };
+    }
+
+    async function loadCourses() {
+      try {
+        const res = await fetch(API_CURSOS);
+        if (!res.ok) {
+          console.error('Erro ao carregar cursos:', res.status);
+          return;
+        }
+        const data = await res.json();
+        cursos = Array.isArray(data) ? data : (data.cursos || []);
+      } catch (err) {
+        console.error('Erro ao carregar cursos:', err);
+      }
+    }
+
+    function obterCursosDisponiveis() {
+      if (currentUserRole === 'PROFESSOR') {
+        return cursos.filter((curso) => curso.id === currentUserCourseId);
+      }
+
+      return cursos.filter((curso) => curso.ativo !== false);
+    }
+
+    function atualizarResumoCursos() {
+      const opcoes = Array.from(document.querySelectorAll('input[name="idsCursos"]'));
+      const selecionadas = opcoes.filter((input) => input.checked);
+      const resumo = document.getElementById('question-courses-summary');
+      const marcarTodos = document.getElementById('all-question-courses');
+
+      if (marcarTodos) {
+        marcarTodos.checked = opcoes.length > 0 && selecionadas.length === opcoes.length;
+        marcarTodos.indeterminate = selecionadas.length > 0 && selecionadas.length < opcoes.length;
+      }
+
+      if (!resumo) return;
+
+      if (!selecionadas.length) {
+        resumo.textContent = 'Selecione um ou mais cursos';
+        return;
+      }
+
+      if (selecionadas.length === opcoes.length && opcoes.length > 1) {
+        resumo.textContent = 'Todos os cursos';
+        return;
+      }
+
+      const primeira = cursos.find((curso) => curso.id === Number(selecionadas[0].value));
+      const nome = primeira?.nome || primeira?.name || 'Curso selecionado';
+      const adicionais = selecionadas.length - 1;
+      resumo.textContent = adicionais > 0 ? `${nome} + ${adicionais} curso${adicionais > 1 ? 's' : ''}` : nome;
+    }
+
+    function preencherControlesCursos() {
+      const coursesBox = document.getElementById('question-courses');
+      const filterSelect = document.getElementById('questions-course-filter');
+      const allCoursesLabel = document.getElementById('all-question-courses-label');
+      const fieldSupervisor = document.getElementById('field-supervisor-courses');
+      const fieldProfessor = document.getElementById('field-professor-courses');
+      const labelCursoProprio = document.getElementById('label-curso-proprio-texto');
+
+      if (currentUserRole === 'PROFESSOR') {
+        if (fieldSupervisor) fieldSupervisor.hidden = true;
+        if (fieldProfessor) fieldProfessor.hidden = false;
+
+        const meuCurso = cursos.find((c) => Number(c.id) === Number(currentUserCourseId));
+        const nomeCurso = meuCurso ? (meuCurso.nome || meuCurso.name) : 'Meu curso';
+        if (labelCursoProprio) {
+          labelCursoProprio.textContent = `Somente meu curso — ${nomeCurso}`;
+        }
+
+        if (filterSelect) {
+          filterSelect.hidden = true;
+        }
+      } else {
+        if (fieldSupervisor) fieldSupervisor.hidden = false;
+        if (fieldProfessor) fieldProfessor.hidden = true;
+
+        const cursosDisponiveis = obterCursosDisponiveis();
+
+        if (coursesBox) {
+          coursesBox.innerHTML = cursosDisponiveis.map((curso) => `
+            <label class="checkbox-field seletor-multiplo__opcao">
+              <input type="checkbox" name="idsCursos" value="${curso.id}">
+              <span>${escapeHtml(curso.nome || curso.name)}</span>
+            </label>
+          `).join('');
+        }
+
+        if (allCoursesLabel) {
+          allCoursesLabel.hidden = cursosDisponiveis.length <= 1;
+        }
+
+        if (filterSelect) {
+          filterSelect.hidden = false;
+          filterSelect.innerHTML = '<option value="">Todos os cursos</option>' + cursosDisponiveis
+            .map((curso) => `<option value="${curso.id}">${escapeHtml(curso.nome || curso.name)}</option>`)
+            .join('');
+        }
+
+        atualizarResumoCursos();
+      }
+    }
+
+    async function loadUserRole() {
+      try {
+        if (typeof UtilJWT !== 'undefined') {
+          const usuario = UtilJWT.obterUsuario();
+          if (usuario) {
+            currentUserRole = usuario.papel;
+            currentUserCourseId = usuario.idCurso;
+            currentUserId = usuario.idUsuario;
+            return;
+          }
+        }
+
+        const res = await fetch('/api/autenticacao/perfil');
+        if (!res.ok) return;
+        const profile = await res.json();
+        currentUserRole = profile.role;
+        currentUserCourseId = profile.idCurso;
+        currentUserId = profile.id;
+      } catch (err) {
+        console.error('Erro ao carregar papel do usuario:', err);
+      }
+    }
+
+    function resetQuestionForm() {
+      editingQuestionId = null;
+      document.getElementById('form-question').reset();
+      document.getElementById('question-create-title').textContent = 'Nova Pergunta';
+      document.getElementById('btn-save-question').textContent = 'Salvar Pergunta';
+      const questionTypeSelect = document.getElementById('question-type');
+      questionTypeSelect.value = 'texto_livre';
+      questionTypeSelect.disabled = false;
+      configuradorTipoPergunta?.redefinir();
+      atualizarResumoCursos();
+      const seletor = document.getElementById('question-courses-select');
+      if (seletor) seletor.open = false;
+      const radioProprio = document.getElementById('escopo-curso-proprio');
+      if (radioProprio) radioProprio.checked = true;
+    }
+
+    function startEditQuestion(q) {
+      editingQuestionId = q.id;
+      document.getElementById('question-create-title').textContent = 'Editar Pergunta';
+      document.getElementById('btn-save-question').textContent = 'Salvar Alterações';
+      document.getElementById('question-title').value = q.title || '';
+      document.getElementById('question-description').value = q.description || '';
+      const questionTypeSelect = document.getElementById('question-type');
+      questionTypeSelect.value = q.question_type;
+      questionTypeSelect.disabled = true;
+
+      if (q.question_type === 'multipla_escolha' && configuradorTipoPergunta) {
+        let opts = q.options;
+        if (typeof opts === 'string') {
+          try {
+            const parsed = JSON.parse(opts);
+            opts = parsed?.options || opts;
+          } catch (e) {}
+        }
+        configuradorTipoPergunta.definirOpcoes(opts);
+      } else {
+        configuradorTipoPergunta?.redefinir();
+      }
+
+      if (currentUserRole === 'PROFESSOR') {
+        const radioProprio = document.getElementById('escopo-curso-proprio');
+        const radioTodos = document.getElementById('escopo-todos-cursos');
+        if (q.todosCursos) {
+          if (radioTodos) radioTodos.checked = true;
+        } else {
+          if (radioProprio) radioProprio.checked = true;
+        }
+      } else {
+        const allInput = document.getElementById('all-question-courses');
+        const courseCheckboxes = document.querySelectorAll('input[name="idsCursos"]');
+        if (q.todosCursos) {
+          if (allInput) allInput.checked = true;
+          courseCheckboxes.forEach((cb) => { cb.checked = true; });
+        } else {
+          const ids = String(q.idsCursos || '').split(',').map((s) => Number(s.trim()));
+          if (allInput) allInput.checked = false;
+          courseCheckboxes.forEach((cb) => {
+            cb.checked = ids.includes(Number(cb.value));
+          });
+        }
+        atualizarResumoCursos();
+      }
+
+      painelCriacaoPergunta?.definirAberto(true);
+      document.getElementById('question-create-accordion').scrollIntoView({ behavior: 'smooth' });
+      document.getElementById('question-title').focus();
+    }
+
+    async function loadQuestions(courseId = '') {
+      const listEl = document.getElementById('questions-list');
+      listEl.innerHTML = '<div class="lista-entidades__vazio">Carregando perguntas...</div>';
+
+      try {
+        const endpoint = courseId ? `/perguntas/curso/${courseId}` : '/perguntas';
+        const res = await fetch(`${API_BASE}${endpoint}`, {
+          headers: {}
+        });
+        if (!res.ok) throw new Error('Falha ao carregar perguntas');
+
+        cachedQuestions = await res.json();
+        renderQuestionsList();
+      } catch (err) {
+        console.error(err);
+        listEl.innerHTML = '<div class="lista-entidades__vazio">Erro ao carregar perguntas.</div>';
+      }
+    }
+
+    function renderQuestionItems(items) {
+      const listEl = document.getElementById('questions-list');
+      if (!items.length) {
+        listEl.innerHTML = '<div class="lista-entidades__vazio">Nenhuma pergunta encontrada com os filtros atuais.</div>';
+        return;
+      }
+
+      listEl.innerHTML = items.map((q) => `
+        <article class="lista-entidades__item lista-entidades__item--horizontal lista-entidades__item--interativo question-card"
+          data-q-id="${q.id}">
+          <div class="lista-entidades__conteudo">
+            <div class="lista-entidades__titulo">${escapeHtml(q.title)}</div>
+            <div class="lista-entidades__meta">
+              ${escapeHtml(formatQuestionType(q.question_type))} • Cursos: ${escapeHtml(q.cursos || 'Nenhum curso')} • ID ${q.id}
+            </div>
+            <div class="lista-entidades__meta lista-entidades__descricao">${escapeHtml(q.description || 'Sem descrição')}</div>
+          </div>
+
+          <div class="lista-entidades__acoes">
+            <button class="btn-alt menu-acoes-trigger" type="button" data-question-menu="${q.id}"
+              aria-label="Ações de ${escapeHtml(q.title)}" aria-haspopup="menu"><span class="icone icone--sm" data-icone="menu" aria-hidden="true"></span></button>
+          </div>
+        </article>
+      `).join('');
+
+      window.IconesCAIGE?.aplicar?.(listEl);
+
+      listEl.querySelectorAll('[data-question-menu]').forEach((button) => {
+        button.addEventListener('click', (event) => {
+          event.stopPropagation();
+
+          const id = Number(button.getAttribute('data-question-menu'));
+          const q = cachedQuestions.find((item) => item.id === id);
+          if (!q) return;
+
+          const podeEditar = currentUserRole === 'SUPERVISOR' || (
+            currentUserRole === 'PROFESSOR' &&
+            Number(q.created_by) === Number(currentUserId) &&
+            Number(q.id_curso || currentUserCourseId) === Number(currentUserCourseId)
+          );
+
+          const acoes = [];
+
+          if (podeEditar) {
+            acoes.push({
+              rotulo: 'Editar',
+              acao: () => {
+                startEditQuestion(q);
+              }
+            });
+
+            acoes.push({
+              rotulo: 'Excluir',
+              perigo: true,
+              acao: async () => {
+                let confirmar = false;
+                if (window.ModalConfirmacao && typeof window.ModalConfirmacao.confirmar === 'function') {
+                  confirmar = await window.ModalConfirmacao.confirmar({
+                    titulo: 'Excluir Pergunta',
+                    mensagem: `Deseja excluir a pergunta "${q.title}"?`,
+                    variante: 'perigo',
+                    textoConfirmar: 'Excluir',
+                    textoCancelar: 'Cancelar',
+                    icone: 'excluir'
+                  });
+                }
+                if (!confirmar) {
+                  return;
+                }
+
+                await deleteQuestion(id);
+              }
+            });
+          }
+
+          if (acoes.length === 0) {
+            acoes.push({
+              rotulo: 'Visualizar apenas (compartilhada)',
+              desabilitado: true
+            });
+          }
+
+          MenuAcoes.abrir(button, acoes);
+        });
+      });
+    }
+
+    function initializeQuestionsPagination() {
+      if (questionsPagination || typeof window.PaginacaoLista === 'undefined') return;
+      questionsPagination = new window.PaginacaoLista({
+        seletorQuantidade: '#questions-page-size',
+        seletorPaginacao: '#questions-pagination',
+        seletorIndicador: '#questions-page-indicator',
+        seletorPrimeira: '#questions-first-page',
+        seletorAnterior: '#questions-prev-page',
+        seletorProxima: '#questions-next-page',
+        seletorUltima: '#questions-last-page',
+        tamanhoPadrao: 10,
+        rotuloSingular: 'pergunta',
+        rotuloPlural: 'perguntas',
+        aoRenderizar: (items) => renderQuestionItems(items)
+      });
+    }
+
+    function renderQuestionsList() {
+      const search = document.getElementById('questions-search').value.trim().toLowerCase();
+      const selectedType = document.getElementById('questions-type-filter').value;
+      const filtered = cachedQuestions.filter((q) => {
+        const matchesType = selectedType === 'all' || q.question_type === selectedType;
+        const haystack = `${q.title || ''} ${q.description || ''}`.toLowerCase();
+        return matchesType && (!search || haystack.includes(search));
+      });
+      document.getElementById('questions-count').textContent = `${filtered.length} pergunta(s)`;
+      initializeQuestionsPagination();
+      if (questionsPagination) questionsPagination.definirItens(filtered);
+      else renderQuestionItems(filtered);
+    }
+
+    async function createQuestion(payload) {
+      const res = await fetch(`${API_BASE}/perguntas`, {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.message || data.error || 'Falha ao salvar pergunta');
+      }
+    }
+
+    async function updateQuestion(id, payload) {
+      const res = await fetch(`${API_BASE}/perguntas/${id}`, {
+        method: 'PUT',
+        headers: authHeaders(),
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.message || data.error || 'Falha ao atualizar pergunta');
+      }
+    }
+
+    async function deleteQuestion(id) {
+      const res = await fetch(`${API_BASE}/perguntas/${id}`, {
+        method: 'DELETE',
+        headers: {}
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.message || data.error || 'Falha ao excluir pergunta');
+      }
+      notify.success('Pergunta excluída com sucesso');
+      await loadQuestions(selectedFilterCourseId);
+    }
+
+    function bindEvents() {
+      document.getElementById('btn-close-question-create').addEventListener('click', () => {
+        resetQuestionForm();
+        painelCriacaoPergunta?.definirAberto(false);
+      });
+
+      const allCoursesCheckbox = document.getElementById('all-question-courses');
+      if (allCoursesCheckbox) {
+        allCoursesCheckbox.addEventListener('change', (event) => {
+          document.querySelectorAll('input[name="idsCursos"]:not(:disabled)').forEach((input) => {
+            input.checked = event.target.checked;
+          });
+          atualizarResumoCursos();
+        });
+      }
+
+      const questionCoursesBox = document.getElementById('question-courses');
+      if (questionCoursesBox) {
+        questionCoursesBox.addEventListener('change', (event) => {
+          if (event.target.matches('input[name="idsCursos"]')) {
+            atualizarResumoCursos();
+          }
+        });
+      }
+
+      document.addEventListener('click', (event) => {
+        const seletor = document.getElementById('question-courses-select');
+        if (seletor?.open && !seletor.contains(event.target)) {
+          seletor.open = false;
+        }
+      });
+
+      document.getElementById('questions-course-filter').addEventListener('change', async (e) => {
+        selectedFilterCourseId = e.target.value;
+        await loadQuestions(selectedFilterCourseId);
+      });
+
+      document.getElementById('questions-search').addEventListener('input', () => {
+        renderQuestionsList();
+      });
+
+      document.getElementById('questions-type-filter').addEventListener('change', () => {
+        renderQuestionsList();
+      });
+
+      document.getElementById('form-question').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        try {
+          const type = document.getElementById('question-type').value;
+          const options = configuradorTipoPergunta?.obterOpcoes();
+
+          if (type === 'multipla_escolha' && (!options || options.length < 2)) {
+            throw new Error('Adicione pelo menos duas alternativas para a pergunta');
+          }
+
+          const payload = {
+            title: document.getElementById('question-title').value.trim(),
+            description: document.getElementById('question-description').value.trim(),
+            question_type: type,
+            options: type === 'multipla_escolha' ? options : undefined
+          };
+
+          if (currentUserRole === 'PROFESSOR') {
+            const isTodos = document.getElementById('escopo-todos-cursos')?.checked;
+            payload.todosCursos = Boolean(isTodos);
+            if (!isTodos) {
+              payload.idsCursos = [currentUserCourseId];
+            }
+          } else {
+            const allChecked = document.getElementById('all-question-courses')?.checked;
+            if (allChecked) {
+              payload.todosCursos = true;
+            } else {
+              payload.idsCursos = Array.from(document.querySelectorAll('input[name="idsCursos"]:checked')).map((input) => Number(input.value));
+              if (!payload.idsCursos.length) {
+                throw new Error('Selecione pelo menos um curso para a pergunta');
+              }
+            }
+          }
+
+          if (editingQuestionId) {
+            await updateQuestion(editingQuestionId, payload);
+            notify.success('Pergunta atualizada com sucesso');
+          } else {
+            await createQuestion(payload);
+            notify.success('Pergunta criada com sucesso');
+          }
+
+          resetQuestionForm();
+          painelCriacaoPergunta?.definirAberto(false);
+          await loadQuestions(selectedFilterCourseId);
+        } catch (err) {
+          console.error(err);
+          notify.error(err.message || 'Erro ao salvar pergunta');
+        }
+      });
+    }
+
+    async function initPage() {
+      if (!sessaoValida || !userEmail) {
+        return;
+      }
+
+      painelCriacaoPergunta = PainelRetratil.inicializar('#question-create-accordion', {
+        chaveEstado: `caige:perguntas:criacao-expandida:${userEmail || 'anonimo'}`,
+        abertoInicial: false
+      });
+
+      await loadCourses();
+      await loadUserRole();
+      preencherControlesCursos();
+      configuradorTipoPergunta = ConfiguradorTipoPergunta.inicializar({
+        seletorTipo: '#question-type',
+        conteudo: '#question-response-config-content'
+      });
+      bindEvents();
+      initializeQuestionsPagination();
+
+      await loadQuestions(selectedFilterCourseId);
+    }
+
+    initPage();
+  </script>
+  <script src="/recursos/js/pwa.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+

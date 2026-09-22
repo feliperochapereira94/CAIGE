@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestão de Prontuários</title>
+  <link rel="stylesheet" href="../../recursos/css/base.css" />
+  <link rel="stylesheet" href="../../recursos/css/componentes.css" />
+  <link rel="stylesheet" href="../../recursos/css/layout.css" />
+  <link rel="stylesheet" href="../../recursos/css/responsive.css" />
+  <link rel="stylesheet" href="../../recursos/css/paginas/prontuarios.css" />
+  <link rel="stylesheet" href="../../recursos/css/paginas/prontuario-documento.css" />
+  <script src="../../recursos/js/text-normalizer.js"></script>
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#123a78" />
+    <meta name="application-name" content="CAIGE" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="CAIGE" />
+    <link rel="apple-touch-icon" href="/recursos/images/pwa/apple-touch-icon.png" />
+  </head>
+<body data-page-title="Prontuários Cadastrados"
+  data-page-subtitle="Monte prontuários com perguntas disponíveis para cada curso">
+  <div class="dashboard">
+    <div id="shell-sidebar"></div>
+
+    <main class="content">
+      <div id="shell-header"></div>
+
+      <!-- Subnavegação em telas móveis (Cadastro de Perguntas / Prontuários Cadastrados) -->
+      <nav class="subnav-tabs subnav-tabs--mobile-only largura-pagina" aria-label="Navegação de Prontuários">
+        <a href="questionarios.html" class="subnav-tab">Cadastro de Perguntas</a>
+        <a href="questionario-detalhes.html" class="subnav-tab subnav-tab--active" aria-current="page">Prontuários Cadastrados</a>
+      </nav>
+
+      <section class="largura-pagina painel-stack">
+        <section class="panel painel-retratil is-collapsed" id="questionnaire-builder-panel"
+          data-painel-retratil-rotulo="área de criação de prontuário" aria-labelledby="questionnaire-form-title">
+          <div class="section__header cabecalho-destaque cabecalho-destaque--encaixado painel-retratil__header"
+            id="questionnaire-builder-header" data-painel-retratil-header>
+            <div>
+              <h3 id="questionnaire-form-title">Criar Novo Prontuário</h3>
+              <p id="questionnaire-form-help">
+                Selecione o curso, defina o prontuário e escolha as perguntas que farão parte dele.
+              </p>
+            </div>
+
+            <button class="cabecalho-destaque__toggle" id="questionnaire-builder-toggle"
+              data-painel-retratil-toggle type="button" aria-expanded="false" aria-controls="questionnaire-builder-content"
+              aria-label="Expandir área de criação de prontuário" title="Expandir">
+              <span class="cabecalho-destaque__toggle-icon" aria-hidden="true"></span>
+            </button>
+          </div>
+
+          <div class="painel-retratil__conteudo" id="questionnaire-builder-content" data-painel-retratil-content>
+            <div class="painel-retratil__conteudo-inner">
+              <p class="form-hint hidden" id="questionnaire-edit-hint">
+            Modo de edição ativo. Salve as alterações ou cancele para voltar ao cadastro.
+          </p>
+
+          <form id="form-questionnaire">
+            <div class="prontuario-builder-grid">
+              <div class="field">
+                <label for="questionnaire-course">Curso</label>
+                <select id="questionnaire-course" required>
+                  <option value="">Selecione um curso</option>
+                </select>
+                <p class="form-hint" id="questionnaire-course-hint">
+                  O curso define quais perguntas podem ser usadas no prontuário.
+                </p>
+              </div>
+
+              <div class="field">
+                <label for="questionnaire-title">Título</label>
+                <input id="questionnaire-title" type="text" maxlength="255"
+                  placeholder="Ex.: Avaliação Funcional" required />
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="questionnaire-description">Descrição</label>
+              <textarea id="questionnaire-description"
+                placeholder="Descreva de forma breve a finalidade deste prontuário."></textarea>
+            </div>
+
+            <div class="prontuario-question-section">
+              <div class="section__header prontuario-question-section__header">
+                <div>
+                  <h3>Perguntas disponíveis</h3>
+                  <p>
+                    Uma pergunta pode ser exclusiva do curso ou compartilhada com outros cursos.
+                  </p>
+                </div>
+                <span class="prontuario-selected-count" id="question-picker-selected-count">
+                  0 selecionada(s)
+                </span>
+              </div>
+
+              <div class="list-toolbar prontuario-question-toolbar">
+                <div class="list-toolbar__main">
+                  <div class="search-box">
+                    <span class="search-box__icon icone icone--sm" data-icone="buscar" aria-hidden="true"></span>
+                    <input class="search-box__input" id="question-picker-search" type="search"
+                      placeholder="Buscar pergunta" />
+                  </div>
+
+                  <label class="prontuario-selected-only">
+                    <input type="checkbox" id="question-picker-selected-only" />
+                    <span>Somente selecionadas</span>
+                  </label>
+                </div>
+              </div>
+
+              <div id="questionnaire-question-picker" class="prontuario-question-list">
+                <div class="empty-state">
+                  <p>Selecione um curso para visualizar as perguntas disponíveis.</p>
+                </div>
+              </div>
+
+              <div class="pagination-bar--integrated" id="question-picker-pagination" hidden>
+                <div class="pagination-page-size">
+                  <span>Por página</span>
+                  <select id="question-picker-page-size" aria-label="Quantidade de perguntas por página">
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                  </select>
+                </div>
+
+                <div class="pagination-navigation">
+                  <button class="pagination-nav-button" id="question-picker-first" type="button"
+                    aria-label="Primeira página"><span class="icone icone--sm" data-icone="primeira-pagina" aria-hidden="true"></span></button>
+                  <button class="pagination-nav-button" id="question-picker-prev" type="button"
+                    aria-label="Página anterior"><span class="icone icone--sm" data-icone="chevron-esquerda" aria-hidden="true"></span></button>
+                  <span class="pagination-page-info" id="question-picker-page-info">Página 1 de 1</span>
+                  <button class="pagination-nav-button" id="question-picker-next" type="button"
+                    aria-label="Próxima página"><span class="icone icone--sm" data-icone="chevron-direita" aria-hidden="true"></span></button>
+                  <button class="pagination-nav-button" id="question-picker-last" type="button"
+                    aria-label="Última página"><span class="icone icone--sm" data-icone="ultima-pagina" aria-hidden="true"></span></button>
+                </div>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button class="btn-main" id="btn-submit-questionnaire-form" type="submit">
+                Criar Prontuário
+              </button>
+              <button class="btn-alt hidden" id="btn-cancel-edit-questionnaire" type="button">
+                Cancelar Edição
+              </button>
+            </div>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="questionnaires-heading">
+          <div class="section__header cabecalho-destaque cabecalho-destaque--encaixado">
+            <div>
+              <h3 id="questionnaires-heading">Prontuários por Curso</h3>
+              <p>Consulte os prontuários cadastrados e use o menu de três pontos para as ações.</p>
+            </div>
+          </div>
+
+          <div class="list-toolbar prontuario-catalog-toolbar">
+            <div class="list-toolbar__main">
+              <div class="search-box">
+                <span class="search-box__icon icone icone--sm" data-icone="buscar" aria-hidden="true"></span>
+                <input class="search-box__input" id="questionnaires-search" type="search"
+                  placeholder="Buscar por título ou descrição" />
+              </div>
+
+              <select class="filter-select" id="questionnaires-status-filter" aria-label="Filtrar por status">
+                <option value="all">Todos os status</option>
+                <option value="published">Publicados</option>
+                <option value="draft">Rascunhos</option>
+              </select>
+
+              <select class="filter-select" id="questionnaires-course-filter"
+                aria-label="Filtrar prontuários por curso">
+                <option value="">Todos os cursos</option>
+              </select>
+            </div>
+
+            <div class="list-toolbar__actions">
+              <span class="prontuario-catalog-count" id="questionnaires-count">0 prontuário(s)</span>
+            </div>
+          </div>
+
+          <div id="questionnaires-by-course" class="prontuario-course-groups">
+            <div class="empty-state">
+              <p>Carregando prontuários...</p>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script src="../../recursos/js/icones.js"></script>
+  <script src="../../recursos/js/notificacoes.js"></script>
+  <script src="../../recursos/js/modal-confirmacao.js"></script>
+  <script src="../../recursos/js/util-jwt.js"></script>
+  <script src="../../recursos/js/shell-global.js"></script>
+  <script src="../../recursos/js/sidebar-menu.js"></script>
+  <script src="../../recursos/js/menu-usuario.js"></script>
+  <script src="../../recursos/js/menu-acoes.js"></script>
+  <script src="../../recursos/js/painel-retratil.js"></script>
+  <script src="../../recursos/js/estado-sessao.js"></script>
+  <script src="../../recursos/js/paginacao.js"></script>
+  <script>
+    const API_BASE = '/api/questionarios';
+    const API_CURSOS = '/api/cursos';
+    const API_PROFILE = '/api/autenticacao/perfil';
+    const sessaoValida = UtilJWT.exigirSessao();
+    const usuarioSessao = sessaoValida ? UtilJWT.obterUsuario() : null;
+    const userEmail = usuarioSessao?.email || '';
+
+    let cursos = [];
+    let currentUserRole = null;
+    let currentUserCourseId = null;
+    let selectedCourseId = null;
+    let cachedPickerQuestions = [];
+    let pickerState = {};
+    let cachedQuestionnaires = [];
+    let editingQuestionnaireId = null;
+    let questionPagination = null;
+    let painelCriacaoProntuario = null;
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function authHeaders() {
+      return {
+        'Content-Type': 'application/json'
+      };
+    }
+
+    function parseQuestionCourseIds(question) {
+      const raw = question?.idsCursos;
+
+      if (Array.isArray(raw)) {
+        return raw.map(Number).filter(Number.isFinite);
+      }
+
+      return String(raw || '')
+        .split(',')
+        .map((value) => Number(value.trim()))
+        .filter(Number.isFinite);
+    }
+
+    async function loadProfile() {
+      const response = await fetch(API_PROFILE, {
+        headers: {}
+      });
+
+      if (!response.ok) {
+        throw new Error('Não foi possível carregar o perfil do usuário');
+      }
+
+      const profile = await response.json();
+
+      currentUserRole = profile.role || profile.papel || null;
+      currentUserCourseId = Number(profile.idCurso || profile.id_curso || 0) || null;
+
+      if (currentUserRole === 'PROFESSOR') {
+        selectedCourseId = currentUserCourseId;
+      }
+    }
+
+    async function loadCourses() {
+      const response = await fetch(API_CURSOS, {
+        headers: {}
+      });
+
+      if (!response.ok) {
+        throw new Error('Não foi possível carregar os cursos');
+      }
+
+      const data = await response.json();
+      cursos = Array.isArray(data) ? data : (data.cursos || []);
+      fillCourseSelects();
+    }
+
+    function fillCourseSelects() {
+      const createSelect = document.getElementById('questionnaire-course');
+      const filterSelect = document.getElementById('questionnaires-course-filter');
+      const courseHint = document.getElementById('questionnaire-course-hint');
+
+      if (currentUserRole === 'PROFESSOR') {
+        const professorCourse = cursos.find(
+          (course) => Number(course.id) === Number(currentUserCourseId)
+        );
+
+        createSelect.innerHTML = professorCourse
+          ? `<option value="${professorCourse.id}">${escapeHtml(professorCourse.nome || professorCourse.name)}</option>`
+          : '<option value="">Curso não encontrado</option>';
+
+        createSelect.value = professorCourse ? String(professorCourse.id) : '';
+        createSelect.disabled = true;
+        selectedCourseId = professorCourse ? Number(professorCourse.id) : currentUserCourseId;
+
+        filterSelect.closest('.list-toolbar__main')?.classList.add('prontuario-catalog-toolbar--professor');
+        filterSelect.hidden = true;
+
+        courseHint.textContent = professorCourse
+          ? `Curso vinculado ao seu usuário: ${professorCourse.nome || professorCourse.name}.`
+          : 'Seu usuário não possui um curso ativo disponível.';
+        return;
+      }
+
+      createSelect.disabled = false;
+      createSelect.innerHTML = '<option value="">Selecione um curso</option>' +
+        cursos.map((course) =>
+          `<option value="${course.id}">${escapeHtml(course.nome || course.name)}</option>`
+        ).join('');
+
+      createSelect.value = selectedCourseId ? String(selectedCourseId) : '';
+
+      filterSelect.hidden = false;
+      filterSelect.innerHTML = '<option value="">Todos os cursos</option>' +
+        cursos.map((course) =>
+          `<option value="${course.id}">${escapeHtml(course.nome || course.name)}</option>`
+        ).join('');
+
+      courseHint.textContent =
+        'Selecione um curso para carregar somente as perguntas disponíveis para ele.';
+    }
+
+    function initializeQuestionPagination() {
+      questionPagination = new PaginacaoLista({
+        seletorQuantidade: '#question-picker-page-size',
+        seletorPaginacao: '#question-picker-pagination',
+        seletorIndicador: '#question-picker-page-info',
+        seletorPrimeira: '#question-picker-first',
+        seletorAnterior: '#question-picker-prev',
+        seletorProxima: '#question-picker-next',
+        seletorUltima: '#question-picker-last',
+        tamanhoPadrao: 10,
+        rotuloSingular: 'pergunta',
+        rotuloPlural: 'perguntas',
+        aoRenderizar: renderQuestionPickerPage
+      });
+    }
+
+    async function loadQuestionsForPicker(courseId, preserveState = false) {
+      const picker = document.getElementById('questionnaire-question-picker');
+
+      if (!courseId) {
+        cachedPickerQuestions = [];
+        pickerState = {};
+        questionPagination.definirItens([]);
+        picker.innerHTML = `
+          <div class="empty-state">
+            <p>Selecione um curso para visualizar as perguntas disponíveis.</p>
+          </div>
+        `;
+        updateSelectedQuestionsCount();
+        return;
+      }
+
+      picker.innerHTML = `
+        <div class="empty-state">
+          <span class="loading-spinner" aria-hidden="true"></span>
+          <p>Carregando perguntas...</p>
+        </div>
+      `;
+
+      try {
+        const response = await fetch(
+          `${API_BASE}/perguntas/curso/${encodeURIComponent(courseId)}`,
+          { headers: {} }
+        );
+
+        if (!response.ok) {
+          throw new Error('Falha ao carregar perguntas');
+        }
+
+        cachedPickerQuestions = await response.json();
+
+        if (!preserveState) {
+          pickerState = {};
+        }
+
+        cachedPickerQuestions.forEach((question, index) => {
+          const key = String(question.id);
+
+          if (!pickerState[key]) {
+            pickerState[key] = {
+              checked: false,
+              order: index + 1,
+              layout: 'automatico'
+            };
+          }
+        });
+
+        applyQuestionFilters();
+      } catch (error) {
+        console.error(error);
+        cachedPickerQuestions = [];
+        pickerState = {};
+        questionPagination.definirItens([]);
+        picker.innerHTML = `
+          <div class="empty-state">
+            <p>Não foi possível carregar as perguntas deste curso.</p>
+          </div>
+        `;
+        updateSelectedQuestionsCount();
+      }
+    }
+
+    function applyQuestionFilters() {
+      const search = document.getElementById('question-picker-search').value.trim().toLowerCase();
+      const selectedOnly = document.getElementById('question-picker-selected-only').checked;
+
+      const filtered = cachedPickerQuestions.filter((question) => {
+        const haystack = `${question.title || ''} ${question.description || ''}`.toLowerCase();
+        const matchesSearch = !search || haystack.includes(search);
+        const matchesSelected = !selectedOnly || Boolean(pickerState[String(question.id)]?.checked);
+
+        return matchesSearch && matchesSelected;
+      });
+
+      questionPagination.definirItens(filtered);
+      updateSelectedQuestionsCount();
+    }
+
+    function renderQuestionPickerPage(questions) {
+      const picker = document.getElementById('questionnaire-question-picker');
+
+      if (!selectedCourseId) {
+        picker.innerHTML = `
+          <div class="empty-state">
+            <p>Selecione um curso para visualizar as perguntas disponíveis.</p>
+          </div>
+        `;
+        return;
+      }
+
+      if (!questions.length) {
+        picker.innerHTML = `
+          <div class="empty-state">
+            <p>Nenhuma pergunta encontrada com os filtros atuais.</p>
+          </div>
+        `;
+        return;
+      }
+
+      picker.innerHTML = questions.map((question) => {
+        const key = String(question.id);
+        const state = pickerState[key] || { checked: false, order: 1, layout: 'automatico' };
+        const linkedCourses = parseQuestionCourseIds(question);
+        const sharingLabel = linkedCourses.length > 1
+          ? `Compartilhada com ${linkedCourses.length} cursos`
+          : 'Exclusiva deste curso';
+
+        return `
+          <article class="prontuario-question-row" data-question-id="${question.id}"
+            data-selected="${state.checked ? 'true' : 'false'}">
+            <label class="prontuario-question-row__check" aria-label="Selecionar pergunta">
+              <input type="checkbox" data-check-question="${question.id}"
+                ${state.checked ? 'checked' : ''} />
+            </label>
+
+            <div class="prontuario-question-row__content">
+              <div class="prontuario-question-row__title-line">
+                <strong>${escapeHtml(question.title)}</strong>
+                <span class="status-pill status-pill--info">${escapeHtml(sharingLabel)}</span>
+              </div>
+              <p>${escapeHtml(question.description || 'Sem descrição')}</p>
+            </div>
+
+            <label class="prontuario-question-row__order">
+              <span>Ordem</span>
+              <input class="order-input" type="number" min="1"
+                value="${Number(state.order) || 1}"
+                data-order-question="${question.id}"
+                ${state.checked ? '' : 'disabled'} />
+            </label>
+
+            <label class="prontuario-question-row__layout">
+              <span>Disposição</span>
+              <select data-layout-question="${question.id}" ${state.checked ? '' : 'disabled'}>
+                <option value="automatico" ${state.layout === 'automatico' ? 'selected' : ''}>Automática</option>
+                <option value="linha_inteira" ${state.layout === 'linha_inteira' ? 'selected' : ''}>Linha inteira</option>
+                <option value="lado_a_lado" ${state.layout === 'lado_a_lado' ? 'selected' : ''}>Lado a lado</option>
+              </select>
+            </label>
+          </article>
+        `;
+      }).join('');
+
+      bindQuestionPickerPageEvents(picker);
+    }
+
+    function bindQuestionPickerPageEvents(picker) {
+      picker.querySelectorAll('[data-check-question]').forEach((checkbox) => {
+        checkbox.addEventListener('change', () => {
+          const id = checkbox.getAttribute('data-check-question');
+          const current = pickerState[id] || { checked: false, order: 1, layout: 'automatico' };
+
+          pickerState[id] = {
+            checked: checkbox.checked,
+            order: Number(current.order) || 1,
+            layout: current.layout || 'automatico'
+          };
+
+          if (document.getElementById('question-picker-selected-only').checked) {
+            applyQuestionFilters();
+            return;
+          }
+
+          const row = checkbox.closest('.prontuario-question-row');
+          const orderInput = row.querySelector('[data-order-question]');
+          const layoutSelect = row.querySelector('[data-layout-question]');
+
+          row.setAttribute('data-selected', checkbox.checked ? 'true' : 'false');
+          orderInput.disabled = !checkbox.checked;
+          layoutSelect.disabled = !checkbox.checked;
+          updateSelectedQuestionsCount();
+        });
+      });
+
+      picker.querySelectorAll('[data-order-question]').forEach((input) => {
+        input.addEventListener('input', () => {
+          const id = input.getAttribute('data-order-question');
+          const current = pickerState[id] || { checked: false, order: 1, layout: 'automatico' };
+
+          pickerState[id] = {
+            checked: current.checked,
+            order: Math.max(1, Number(input.value) || 1),
+            layout: current.layout || 'automatico'
+          };
+        });
+      });
+
+      picker.querySelectorAll('[data-layout-question]').forEach((select) => {
+        select.addEventListener('change', () => {
+          const id = select.getAttribute('data-layout-question');
+          const current = pickerState[id] || { checked: false, order: 1, layout: 'automatico' };
+          pickerState[id] = { ...current, layout: select.value || 'automatico' };
+        });
+      });
+    }
+
+    function updateSelectedQuestionsCount() {
+      const selected = Object.values(pickerState)
+        .filter((state) => state.checked)
+        .length;
+
+      document.getElementById('question-picker-selected-count').textContent =
+        `${selected} selecionada(s)`;
+    }
+
+    function setQuestionnaireFormMode(isEditing) {
+      document.getElementById('questionnaire-form-title').textContent =
+        isEditing ? 'Editar Prontuário' : 'Criar Novo Prontuário';
+
+      document.getElementById('btn-submit-questionnaire-form').textContent =
+        isEditing ? 'Salvar Alterações' : 'Criar Prontuário';
+
+      document.getElementById('btn-cancel-edit-questionnaire')
+        .classList.toggle('hidden', !isEditing);
+
+      document.getElementById('questionnaire-edit-hint')
+        .classList.toggle('hidden', !isEditing);
+    }
+
+    function clearQuestionnaireForm() {
+      document.getElementById('form-questionnaire').reset();
+      document.getElementById('question-picker-search').value = '';
+      document.getElementById('question-picker-selected-only').checked = false;
+
+      if (currentUserRole === 'PROFESSOR') {
+        selectedCourseId = currentUserCourseId;
+        document.getElementById('questionnaire-course').value =
+          currentUserCourseId ? String(currentUserCourseId) : '';
+      } else {
+        selectedCourseId = null;
+        document.getElementById('questionnaire-course').value = '';
+      }
+
+      cachedPickerQuestions = [];
+      pickerState = {};
+      questionPagination.definirItens([]);
+      document.getElementById('questionnaire-question-picker').innerHTML = `
+        <div class="empty-state">
+          <p>${selectedCourseId
+            ? 'Carregando perguntas...'
+            : 'Selecione um curso para visualizar as perguntas disponíveis.'}</p>
+        </div>
+      `;
+
+      updateSelectedQuestionsCount();
+
+      if (selectedCourseId) {
+        loadQuestionsForPicker(selectedCourseId);
+      }
+    }
+
+    function exitEditQuestionnaireMode() {
+      editingQuestionnaireId = null;
+      setQuestionnaireFormMode(false);
+      clearQuestionnaireForm();
+    }
+
+    async function startEditQuestionnaire(questionnaire) {
+      if (!questionnaire?.id) {
+        return;
+      }
+
+      try {
+        editingQuestionnaireId = Number(questionnaire.id);
+        setQuestionnaireFormMode(true);
+        painelCriacaoProntuario?.definirAberto(true);
+
+        selectedCourseId = Number(questionnaire.idCurso);
+        document.getElementById('questionnaire-course').value = String(selectedCourseId);
+
+        document.getElementById('questionnaire-title').value = questionnaire.title || '';
+        document.getElementById('questionnaire-description').value = questionnaire.description || '';
+        document.getElementById('question-picker-search').value = '';
+        document.getElementById('question-picker-selected-only').checked = false;
+
+        await loadQuestionsForPicker(selectedCourseId);
+
+        const response = await fetch(
+          `${API_BASE}/questionarios/${editingQuestionnaireId}/perguntas`,
+          { headers: {} }
+        );
+
+        if (!response.ok) {
+          throw new Error('Falha ao carregar as perguntas do prontuário');
+        }
+
+        const selectedQuestions = await response.json();
+
+        pickerState = {};
+
+        cachedPickerQuestions.forEach((question, index) => {
+          pickerState[String(question.id)] = {
+            checked: false,
+            order: index + 1
+          };
+        });
+
+        selectedQuestions.forEach((question, index) => {
+          pickerState[String(question.id)] = {
+            checked: true,
+            order: Number(question.question_order) || index + 1,
+            layout: question.layout || 'automatico'
+          };
+        });
+
+        applyQuestionFilters();
+
+        document.getElementById('questionnaire-builder-panel')
+          .scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } catch (error) {
+        console.error(error);
+        notify.error(error.message || 'Erro ao editar prontuário');
+      }
+    }
+
+    async function loadQuestionnaires() {
+      const container = document.getElementById('questionnaires-by-course');
+
+      container.innerHTML = `
+        <div class="empty-state">
+          <span class="loading-spinner" aria-hidden="true"></span>
+          <p>Carregando prontuários...</p>
+        </div>
+      `;
+
+      try {
+        const response = await fetch(`${API_BASE}/questionarios`, {
+          headers: {}
+        });
+
+        if (!response.ok) {
+          const data = await response.json().catch(() => ({}));
+          throw new Error(data.message || 'Falha ao carregar prontuários');
+        }
+
+        cachedQuestionnaires = await response.json();
+        renderQuestionnairesByCourse();
+      } catch (error) {
+        console.error(error);
+        cachedQuestionnaires = [];
+        document.getElementById('questionnaires-count').textContent = '0 prontuário(s)';
+        container.innerHTML = `
+          <div class="empty-state">
+            <p>Não foi possível carregar os prontuários.</p>
+          </div>
+        `;
+      }
+    }
+
+    const ESTADO_CATALOGO_MODULO = 'prontuarios';
+    const ESTADO_CATALOGO_ID = 'catalogo';
+
+    function salvarEstadoCatalogo() {
+      window.EstadoSessao?.salvar?.(ESTADO_CATALOGO_MODULO, ESTADO_CATALOGO_ID, {
+        busca: document.getElementById('questionnaires-search')?.value || '',
+        status: document.getElementById('questionnaires-status-filter')?.value || 'all',
+        curso: document.getElementById('questionnaires-course-filter')?.value || ''
+      });
+    }
+
+    function restaurarEstadoCatalogo() {
+      const estado = window.EstadoSessao?.obter?.(ESTADO_CATALOGO_MODULO, ESTADO_CATALOGO_ID);
+      if (!estado) return;
+
+      const busca = document.getElementById('questionnaires-search');
+      const status = document.getElementById('questionnaires-status-filter');
+      const curso = document.getElementById('questionnaires-course-filter');
+
+      if (busca) busca.value = estado.busca || '';
+      if (status && [...status.options].some((opcao) => opcao.value === String(estado.status || 'all'))) {
+        status.value = String(estado.status || 'all');
+      }
+      if (curso && [...curso.options].some((opcao) => opcao.value === String(estado.curso || ''))) {
+        curso.value = String(estado.curso || '');
+      }
+    }
+
+    function renderQuestionnairesByCourse() {
+      const search = document.getElementById('questionnaires-search').value.trim().toLowerCase();
+      const status = document.getElementById('questionnaires-status-filter').value;
+      const courseFilter = document.getElementById('questionnaires-course-filter').value;
+
+      const filtered = cachedQuestionnaires.filter((questionnaire) => {
+        const matchesSearch = !search ||
+          `${questionnaire.title || ''} ${questionnaire.description || ''}`.toLowerCase().includes(search);
+
+        const matchesStatus = status === 'all' ||
+          (status === 'published' && questionnaire.is_published) ||
+          (status === 'draft' && !questionnaire.is_published);
+
+        const matchesCourse = !courseFilter ||
+          Number(questionnaire.idCurso) === Number(courseFilter);
+
+        return matchesSearch && matchesStatus && matchesCourse;
+      });
+
+      document.getElementById('questionnaires-count').textContent =
+        `${filtered.length} prontuário(s)`;
+
+      const container = document.getElementById('questionnaires-by-course');
+
+      if (!filtered.length) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <p>Nenhum prontuário encontrado com os filtros atuais.</p>
+          </div>
+        `;
+        return;
+      }
+
+      const groups = new Map();
+
+      filtered.forEach((questionnaire) => {
+        const courseId = Number(questionnaire.idCurso);
+        const group = groups.get(courseId) || {
+          id: courseId,
+          name: questionnaire.course_name ||
+            cursos.find((course) => Number(course.id) === courseId)?.nome ||
+            `Curso ${courseId}`,
+          items: []
+        };
+
+        group.items.push(questionnaire);
+        groups.set(courseId, group);
+      });
+
+      const orderedGroups = Array.from(groups.values())
+        .sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
+
+      container.innerHTML = orderedGroups.map((group) => {
+        return `
+          <section class="prontuario-course-group painel-retratil" data-course-group="${group.id}">
+            <button class="prontuario-course-group__header" type="button"
+              data-painel-retratil-toggle
+              aria-label="Expandir ou recolher prontuários do curso ${escapeHtml(group.name)}">
+              <span class="prontuario-course-group__name">${escapeHtml(group.name)}</span>
+              <span class="prontuario-course-group__count">
+                ${group.items.length} prontuário(s)
+              </span>
+              <span class="prontuario-course-group__chevron icone icone--sm" data-icone="chevron-direita" aria-hidden="true"></span>
+            </button>
+
+            <div class="prontuario-course-group__body" data-painel-retratil-content>
+              ${group.items.map(renderQuestionnaireRow).join('')}
+            </div>
+          </section>
+        `;
+      }).join('');
+
+      window.IconesCAIGE?.aplicar?.(container);
+      bindQuestionnaireListEvents(container);
+    }
+
+    function renderQuestionnaireRow(questionnaire) {
+      return `
+        <article class="prontuario-catalog-row">
+          <div class="prontuario-catalog-row__main">
+            <div class="prontuario-catalog-row__title-line">
+              <strong>${escapeHtml(questionnaire.title)}</strong>
+              <span class="status-pill ${questionnaire.is_published
+                ? 'status-pill--success'
+                : 'status-pill--warning'}">
+                ${questionnaire.is_published ? 'Publicado' : 'Rascunho'}
+              </span>
+            </div>
+
+            <p>${escapeHtml(questionnaire.description || 'Sem descrição')}</p>
+
+            <span class="prontuario-catalog-row__meta">
+              ${Number(questionnaire.question_count) || 0} pergunta(s)
+            </span>
+          </div>
+
+          <button class="btn-alt menu-acoes-trigger" type="button"
+            data-questionnaire-menu="${questionnaire.id}"
+            aria-label="Ações de ${escapeHtml(questionnaire.title)}"
+            aria-haspopup="menu"><span class="icone icone--sm" data-icone="menu" aria-hidden="true"></span></button>
+        </article>
+      `;
+    }
+
+    function formatQuestionType(type) {
+      const labels = {
+        texto_livre: 'Texto livre',
+        multipla_escolha: 'Múltipla escolha',
+        sim_nao: 'Sim / Não',
+        escala: 'Escala'
+      };
+      return labels[String(type || '').toLowerCase()] || 'Pergunta';
+    }
+
+    function obterClasseDisposicaoPreview(question) {
+      const layout = question.layout || 'automatico';
+      const type = question.question_type || 'texto_livre';
+      const larguraInteira = layout === 'linha_inteira' ||
+        (layout === 'automatico' && type === 'texto_livre');
+      return larguraInteira ? 'prontuario-documento__pergunta--larga' : '';
+    }
+
+    function renderQuestionPreview(question, index) {
+      const type = question.question_type || 'texto_livre';
+      let answerPreview = '';
+
+      if (type === 'sim_nao') {
+        answerPreview = `<div class="prontuario-documento__opcoes">
+          <span class="prontuario-documento__opcao"><span class="prontuario-documento__marcador"></span><span>Sim</span></span>
+          <span class="prontuario-documento__opcao"><span class="prontuario-documento__marcador"></span><span>Não</span></span>
+        </div>`;
+      } else if (type === 'escala') {
+        answerPreview = `<div class="prontuario-documento__escala">${[1,2,3,4,5].map(v =>
+          `<span class="prontuario-documento__escala-item">${v}</span>`).join('')}</div>`;
+      } else if (type === 'multipla_escolha') {
+        let options = question.options || [];
+        if (typeof options === 'string') { try { options = JSON.parse(options); } catch (_) { options = []; } }
+        if (!Array.isArray(options) && options?.options) options = options.options;
+        answerPreview = `<div class="prontuario-documento__opcoes">${(Array.isArray(options) ? options : []).map(option =>
+          `<span class="prontuario-documento__opcao"><span class="prontuario-documento__marcador"></span><span>${escapeHtml(option)}</span></span>`).join('')}</div>`;
+      } else {
+        answerPreview = '<div class="prontuario-documento__resposta-texto prontuario-preview__placeholder">Campo de resposta do profissional</div>';
+      }
+
+      return `<section class="prontuario-documento__pergunta ${obterClasseDisposicaoPreview(question)}">
+        <div class="prontuario-documento__pergunta-cabecalho">
+          <span class="prontuario-documento__numero">${String(index + 1).padStart(2,'0')}</span>
+          <div><h3>${escapeHtml(question.title || question.titulo || 'Pergunta')}</h3>
+          ${question.description || question.descricao ? `<p class="prontuario-preview__descricao">${escapeHtml(question.description || question.descricao)}</p>` : ''}</div>
+        </div>
+        ${answerPreview}
+      </section>`;
+    }
+
+    async function previewQuestionnaire(questionnaire) {
+      try {
+        const response = await fetch(
+          `${API_BASE}/questionarios/${encodeURIComponent(questionnaire.id)}/perguntas`,
+          { headers: {} }
+        );
+
+        if (!response.ok) {
+          const data = await response.json().catch(() => ({}));
+          throw new Error(data.message || 'Falha ao carregar as perguntas do prontuário');
+        }
+
+        const questions = await response.json();
+        const courseName = questionnaire.course_name ||
+          cursos.find((course) => Number(course.id) === Number(questionnaire.idCurso))?.nome ||
+          `Curso ${questionnaire.idCurso}`;
+
+        document.getElementById('questionnaire-preview-modal')?.remove();
+
+        const modal = document.createElement('div');
+        modal.id = 'questionnaire-preview-modal';
+        modal.className = 'modal active';
+        modal.setAttribute('aria-hidden', 'false');
+        modal.setAttribute('role', 'dialog');
+        modal.setAttribute('aria-modal', 'true');
+        modal.setAttribute('aria-labelledby', 'questionnaire-preview-title');
+        modal.innerHTML = `
+          <div class="modal__content modal__content--large">
+            <div class="modal__header modal__header--destaque">
+              <h3 class="modal__title" id="questionnaire-preview-title">Visualizar Prontuário</h3>
+              <button type="button" class="modal__close" data-preview-close aria-label="Fechar"><span class="icone icone--sm" data-icone="fechar" aria-hidden="true"></span></button>
+            </div>
+            <div class="modal__body">
+              <section class="modal-section">
+                <h4 class="modal-section__title">${escapeHtml(questionnaire.title || 'Prontuário')}</h4>
+                <p>${escapeHtml(questionnaire.description || 'Sem descrição')}</p>
+                <p><strong>Curso:</strong> ${escapeHtml(courseName)}</p>
+                <p><strong>Status:</strong> ${questionnaire.is_published ? 'Publicado' : 'Rascunho'}</p>
+              </section>
+              <section class="modal-section">
+                <h4 class="modal-section__title">Perguntas (${questions.length})</h4>
+                <div class="prontuario-documento__perguntas">
+                  ${questions.length
+                    ? questions.map(renderQuestionPreview).join('')
+                    : '<div class="empty-state"><p>Este prontuário não possui perguntas.</p></div>'}
+                </div>
+              </section>
+            </div>
+            <div class="modal__form-actions">
+              <button type="button" class="modal__btn modal__btn--secondary modal__close" data-preview-close>Fechar</button>
+            </div>
+          </div>`;
+
+        const close = () => {
+          document.removeEventListener('keydown', onKeydown);
+          modal.remove();
+        };
+        const onKeydown = (event) => {
+          if (event.key === 'Escape') close();
+        };
+
+        modal.querySelectorAll('[data-preview-close]').forEach((button) => button.addEventListener('click', close));
+        modal.addEventListener('click', (event) => {
+          if (event.target === modal) close();
+        });
+        document.addEventListener('keydown', onKeydown);
+        document.body.appendChild(modal);
+        window.IconesCAIGE?.aplicar?.(modal);
+        modal.querySelector('[data-preview-close]')?.focus();
+      } catch (error) {
+        console.error(error);
+        notify.error(error.message || 'Erro ao visualizar prontuário');
+      }
+    }
+
+    function bindQuestionnaireListEvents(container) {
+      container.querySelectorAll('.prontuario-course-group').forEach((groupEl, index) => {
+        const courseId = groupEl.getAttribute('data-course-group');
+        const professorDoCurso = currentUserRole === 'PROFESSOR' && Number(currentUserCourseId) === Number(courseId);
+
+        PainelRetratil.inicializar(groupEl, {
+          chaveEstado: `caige:prontuarios:curso-${courseId}:${userEmail || 'anonimo'}`,
+          abertoInicial: currentUserRole === 'PROFESSOR' ? professorDoCurso : false,
+          rotulo: `curso ${courseId}`
+        });
+      });
+
+      container.querySelectorAll('[data-questionnaire-menu]').forEach((button) => {
+        button.addEventListener('click', (event) => {
+          event.stopPropagation();
+
+          const id = Number(button.getAttribute('data-questionnaire-menu'));
+          const questionnaire = cachedQuestionnaires.find(
+            (item) => Number(item.id) === id
+          );
+
+          if (!questionnaire) {
+            return;
+          }
+
+          const actions = [
+            {
+              rotulo: 'Visualizar',
+              acao: () => previewQuestionnaire(questionnaire)
+            },
+            {
+              rotulo: 'Editar',
+              acao: () => startEditQuestionnaire(questionnaire)
+            }
+          ];
+
+          if (!questionnaire.is_published) {
+            actions.push({
+              rotulo: 'Publicar',
+              acao: () => publishQuestionnaire(questionnaire.id)
+            });
+          }
+
+          actions.push({
+            rotulo: 'Excluir',
+            perigo: true,
+            acao: async () => {
+              let confirmar = false;
+              if (window.ModalConfirmacao && typeof window.ModalConfirmacao.confirmar === 'function') {
+                confirmar = await window.ModalConfirmacao.confirmar({
+                  titulo: 'Excluir Prontuário',
+                  mensagem: 'Deseja excluir este prontuário?',
+                  variante: 'perigo',
+                  textoConfirmar: 'Excluir',
+                  textoCancelar: 'Cancelar',
+                  icone: 'excluir'
+                });
+              }
+              if (!confirmar) {
+                return;
+              }
+
+              await deleteQuestionnaire(questionnaire.id);
+            }
+          });
+
+          MenuAcoes.abrir(button, actions);
+        });
+      });
+    }
+
+    async function createQuestionnaire(payload) {
+      const response = await fetch(`${API_BASE}/questionarios`, {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.message || data.error || 'Falha ao criar prontuário');
+      }
+    }
+
+    async function updateQuestionnaire(id, payload) {
+      const response = await fetch(`${API_BASE}/questionarios/${id}`, {
+        method: 'PUT',
+        headers: authHeaders(),
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.message || data.error || 'Falha ao atualizar prontuário');
+      }
+    }
+
+    async function publishQuestionnaire(id) {
+      try {
+        const response = await fetch(`${API_BASE}/questionarios/${id}/publicar`, {
+          method: 'PATCH',
+          headers: {}
+        });
+
+        if (!response.ok) {
+          const data = await response.json().catch(() => ({}));
+          throw new Error(data.message || data.error || 'Falha ao publicar prontuário');
+        }
+
+        notify.success('Prontuário publicado com sucesso');
+        await loadQuestionnaires();
+      } catch (error) {
+        console.error(error);
+        notify.error(error.message || 'Erro ao publicar prontuário');
+      }
+    }
+
+    async function deleteQuestionnaire(id) {
+      try {
+        const response = await fetch(`${API_BASE}/questionarios/${id}`, {
+          method: 'DELETE',
+          headers: {}
+        });
+
+        if (!response.ok) {
+          const data = await response.json().catch(() => ({}));
+          throw new Error(data.message || data.error || 'Falha ao excluir prontuário');
+        }
+
+        notify.success('Prontuário excluído com sucesso');
+
+        if (editingQuestionnaireId === Number(id)) {
+          exitEditQuestionnaireMode();
+        }
+
+        await loadQuestionnaires();
+      } catch (error) {
+        console.error(error);
+        notify.error(error.message || 'Erro ao excluir prontuário');
+      }
+    }
+
+    function bindEvents() {
+      document.getElementById('questionnaire-course').addEventListener('change', async (event) => {
+        selectedCourseId = Number(event.target.value) || null;
+
+        if (editingQuestionnaireId !== null) {
+          editingQuestionnaireId = null;
+          setQuestionnaireFormMode(false);
+          document.getElementById('questionnaire-title').value = '';
+          document.getElementById('questionnaire-description').value = '';
+        }
+
+        document.getElementById('question-picker-search').value = '';
+        document.getElementById('question-picker-selected-only').checked = false;
+
+        await loadQuestionsForPicker(selectedCourseId);
+      });
+
+      document.getElementById('question-picker-search').addEventListener('input', applyQuestionFilters);
+      document.getElementById('question-picker-selected-only').addEventListener('change', applyQuestionFilters);
+
+      document.getElementById('questionnaires-search').addEventListener('input', () => {
+        renderQuestionnairesByCourse();
+        salvarEstadoCatalogo();
+      });
+      document.getElementById('questionnaires-status-filter').addEventListener('change', () => {
+        renderQuestionnairesByCourse();
+        salvarEstadoCatalogo();
+      });
+      document.getElementById('questionnaires-course-filter').addEventListener('change', () => {
+        renderQuestionnairesByCourse();
+        salvarEstadoCatalogo();
+      });
+
+      document.getElementById('btn-cancel-edit-questionnaire').addEventListener('click', exitEditQuestionnaireMode);
+
+      document.getElementById('form-questionnaire').addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        try {
+          const courseId = Number(document.getElementById('questionnaire-course').value) || null;
+
+          if (!courseId) {
+            notify.error('Selecione o curso do prontuário');
+            return;
+          }
+
+          const selected = Object.entries(pickerState)
+            .filter(([, state]) => state.checked)
+            .map(([id, state]) => ({
+              id: Number(id),
+              order: Number(state.order) || 9999,
+              layout: state.layout || 'automatico'
+            }))
+            .sort((a, b) => a.order - b.order);
+
+          if (!selected.length) {
+            notify.error('Selecione pelo menos uma pergunta');
+            return;
+          }
+
+          const payload = {
+            title: document.getElementById('questionnaire-title').value.trim(),
+            description: document.getElementById('questionnaire-description').value.trim(),
+            idCurso: courseId,
+            questions: selected.map((item) => ({ id: item.id, disposicao: item.layout }))
+          };
+
+          if (editingQuestionnaireId) {
+            await updateQuestionnaire(editingQuestionnaireId, payload);
+            notify.success('Prontuário atualizado com sucesso');
+            exitEditQuestionnaireMode();
+          } else {
+            await createQuestionnaire(payload);
+            notify.success('Prontuário criado com sucesso');
+
+            document.getElementById('questionnaire-title').value = '';
+            document.getElementById('questionnaire-description').value = '';
+            pickerState = {};
+            await loadQuestionsForPicker(selectedCourseId);
+          }
+
+          await loadQuestionnaires();
+        } catch (error) {
+          console.error(error);
+          notify.error(error.message || 'Erro ao salvar prontuário');
+        }
+      });
+    }
+
+    async function initPage() {
+      if (!sessaoValida || !userEmail) {
+        return;
+      }
+
+      try {
+        painelCriacaoProntuario = PainelRetratil.inicializar('#questionnaire-builder-panel', {
+          chaveEstado: `caige:prontuarios:criacao-expandida:${userEmail || 'anonimo'}`,
+          abertoInicial: false
+        });
+        initializeQuestionPagination();
+        await loadProfile();
+        await loadCourses();
+        restaurarEstadoCatalogo();
+        bindEvents();
+
+        if (selectedCourseId) {
+          await loadQuestionsForPicker(selectedCourseId);
+        }
+
+        await loadQuestionnaires();
+      } catch (error) {
+        console.error(error);
+        notify.error(error.message || 'Erro ao carregar a Gestão de Prontuários');
+      }
+    }
+
+    initPage();
+  </script>
+  <script src="/recursos/js/pwa.js"></script>
+</body>
+</html>

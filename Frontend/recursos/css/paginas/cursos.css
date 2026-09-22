@@ -1,0 +1,365 @@
+/* =========================================================
+   CAIGE - PÁGINA MEU CURSO
+   Estilos específicos da área Meu Curso (Professor).
+   100% aderente aos tokens do Design System.
+   ========================================================= */
+
+.meu-curso-page {
+  min-height: 100vh;
+}
+
+.meu-curso-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.meu-curso-carregando {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8);
+  color: var(--text-muted);
+}
+
+/* =========================================================
+   PAINEL PRINCIPAL
+   Unifica cabeçalho do curso e seção de atividades
+   ========================================================= */
+
+.meu-curso-painel {
+  background: var(--surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-xs);
+}
+
+/* =========================================================
+   1. CABEÇALHO DO CURSO
+   ========================================================= */
+
+.meu-curso-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.meu-curso-header__info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.meu-curso-header__icone {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--blue-50);
+  color: var(--blue-600);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--blue-200);
+}
+
+.meu-curso-header__icone svg {
+  width: 22px;
+  height: 22px;
+}
+
+.meu-curso-header__detalhes {
+  min-width: 0;
+}
+
+.meu-curso-header__titulo {
+  font-size: var(--fonte-titulo-pagina);
+  font-weight: var(--peso-titulo-pagina);
+  color: var(--text-primary);
+  margin: 0 0 var(--space-1) 0;
+  line-height: 1.25;
+}
+
+.meu-curso-header__status {
+  display: flex;
+  align-items: center;
+}
+
+.meu-curso-header__acoes {
+  display: flex;
+  align-items: center;
+}
+
+.meu-curso-header__acoes .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* =========================================================
+   2. SEPARAÇÃO VISUAL DISCRETA
+   ========================================================= */
+
+.meu-curso-divisor {
+  border: 0;
+  border-top: 1px solid var(--border-default);
+  margin: var(--space-5) 0;
+}
+
+/* =========================================================
+   3. SEÇÃO ATIVIDADES DO CURSO
+   ========================================================= */
+
+.meu-curso-secao {
+  display: flex;
+  flex-direction: column;
+}
+
+.meu-curso-secao__cabecalho {
+  margin-bottom: var(--space-4);
+}
+
+.meu-curso-secao__titulo {
+  font-size: var(--fonte-titulo-secao);
+  font-weight: var(--peso-titulo-secao);
+  color: var(--text-primary);
+  margin: 0 0 var(--space-1) 0;
+  line-height: 1.3;
+}
+
+.meu-curso-secao__descricao {
+  font-size: var(--fonte-texto-auxiliar);
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.45;
+}
+
+/* =========================================================
+   5. LISTA DE ATIVIDADES
+   ========================================================= */
+
+.meu-curso-atividades-lista {
+  min-height: 60px;
+}
+
+/* =========================================================
+   6. ESTADO VAZIO DE ATIVIDADES
+   ========================================================= */
+
+.empty-state--atividades {
+  padding: var(--space-6) var(--space-4);
+  background: var(--surface-soft);
+  border: 1px dashed var(--border-default);
+  border-radius: var(--radius-sm);
+  margin: var(--space-1) 0;
+}
+
+.empty-state--atividades .empty-state__icon {
+  width: 36px;
+  height: 36px;
+  color: var(--gray-400);
+  margin-bottom: var(--space-2);
+}
+
+.empty-state--atividades .empty-state__title {
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin: 0 0 var(--space-1) 0;
+}
+
+.empty-state--atividades .empty-state__description {
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* =========================================================
+   ESTADO VAZIO (PROFESSOR SEM CURSO)
+   ========================================================= */
+
+.meu-curso-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-8) var(--space-6);
+  background: var(--surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xs);
+}
+
+.meu-curso-empty-icon {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gray-50);
+  color: var(--gray-400);
+  border-radius: 50%;
+  margin-bottom: var(--space-4);
+}
+
+.meu-curso-empty-icon svg {
+  width: 26px;
+  height: 26px;
+}
+
+.meu-curso-empty-title {
+  font-size: var(--fonte-titulo-pagina);
+  font-weight: var(--peso-titulo-pagina);
+  color: var(--text-primary);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.meu-curso-empty-text {
+  font-size: var(--fonte-corpo);
+  color: var(--text-muted);
+  max-width: 440px;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   AVISO SUPERVISOR
+   ========================================================= */
+
+.meu-curso-aviso-supervisor {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  padding: var(--space-5) var(--space-6);
+  background: var(--blue-50);
+  border: 1px solid var(--blue-200);
+  border-radius: var(--radius-md);
+}
+
+.meu-curso-aviso-supervisor p {
+  margin: 0;
+  color: var(--blue-900);
+  font-size: var(--fonte-corpo);
+}
+
+.meu-curso-aviso-supervisor strong {
+  display: block;
+  margin-bottom: 2px;
+}
+
+/* =========================================================
+   ADAPTAÇÃO RESPONSIVA PARA TELAS MÓVEIS (<= 767px)
+   ========================================================= */
+
+@media (max-width: 767px) {
+  .meu-curso-painel {
+    padding: var(--space-4);
+    border-radius: var(--radius-sm);
+  }
+
+  .meu-curso-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+  }
+
+  .meu-curso-header__info {
+    gap: var(--space-3);
+  }
+
+  .meu-curso-header__icone {
+    width: 40px;
+    height: 40px;
+  }
+
+  .meu-curso-header__acoes {
+    width: 100%;
+    margin-top: var(--space-1);
+  }
+
+  .meu-curso-header__acoes .btn {
+    width: 100%;
+    justify-content: center;
+    min-height: 42px;
+  }
+
+  .meu-curso-divisor {
+    margin: var(--space-4) 0;
+  }
+
+  .meu-curso-empty-state {
+    padding: var(--space-6) var(--space-4);
+    border-radius: var(--radius-sm);
+  }
+
+  .meu-curso-aviso-supervisor {
+    flex-direction: column;
+    align-items: stretch;
+    padding: var(--space-4);
+  }
+
+  .meu-curso-aviso-supervisor .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Desktop institucional - Meu Curso */
+@media (min-width: 1025px) {
+  .meu-curso-container {
+    gap: var(--space-4);
+  }
+
+  .meu-curso-painel {
+    padding: 0;
+    border-radius: var(--radius-md);
+    box-shadow: none;
+    overflow: hidden;
+  }
+
+  .meu-curso-header {
+    padding: 14px 16px;
+    background: var(--gray-50);
+    border-bottom: 1px solid var(--border-default);
+  }
+
+  .meu-curso-header__info {
+    gap: var(--space-3);
+  }
+
+  .meu-curso-header__icone {
+    width: 30px;
+    height: 30px;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .meu-curso-header__icone svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .meu-curso-header__titulo {
+    font-size: var(--fonte-titulo-secao);
+  }
+
+  .meu-curso-divisor {
+    display: none;
+  }
+
+  .meu-curso-secao {
+    padding: 14px 16px 16px;
+  }
+
+  .meu-curso-secao__cabecalho {
+    margin-bottom: 10px;
+  }
+
+
+}

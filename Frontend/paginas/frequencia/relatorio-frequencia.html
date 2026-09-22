@@ -1,0 +1,2220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Relatório de Frequência</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+    <link rel="stylesheet" href="../../recursos/css/base.css" />
+    <link rel="stylesheet" href="../../recursos/css/componentes.css" />
+    <link rel="stylesheet" href="../../recursos/css/layout.css" />
+    <link rel="stylesheet" href="../../recursos/css/responsive.css" />
+    <link rel="stylesheet" href="../../recursos/css/paginas/frequencia.css" />
+    <script src="../../recursos/js/text-normalizer.js"></script>
+    <script src="../../recursos/js/formatador-texto.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.4/jspdf.plugin.autotable.min.js"></script>
+    <script src="../../recursos/js/gerador-pdf.js"></script>
+      <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#123a78" />
+    <meta name="application-name" content="CAIGE" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="CAIGE" />
+    <link rel="apple-touch-icon" href="/recursos/images/pwa/apple-touch-icon.png" />
+  </head>
+  <body data-page-title="Relatório de Frequência" data-page-subtitle="Consulte os dias em que cada paciente compareceu ao projeto">
+    <div class="dashboard frequencia-page">
+      <div id="shell-sidebar"></div>
+
+      <main class="content">
+        <div id="shell-header"></div>
+
+        <section class="report-card frequency-data-card">
+          <div class="report-header cabecalho-destaque">
+            <h3 id="report-title" class="titulo-com-icone"><span class="icone icone--sm" data-icone="frequencia" aria-hidden="true"></span><span id="report-title-text">Dados de Frequência</span></h3>
+          </div>
+
+          <div class="report-content" id="report-content">
+            <div class="filter-row">
+              <div class="form-group">
+                <label for="start-date">Data Inicial</label>
+                <div class="caige-date-filter">
+                  <input type="text" id="start-date" title="Selecione a data inicial" autocomplete="off" />
+                  <button class="caige-date-filter__calendar" type="button" id="start-date-calendar" aria-label="Abrir calendário da data inicial" title="Abrir calendário"><span class="icone icone--sm" data-icone="calendario" aria-hidden="true"></span></button>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="end-date">Data Final</label>
+                <div class="caige-date-filter">
+                  <input type="text" id="end-date" title="Selecione a data final" autocomplete="off" />
+                  <button class="caige-date-filter__calendar" type="button" id="end-date-calendar" aria-label="Abrir calendário da data final" title="Abrir calendário"><span class="icone icone--sm" data-icone="calendario" aria-hidden="true"></span></button>
+                </div>
+              </div>
+              <div class="form-group attendance-patient-combobox report-patient-combobox" id="report-patient-combobox">
+                <label id="report-patient-label" for="report-patient-trigger">Paciente</label>
+                <button
+                  type="button"
+                  id="report-patient-trigger"
+                  class="attendance-patient-trigger"
+                  aria-haspopup="listbox"
+                  aria-expanded="false"
+                  aria-controls="patient-results"
+                  aria-labelledby="report-patient-label report-patient-display"
+                >
+                  <span class="attendance-patient-trigger__text" id="report-patient-display">Selecione um ou mais pacientes</span>
+                  <span class="attendance-patient-trigger__chevron" aria-hidden="true"></span>
+                </button>
+                <input id="patient-search" type="hidden" />
+                <input id="patient-id" type="hidden" />
+
+                <div
+                  id="report-patient-dropdown"
+                  class="attendance-patient-dropdown report-patient-dropdown"
+                  role="region"
+                  aria-label="Filtro de paciente"
+                  hidden
+                >
+                  <div class="attendance-patient-dropdown__search-wrap">
+                    <input
+                      id="report-patient-search-input"
+                      class="attendance-patient-dropdown__search"
+                      type="search"
+                      placeholder="Digite o nome do paciente..."
+                      autocomplete="off"
+                      aria-label="Digite o nome do paciente para buscar"
+                    />
+                  </div>
+
+                  <div class="report-patient-actions" aria-label="Ações do filtro de pacientes">
+                    <button type="button" id="report-patient-select-all" class="attendance-patient-section-action">
+                      Selecionar todos
+                    </button>
+                    <button type="button" id="report-patient-clear" class="attendance-patient-section-action attendance-patient-section-action--secondary">
+                      Limpar seleção
+                    </button>
+                  </div>
+
+                  <div
+                    id="patient-results"
+                    class="attendance-patient-dropdown__list report-patient-results"
+                    role="listbox"
+                    aria-label="Sugestões de pacientes"
+                    tabindex="-1"
+                  ></div>
+
+                  <div id="report-patient-loading" class="attendance-patient-dropdown__loading" hidden>
+                    <span class="icone icone--sm" data-icone="spinner" aria-hidden="true"></span>
+                    <span>Carregando pacientes...</span>
+                  </div>
+
+                  <div id="report-patient-empty" class="attendance-patient-dropdown__empty" hidden>
+                    Nenhum paciente encontrado.
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="sector-filter">Curso</label>
+                <select id="sector-filter">
+                  <option value="">Todos os cursos</option>
+                </select>
+              </div>
+              <div class="form-group"><label for="activity-filter">Atividade</label><select id="activity-filter"><option value="">Todas as atividades</option></select></div>
+              <div class="form-group"><label for="professional-filter">Profissional</label><select id="professional-filter"><option value="">Todos os profissionais</option></select></div>
+              <div class="form-group">
+                <label for="report-view">Formato</label>
+                <select id="report-view">
+                  <option value="summary">Resumo do período</option>
+                  <option value="administrative">Administrativo por paciente</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="admin-grouping">Agrupamento</label>
+                <select id="admin-grouping">
+                  <option value="monthly">Mensal</option>
+                  <option value="quarterly">Trimestral</option>
+                  <option value="semiannual">Semestral</option>
+                  <option value="yearly">Anual</option>
+                </select>
+              </div>
+              <div class="filter-actions">
+                <button class="btn-filter" id="btn-filter" type="button">
+                  <span class="icone icone--sm" data-icone="buscar" aria-hidden="true"></span>
+                  <span>Gerar Relatório</span>
+                </button>
+                <button class="btn-filter btn-export-pdf" id="btn-export-pdf" type="button" hidden>
+                  <span class="icone icone--sm" data-icone="baixar" aria-hidden="true"></span>
+                  <span>Exportar PDF</span>
+                </button>
+                <button class="btn-filter btn-clear-filter" id="btn-clear-filter" type="button">
+                  <span class="icone icone--sm" data-icone="fechar" aria-hidden="true"></span>
+                  <span>Limpar</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="stats-grid" id="stats-grid" hidden>
+              <div class="stat-card">
+                <div class="stat-card-value" id="stat-total-patients">0</div>
+                <div class="stat-card-label">Pacientes</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-card-value" id="stat-total-entries">0</div>
+                <div class="stat-card-label">Participações</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-card-value" id="stat-avg-frequency">0%</div>
+                <div class="stat-card-label">Média de participação</div>
+              </div>
+            </div>
+
+            <div class="frequency-calculation-note" id="frequency-calculation-note" hidden>
+              <span class="icone icone--sm" data-icone="informacao" aria-hidden="true"></span>
+              <span id="frequency-calculation-text"></span>
+            </div>
+
+            <div class="report-data-scroll" id="report-data-scroll">
+              <div id="report-list">
+                <div class="empty-state">
+                  <span class="empty-state-icon icone" data-icone="caixa-vazia" aria-hidden="true"></span>
+                  <p>Selecione um período e clique em "Gerar Relatório"</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="pagination-bar--integrated" id="frequency-report-pagination" hidden>
+              <label class="pagination-page-size">
+                <span>Registros por página</span>
+                <select id="frequency-report-page-size" aria-label="Registros por página"></select>
+              </label>
+
+              <div class="pagination-navigation">
+                <button class="pagination-nav-button" id="frequency-report-first" type="button" aria-label="Primeira página" title="Primeira página"><span class="icone icone--sm" data-icone="primeira-pagina" aria-hidden="true"></span></button>
+                <button class="pagination-nav-button" id="frequency-report-prev" type="button" aria-label="Página anterior" title="Página anterior"><span class="icone icone--sm" data-icone="chevron-esquerda" aria-hidden="true"></span></button>
+                <span class="pagination-page-info" id="frequency-report-page-info">Página 1 de 1 (0 registros)</span>
+                <button class="pagination-nav-button" id="frequency-report-next" type="button" aria-label="Próxima página" title="Próxima página"><span class="icone icone--sm" data-icone="chevron-direita" aria-hidden="true"></span></button>
+                <button class="pagination-nav-button" id="frequency-report-last" type="button" aria-label="Última página" title="Última página"><span class="icone icone--sm" data-icone="ultima-pagina" aria-hidden="true"></span></button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section
+          class="panel attendance-card painel-retratil is-collapsed"
+          id="attendance-panel"
+          data-painel-retratil-rotulo="registro de frequência"
+          aria-labelledby="attendance-panel-title"
+        >
+          <div
+            class="section__header cabecalho-destaque cabecalho-destaque--encaixado painel-retratil__header attendance-card__header"
+            data-painel-retratil-header
+          >
+            <h3 id="attendance-panel-title" class="titulo-com-icone"><span class="icone icone--sm" data-icone="sucesso" aria-hidden="true"></span><span>Registrar frequência</span></h3>
+
+            <button
+              class="cabecalho-destaque__toggle"
+              id="attendance-panel-toggle"
+              data-painel-retratil-toggle
+              type="button"
+              aria-expanded="false"
+              aria-controls="attendance-panel-content"
+              aria-label="Expandir registro de frequência"
+              title="Expandir"
+            >
+              <span class="cabecalho-destaque__toggle-icon" aria-hidden="true"></span>
+            </button>
+          </div>
+
+          <div
+            class="painel-retratil__conteudo"
+            id="attendance-panel-content"
+            data-painel-retratil-content
+          >
+            <div class="painel-retratil__conteudo-inner">
+              <form id="attendance-form" class="attendance-form">
+                <div class="form-group attendance-patient-combobox" id="attendance-patient-combobox">
+                  <label id="attendance-patient-label" for="attendance-patient-trigger">Paciente</label>
+                  <button
+                    type="button"
+                    id="attendance-patient-trigger"
+                    class="attendance-patient-trigger"
+                    aria-haspopup="listbox"
+                    aria-expanded="false"
+                    aria-controls="attendance-patient-results"
+                    aria-labelledby="attendance-patient-label attendance-patient-display"
+                  >
+                    <span class="attendance-patient-trigger__text" id="attendance-patient-display">Selecione um ou mais pacientes</span>
+                    <span class="attendance-patient-trigger__chevron" aria-hidden="true"></span>
+                  </button>
+                  <input id="attendance-patient" name="attendance-patient" type="hidden" required />
+
+                  <div
+                    id="attendance-patient-dropdown"
+                    class="attendance-patient-dropdown"
+                    role="region"
+                    aria-label="Seleção de paciente"
+                    hidden
+                  >
+                    <div class="attendance-patient-dropdown__search-wrap">
+                      <input
+                        id="attendance-patient-search"
+                        class="attendance-patient-dropdown__search"
+                        type="search"
+                        placeholder="Digite o nome do paciente..."
+                        autocomplete="off"
+                        aria-label="Digite o nome do paciente para buscar"
+                      />
+                    </div>
+                    <div
+                      id="attendance-patient-results"
+                      class="attendance-patient-dropdown__list attendance-patient-results"
+                      role="listbox"
+                      aria-multiselectable="true"
+                      aria-label="Sugestões de pacientes"
+                      tabindex="-1"
+                    ></div>
+                    <div
+                      id="attendance-patient-loading"
+                      class="attendance-patient-dropdown__loading"
+                      hidden
+                    >
+                      <span class="icone icone--sm" data-icone="spinner" aria-hidden="true"></span>
+                      <span>Carregando pacientes...</span>
+                    </div>
+                    <div
+                      id="attendance-patient-empty"
+                      class="attendance-patient-dropdown__empty"
+                      hidden
+                    >
+                      Nenhum paciente encontrado.
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="attendance-course">Curso</label>
+                  <select id="attendance-course" required>
+                    <option value="">Selecione um curso</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="attendance-activity">Atividade</label>
+                  <select id="attendance-activity" required disabled>
+                    <option value="">Selecione o curso primeiro</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="attendance-professional">Profissional</label>
+                  <select id="attendance-professional">
+                    <option value="">Não informado</option>
+                  </select>
+                </div>
+
+                <div class="form-group attendance-notes-group">
+                  <label for="attendance-notes">Observação</label>
+                  <textarea
+                    id="attendance-notes"
+                    maxlength="255"
+                    rows="3"
+                    placeholder="Digite uma observação, se necessário"
+                  ></textarea>
+                </div>
+
+                <div class="attendance-submit">
+                  <button class="btn-filter" type="submit">Registrar presença</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="modal" id="modal-registros-frequencia" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="modal-registros-frequencia-titulo">
+      <div class="modal__content modal__content--medium report-records-modal">
+        <div class="modal__header modal__header--destaque">
+          <h2 class="modal__title" id="modal-registros-frequencia-titulo">Registros de frequência</h2>
+          <button class="modal__close" type="button" data-close-report-records-modal aria-label="Fechar">
+            <span class="icone icone--sm" data-icone="fechar" aria-hidden="true"></span>
+          </button>
+        </div>
+        <div class="modal__body">
+          <div class="report-records-modal__list" id="modal-registros-frequencia-lista"></div>
+          <div class="modal__form-actions">
+            <button type="button" class="modal__btn modal__btn--secondary" data-close-report-records-modal>Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="../../recursos/js/notificacoes.js"></script>
+    <script src="../../recursos/js/icones.js"></script>
+    <script src="../../recursos/js/modal-confirmacao.js"></script>
+    <script src="../../recursos/js/paginacao.js"></script>
+    <script src="../../recursos/js/util-jwt.js"></script>
+    <script src="../../recursos/js/shell-global.js"></script>
+    <script src="../../recursos/js/sidebar-menu.js"></script>
+    <script src="../../recursos/js/menu-usuario.js"></script>
+    <script src="../../recursos/js/painel-retratil.js"></script>
+    <script src="../../recursos/js/controle-acesso.js"></script>
+    <script src="../../recursos/js/estado-sessao.js"></script>
+    <script src="../../recursos/js/gerenciador-frequencia.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
+    <script src="../../recursos/js/date-picker-ptbr.js"></script>
+    <script>
+      const API_URL = '';
+      if (!UtilJWT.exigirSessao()) {
+        throw new Error('Sessão inválida.');
+      }
+      const userEmail = UtilJWT.obterUsuario()?.email || '';
+
+      const COURSE_OPTIONS = [
+        'Fisioterapia',
+        'Educação Física',
+        'Agronomia',
+        'Farmácia',
+        'Enfermagem',
+        'Medicina',
+        'Estética e Cosmética',
+        'Fonoaudiologia',
+        'Nutrição'
+      ];
+
+      const reportPatientSelectedIds = new Set();
+      const reportPatientSelectedNames = new Map();
+      let reportAllPatientsSelected = false;
+      let reportPatientOpen = false;
+      let reportPatientPage = 1;
+      const REPORT_PATIENT_PAGE_SIZE = 5;
+      let reportPatientHasMore = true;
+      let reportPatientLoading = false;
+      let reportPatientSearchTerm = '';
+      let reportPatientDebounce = null;
+      const reportPatientLoadedIds = new Set();
+      let contextoFrequencia = null;
+      let reportPagination = null;
+      let estadoRelatorioAtual = null;
+      let restaurandoEstadoRelatorio = false;
+      let painelRegistroFrequencia = null;
+      const datePickers = {};
+      const REPORT_STATE_KEY = 'caige:frequencia:relatorio:guia-interna';
+      const ATTENDANCE_PANEL_STATE_KEY = 'caige:frequencia:painel:guia-interna';
+
+      function formatDateToIsoInput(date) {
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${year}-${month}-${day}`;
+      }
+
+      function formatIsoDateToPtBr(value) {
+        if (!value) return '';
+        const parsed = new Date(`${value}T00:00:00`);
+        if (Number.isNaN(parsed.getTime())) return value;
+        return parsed.toLocaleDateString('pt-BR');
+      }
+
+
+      function readReportSessionState() {
+        try {
+          const saved = sessionStorage.getItem(REPORT_STATE_KEY);
+          return saved ? JSON.parse(saved) : null;
+        } catch (error) {
+          console.warn('Não foi possível restaurar o estado do relatório:', error);
+          sessionStorage.removeItem(REPORT_STATE_KEY);
+          return null;
+        }
+      }
+
+      function saveReportSessionState() {
+        if (restaurandoEstadoRelatorio) return;
+
+        const filters = collectReportFilters();
+        const paginationState = reportPagination
+          ? {
+              registrosPorPagina: reportPagination.tamanhoPagina,
+              paginaAtual: reportPagination.paginaAtual
+            }
+          : {};
+
+        estadoRelatorioAtual = {
+          ...(estadoRelatorioAtual || {}),
+          ...filters,
+          ...paginationState,
+          relatorioGerado: Boolean(estadoRelatorioAtual?.relatorioGerado)
+        };
+
+        try {
+          sessionStorage.setItem(REPORT_STATE_KEY, JSON.stringify(estadoRelatorioAtual));
+        } catch (error) {
+          console.warn('Não foi possível salvar o estado do relatório:', error);
+        }
+      }
+
+      function setFilterDateValue(id, value) {
+        const input = document.getElementById(id);
+        if (!input || !value) return;
+
+        if (datePickers[id]) {
+          datePickers[id].setDate(value, true, 'Y-m-d');
+        } else {
+          input.value = value;
+        }
+      }
+
+      function getSelectedOptionText(id, fallback) {
+        const select = document.getElementById(id);
+        const text = select?.selectedOptions?.[0]?.textContent?.trim();
+        return text || fallback;
+      }
+
+      function initializeReportPagination() {
+        if (reportPagination || typeof PaginacaoLista === 'undefined') return;
+
+        reportPagination = new PaginacaoLista({
+          seletorQuantidade: '#frequency-report-page-size',
+          seletorPaginacao: '#frequency-report-pagination',
+          seletorIndicador: '#frequency-report-page-info',
+          seletorPrimeira: '#frequency-report-first',
+          seletorAnterior: '#frequency-report-prev',
+          seletorProxima: '#frequency-report-next',
+          seletorUltima: '#frequency-report-last',
+          tamanhoPadrao: 10,
+          rotuloSingular: 'registro',
+          rotuloPlural: 'registros',
+          aoRenderizar: (items) => {
+            renderReportPage(items);
+
+            if (!restaurandoEstadoRelatorio) {
+              saveReportSessionState();
+            }
+          }
+        });
+      }
+
+      function renderReportPage(items) {
+        if (!currentReportData) return;
+
+        const reportList = document.getElementById('report-list');
+        const reportView = currentFilters.reportView || 'summary';
+
+        reportList.innerHTML = reportView === 'administrative'
+          ? renderAdministrativeReport(items, currentFilters.adminGrouping || 'monthly')
+          : renderSummaryReport(items);
+      }
+
+      // Definir datas padrão (dia atual)
+      function setDefaultDates() {
+        const endDateInput = document.getElementById('end-date');
+        const startDateInput = document.getElementById('start-date');
+
+        const instances = window.initPtBrDatePicker
+          ? window.initPtBrDatePicker('#start-date, #end-date')
+          : [];
+
+        instances.forEach((instance) => {
+          datePickers[instance.input.id] = instance;
+        });
+
+        if (!datePickers['start-date']) {
+          startDateInput.type = 'date';
+          startDateInput.lang = 'pt-BR';
+        }
+
+        if (!datePickers['end-date']) {
+          endDateInput.type = 'date';
+          endDateInput.lang = 'pt-BR';
+        }
+        const abrirCalendarioFiltro = (id) => {
+          const input = document.getElementById(id);
+          const picker = datePickers[id];
+          if (picker && typeof picker.open === 'function') { picker.open(); return; }
+          if (typeof input?.showPicker === 'function') { input.showPicker(); return; }
+          input?.focus();
+        };
+        document.getElementById('start-date-calendar')?.addEventListener('click', () => abrirCalendarioFiltro('start-date'));
+        document.getElementById('end-date-calendar')?.addEventListener('click', () => abrirCalendarioFiltro('end-date'));
+
+        const today = new Date();
+
+        const endIso = formatDateToIsoInput(today);
+        const startIso = endIso;
+
+        if (datePickers['end-date']) {
+          datePickers['end-date'].setDate(endIso, true, 'Y-m-d');
+        } else {
+          endDateInput.value = endIso;
+        }
+
+        if (datePickers['start-date']) {
+          datePickers['start-date'].setDate(startIso, true, 'Y-m-d');
+        } else {
+          startDateInput.value = startIso;
+        }
+      }
+
+      // Seletor pesquisável e paginado de paciente do relatório.
+      // Não carrega a base inteira: abre com 5 pacientes e busca as próximas
+      // páginas somente conforme a rolagem do usuário.
+      let reportPatientAbortController = null;
+
+      function getReportPatientHeaders() {
+        return UtilJWT.obterHeaders();
+      }
+
+      function formatReportPatientName(value) {
+        return window.FormatadorTexto
+          ? window.FormatadorTexto.formatarNomePessoa(value)
+          : (value || '');
+      }
+
+      function getReportPatientSelectionNames() {
+        return Array.from(reportPatientSelectedIds)
+          .map((id) => reportPatientSelectedNames.get(String(id)) || '')
+          .filter(Boolean);
+      }
+
+      function updateReportPatientVisualSelection() {
+        const trigger = document.getElementById('report-patient-trigger');
+        const display = document.getElementById('report-patient-display');
+        const patientIdInput = document.getElementById('patient-id');
+        const patientNameInput = document.getElementById('patient-search');
+        const selectedIds = Array.from(reportPatientSelectedIds);
+        const selectedNames = getReportPatientSelectionNames();
+
+        if (patientIdInput) {
+          patientIdInput.value = !reportAllPatientsSelected && selectedIds.length === 1
+            ? selectedIds[0]
+            : '';
+        }
+
+        if (patientNameInput) {
+          patientNameInput.value = reportAllPatientsSelected
+            ? ''
+            : selectedNames.join(', ');
+        }
+
+        if (display) {
+          if (reportAllPatientsSelected) {
+            display.textContent = 'Todos os pacientes';
+          } else if (selectedIds.length === 0) {
+            display.textContent = 'Selecione um ou mais pacientes';
+          } else if (selectedIds.length === 1) {
+            display.textContent = selectedNames[0] || '1 paciente selecionado';
+          } else {
+            display.textContent = `${selectedIds.length} pacientes selecionados`;
+          }
+        }
+
+        if (trigger) {
+          trigger.classList.toggle(
+            'has-selected',
+            reportAllPatientsSelected || selectedIds.length > 0
+          );
+        }
+
+        document.querySelectorAll('#patient-results .report-patient-item').forEach((item) => {
+          const selected = reportAllPatientsSelected || reportPatientSelectedIds.has(String(item.dataset.id));
+          item.setAttribute('aria-selected', selected ? 'true' : 'false');
+          const checkbox = item.querySelector('.attendance-patient-item__checkbox');
+          if (checkbox) checkbox.checked = selected;
+        });
+      }
+
+      function selectAllReportPatients() {
+        reportAllPatientsSelected = true;
+        reportPatientSelectedIds.clear();
+        reportPatientSelectedNames.clear();
+        updateReportPatientVisualSelection();
+        saveReportSessionState();
+      }
+
+      function clearReportPatientSelection() {
+        reportAllPatientsSelected = false;
+        reportPatientSelectedIds.clear();
+        reportPatientSelectedNames.clear();
+        updateReportPatientVisualSelection();
+        saveReportSessionState();
+      }
+
+      function toggleReportPatientSelection(id, name = '') {
+        const key = String(id);
+
+        // Ao sair do modo "Todos", a primeira marcação inicia uma seleção específica.
+        if (reportAllPatientsSelected) {
+          reportAllPatientsSelected = false;
+          reportPatientSelectedIds.clear();
+          reportPatientSelectedNames.clear();
+        }
+
+        if (reportPatientSelectedIds.has(key)) {
+          reportPatientSelectedIds.delete(key);
+          reportPatientSelectedNames.delete(key);
+        } else {
+          reportPatientSelectedIds.add(key);
+          reportPatientSelectedNames.set(key, formatReportPatientName(name));
+        }
+
+        updateReportPatientVisualSelection();
+        saveReportSessionState();
+      }
+
+      function restoreReportPatientSelection(state = {}) {
+        reportPatientSelectedIds.clear();
+        reportPatientSelectedNames.clear();
+
+        const ids = Array.isArray(state.patientIds)
+          ? state.patientIds
+          : (state.patientId ? [state.patientId] : []);
+        const names = Array.isArray(state.patientNames)
+          ? state.patientNames
+          : (state.patientName ? [state.patientName] : []);
+        const oldStateHadSpecificPatient = Boolean(state.patientId || (Array.isArray(state.patientIds) && state.patientIds.length));
+
+        reportAllPatientsSelected = typeof state.allPatientsSelected === 'boolean'
+          ? state.allPatientsSelected
+          : !oldStateHadSpecificPatient;
+
+        ids.forEach((id, index) => {
+          const numericId = Number(id);
+          if (!numericId) return;
+          const key = String(numericId);
+          reportPatientSelectedIds.add(key);
+          reportPatientSelectedNames.set(key, formatReportPatientName(names[index] || ''));
+        });
+
+        if (reportAllPatientsSelected) {
+          reportPatientSelectedIds.clear();
+          reportPatientSelectedNames.clear();
+        }
+
+        updateReportPatientVisualSelection();
+      }
+
+      function closeReportPatientDropdown(returnFocus = false) {
+        const combobox = document.getElementById('report-patient-combobox');
+        const dropdown = document.getElementById('report-patient-dropdown');
+        const trigger = document.getElementById('report-patient-trigger');
+
+        if (dropdown) dropdown.hidden = true;
+        if (combobox) combobox.classList.remove('is-open');
+
+        if (trigger) {
+          trigger.setAttribute('aria-expanded', 'false');
+          if (returnFocus) trigger.focus();
+        }
+
+        reportPatientOpen = false;
+      }
+
+      function renderReportPatientResults(patients, append = false) {
+        const results = document.getElementById('patient-results');
+        if (!results) return;
+
+        if (!append) {
+          results.innerHTML = '';
+        }
+
+        patients.forEach((item) => {
+          const id = String(item.id);
+          const name = formatReportPatientName(item.name || item.nome || '');
+          const selected = reportAllPatientsSelected || reportPatientSelectedIds.has(id);
+
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'attendance-patient-item report-patient-item';
+          button.dataset.id = id;
+          button.dataset.name = name;
+          button.setAttribute('role', 'option');
+          button.setAttribute('aria-selected', selected ? 'true' : 'false');
+
+          const checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          checkbox.className = 'attendance-patient-item__checkbox';
+          checkbox.tabIndex = -1;
+          checkbox.setAttribute('aria-hidden', 'true');
+          checkbox.checked = selected;
+
+          const nameElement = document.createElement('span');
+          nameElement.className = 'attendance-patient-item__name';
+          nameElement.textContent = name;
+
+          button.append(checkbox, nameElement);
+          results.appendChild(button);
+        });
+      }
+
+      async function fetchReportPatients(reset = false) {
+        if (!reset && (reportPatientLoading || !reportPatientHasMore)) {
+          return;
+        }
+
+        if (reset && reportPatientAbortController) {
+          reportPatientAbortController.abort();
+        }
+
+        if (reset) {
+          reportPatientPage = 1;
+          reportPatientHasMore = true;
+          reportPatientLoadedIds.clear();
+
+          const results = document.getElementById('patient-results');
+          if (results) results.innerHTML = '';
+        }
+
+        const loading = document.getElementById('report-patient-loading');
+        const empty = document.getElementById('report-patient-empty');
+        const controller = new AbortController();
+
+        reportPatientAbortController = controller;
+        reportPatientLoading = true;
+
+        if (loading) loading.hidden = false;
+        if (empty) empty.hidden = true;
+
+        try {
+          const params = new URLSearchParams({
+            status: 'ativo',
+            limit: String(REPORT_PATIENT_PAGE_SIZE),
+            page: String(reportPatientPage)
+          });
+
+          if (reportPatientSearchTerm) {
+            params.set('q', reportPatientSearchTerm);
+          }
+
+          const response = await fetch(`${API_URL}/api/pacientes?${params.toString()}`, {
+            headers: getReportPatientHeaders(),
+            signal: controller.signal
+          });
+
+          if (!response.ok) {
+            throw new Error(`Erro ao buscar pacientes (${response.status})`);
+          }
+
+          const payload = await response.json();
+          const patients = Array.isArray(payload)
+            ? payload
+            : (payload.pacientes || payload.data || []);
+
+          if (patients.length < REPORT_PATIENT_PAGE_SIZE) {
+            reportPatientHasMore = false;
+          }
+
+          const newPatients = patients.filter((patient) => {
+            const id = Number(patient.id);
+            if (!id || reportPatientLoadedIds.has(id)) return false;
+            reportPatientLoadedIds.add(id);
+            return true;
+          });
+
+          renderReportPatientResults(newPatients, !reset);
+
+          if (empty) {
+            empty.hidden = reportPatientLoadedIds.size > 0;
+          }
+        } catch (error) {
+          if (error.name !== 'AbortError') {
+            console.error('Erro ao carregar pacientes do relatório:', error);
+            notify.error('Não foi possível carregar os pacientes');
+          }
+        } finally {
+          if (reportPatientAbortController === controller) {
+            reportPatientLoading = false;
+            if (loading) loading.hidden = true;
+          }
+        }
+      }
+
+      async function openReportPatientDropdown() {
+        const combobox = document.getElementById('report-patient-combobox');
+        const dropdown = document.getElementById('report-patient-dropdown');
+        const trigger = document.getElementById('report-patient-trigger');
+        const search = document.getElementById('report-patient-search-input');
+        const results = document.getElementById('patient-results');
+
+        if (!combobox || !dropdown || !trigger || !search || !results) return;
+
+        reportPatientOpen = true;
+        dropdown.hidden = false;
+        combobox.classList.add('is-open');
+        trigger.setAttribute('aria-expanded', 'true');
+
+        requestAnimationFrame(() => search.focus());
+
+        if (results.children.length === 0) {
+          reportPatientSearchTerm = search.value.trim();
+          await fetchReportPatients(true);
+        } else {
+          updateReportPatientVisualSelection();
+        }
+      }
+
+      function configureReportPatientCombobox() {
+        const combobox = document.getElementById('report-patient-combobox');
+        const trigger = document.getElementById('report-patient-trigger');
+        const search = document.getElementById('report-patient-search-input');
+        const results = document.getElementById('patient-results');
+        const selectAllButton = document.getElementById('report-patient-select-all');
+        const clearButton = document.getElementById('report-patient-clear');
+
+        if (!combobox || !trigger || !search || !results || !selectAllButton || !clearButton) return;
+
+        updateReportPatientVisualSelection();
+
+        trigger.addEventListener('click', (event) => {
+          event.stopPropagation();
+
+          if (reportPatientOpen) {
+            closeReportPatientDropdown(true);
+          } else {
+            openReportPatientDropdown();
+          }
+        });
+
+        search.addEventListener('input', () => {
+          window.clearTimeout(reportPatientDebounce);
+
+          reportPatientDebounce = window.setTimeout(() => {
+            reportPatientSearchTerm = search.value.trim();
+            fetchReportPatients(true);
+          }, 300);
+        });
+
+        results.addEventListener('scroll', () => {
+          const nearBottom =
+            results.scrollTop + results.clientHeight >= results.scrollHeight - 40;
+
+          if (nearBottom && !reportPatientLoading && reportPatientHasMore) {
+            reportPatientPage += 1;
+            fetchReportPatients(false);
+          }
+        }, { passive: true });
+
+        results.addEventListener('click', (event) => {
+          const item = event.target.closest('.report-patient-item');
+          if (!item) return;
+
+          toggleReportPatientSelection(item.dataset.id, item.dataset.name);
+        });
+
+        selectAllButton.addEventListener('click', (event) => {
+          event.stopPropagation();
+          selectAllReportPatients();
+        });
+
+        clearButton.addEventListener('click', (event) => {
+          event.stopPropagation();
+          clearReportPatientSelection();
+        });
+
+        document.addEventListener('click', (event) => {
+          if (reportPatientOpen && !combobox.contains(event.target)) {
+            closeReportPatientDropdown(false);
+          }
+        });
+
+        document.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape' && reportPatientOpen) {
+            closeReportPatientDropdown(true);
+          }
+        });
+      }
+
+      // -- FREQUENCY FORM HANDLING --
+      // Gerenciamento de formulário de frequência delegado para gerenciador-frequencia.js
+
+      /* OLD CODE - REMOVED
+      async function populateSectorFilter() { ... }
+      async function carregarOpcoesFrequencia() { ... }
+      async function carregarAtividades() { ... }
+      document.getElementById('attendance-course').addEventListener('change', ...) { ... }
+      document.getElementById('attendance-form').addEventListener('submit', ...) { ... }
+      */
+
+      let frequencyFilterContext = { professores: [] };
+
+      function populateProfessionalFilter(courseId = '', selectedProfessional = '') {
+        const professionalSelect = document.getElementById('professional-filter');
+        const selectedCourseId = Number(courseId) || null;
+        const professionals = Array.isArray(frequencyFilterContext.professores)
+          ? frequencyFilterContext.professores
+          : [];
+
+        professionalSelect.innerHTML = '<option value="">Todos os profissionais</option>';
+
+        professionals
+          .filter((user) => !selectedCourseId || Number(user.idCurso) === selectedCourseId)
+          .forEach((user) => {
+            const option = document.createElement('option');
+            option.value = user.id;
+            const rawNome = user.nome || user.name || `Profissional ${user.id}`;
+            option.textContent = window.FormatadorTexto
+              ? window.FormatadorTexto.formatarNomePessoa(rawNome)
+              : rawNome;
+            professionalSelect.appendChild(option);
+          });
+
+        const valor = selectedProfessional ? String(selectedProfessional) : '';
+        professionalSelect.value = [...professionalSelect.options].some((option) => option.value === valor)
+          ? valor
+          : '';
+      }
+
+      async function populateSectorFilter() {
+        const headers = UtilJWT.obterHeaders();
+
+        const [coursesResponse, contextResponse] = await Promise.all([
+          fetch(`${API_URL}/api/cursos`, { headers }),
+          fetch(`${API_URL}/api/frequencia/contexto`, { headers })
+        ]);
+
+        if (!coursesResponse.ok) {
+          throw new Error(`Erro ao carregar cursos (${coursesResponse.status})`);
+        }
+
+        const coursesPayload = await coursesResponse.json();
+        const courses = Array.isArray(coursesPayload)
+          ? coursesPayload
+          : (coursesPayload.data || coursesPayload.cursos || []);
+
+        const courseSelect = document.getElementById('sector-filter');
+        courseSelect.innerHTML = '<option value="">Todos os cursos</option>';
+
+        courses
+          .filter((course) => {
+            const active = course.ativo ?? course.is_active;
+            return active !== false && active !== 0;
+          })
+          .forEach((course) => {
+            const option = document.createElement('option');
+            option.value = course.id;
+            option.textContent = course.nome || course.name || `Curso ${course.id}`;
+            courseSelect.appendChild(option);
+          });
+
+        if (contextResponse.ok) {
+          const contextPayload = await contextResponse.json();
+          frequencyFilterContext = {
+            ...contextPayload,
+            professores: Array.isArray(contextPayload.professores)
+              ? contextPayload.professores
+              : []
+          };
+        }
+
+        populateProfessionalFilter(courseSelect.value);
+      }
+
+      // -- REPORT FILTERING --
+
+      // O filtro de paciente do relatório usa busca remota paginada.
+      // A configuração dos eventos fica centralizada em configureReportPatientCombobox().
+
+      function formatDateToPtBr(dateString) {
+        return new Date(`${dateString}T00:00:00`).toLocaleDateString('pt-BR');
+      }
+
+      function formatarQuantidadeParticipacoes(total) {
+        const quantidade = Math.max(0, Number(total) || 0);
+        return `${quantidade} ${quantidade === 1 ? 'participação' : 'participações'}`;
+      }
+
+      function formatarQuantidadeDiasPresenca(total) {
+        const quantidade = Math.max(0, Number(total) || 0);
+        return `${quantidade} ${quantidade === 1 ? 'dia com presença' : 'dias com presença'}`;
+      }
+
+      function getGroupingLabel(grouping) {
+        const labels = {
+          monthly: 'Mensal',
+          quarterly: 'Trimestral',
+          semiannual: 'Semestral',
+          yearly: 'Anual'
+        };
+
+        return labels[grouping] || 'Mensal';
+      }
+
+      function getPeriodKey(dateString, grouping) {
+        const [year, monthString] = dateString.split('-');
+        const month = Number(monthString);
+
+        if (grouping === 'yearly') {
+          return year;
+        }
+
+        if (grouping === 'quarterly') {
+          const quarter = Math.floor((month - 1) / 3) + 1;
+          return `${year}-Q${quarter}`;
+        }
+
+        if (grouping === 'semiannual') {
+          const semester = month <= 6 ? 1 : 2;
+          return `${year}-S${semester}`;
+        }
+
+        return `${year}-${monthString}`;
+      }
+
+      function getPeriodLabel(key, grouping) {
+        if (grouping === 'yearly') {
+          return key;
+        }
+
+        if (grouping === 'quarterly') {
+          const [year, quarter] = key.split('-');
+          return `${quarter} ${year}`;
+        }
+
+        if (grouping === 'semiannual') {
+          const [year, semester] = key.split('-');
+          return `${semester} ${year}`;
+        }
+
+        return new Date(`${key}-01T00:00:00`).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+      }
+
+      function getAdministrativeSections(report, grouping) {
+        return report.map((item) => {
+          const groupedDates = {};
+          const attendanceRecords = Array.isArray(item.attendance_records)
+            ? item.attendance_records
+            : (Array.isArray(item.attendance_dates)
+              ? item.attendance_dates.map((date) => ({ date, sector: null }))
+              : []);
+
+          attendanceRecords.forEach((record) => {
+            const dateString = record.date;
+            if (!dateString) return;
+
+            const key = getPeriodKey(dateString, grouping);
+
+            if (!groupedDates[key]) {
+              groupedDates[key] = [];
+            }
+
+            groupedDates[key].push({
+              date: dateString,
+              time: record.time || '',
+              course: record.course || 'Não informado',
+              activity: record.activity || 'Atividade não informada',
+              professional: record.professional || 'Não informado'
+            });
+          });
+
+          const periods = Object.entries(groupedDates)
+            .sort(([left], [right]) => left.localeCompare(right))
+            .map(([key, records]) => {
+              const label = getPeriodLabel(key, grouping);
+
+              return {
+                label,
+                total: records.length,
+                records: records.sort((a, b) => {
+                  const left = `${a.date || ''} ${a.time || ''}`;
+                  const right = `${b.date || ''} ${b.time || ''}`;
+                  return left.localeCompare(right);
+                })
+              };
+            });
+
+          return {
+            id: item.id,
+            name: item.name,
+            total: item.days_present || 0,
+            expected: item.expected_entries || 0,
+            attendedExpected: item.attended_expected || 0,
+            absences: item.absences || 0,
+            frequency: item.frequency_percentage,
+            frequencyAvailable: item.frequency_available === true,
+            periods
+          };
+        });
+      }
+
+      function renderAttendanceRecord(record) {
+        const profFormatado = window.FormatadorTexto && record.professional
+          ? window.FormatadorTexto.formatarNomePessoa(record.professional)
+          : record.professional;
+        const meta = [record.course, record.activity, profFormatado]
+          .filter(Boolean)
+          .join(' · ');
+
+        return `
+          <div class="report-record">
+            <strong>${formatDateToPtBr(record.date)}${record.time ? ` • ${record.time}` : ''}</strong>
+            ${meta ? `<span class="report-record__meta">${meta}</span>` : ''}
+          </div>
+        `;
+      }
+
+      function encodeReportRecords(records = []) {
+        try {
+          return encodeURIComponent(JSON.stringify(records));
+        } catch (error) {
+          console.error('Erro ao preparar registros do relatório:', error);
+          return '';
+        }
+      }
+
+      function renderSummaryAttendanceDetails(item, rowIndex) {
+        const records = Array.isArray(item.attendance_records) ? item.attendance_records : [];
+
+        if (records.length > 0) {
+          const [firstRecord, ...extraRecords] = records;
+          return `
+            <div class="report-records-summary report-records-summary--compact">
+              <div class="report-records-summary__top">
+                ${renderAttendanceRecord(firstRecord)}
+                ${extraRecords.length > 0 ? `
+                  <button
+                    class="report-records-modal-button"
+                    type="button"
+                    data-report-records-modal
+                    data-patient="${String(item.name || '').replace(/"/g, '&quot;')}"
+                    data-records="${encodeReportRecords(records)}"
+                  >+ ${extraRecords.length} ${extraRecords.length === 1 ? 'outro' : 'outros'}</button>
+                ` : ''}
+              </div>
+
+            </div>
+          `;
+        }
+
+        const dates = Array.isArray(item.attendance_dates) ? item.attendance_dates.filter(Boolean) : [];
+        if (dates.length === 0) return 'Nenhuma presença';
+
+        const [firstDate, ...extraDates] = dates;
+        const dateRecords = dates.map((date) => ({
+          date, time: '', course: '', activity: '', professional: '', calendarCompatible: true
+        }));
+
+        return `
+          <div class="report-records-summary report-records-summary--compact">
+            <div class="report-records-summary__top">
+              <div class="report-record"><strong>${formatDateToPtBr(firstDate)}</strong></div>
+              ${extraDates.length > 0 ? `
+                <button class="report-records-modal-button" type="button"
+                  data-report-records-modal
+                  data-patient="${String(item.name || '').replace(/"/g, '&quot;')}"
+                  data-records="${encodeReportRecords(dateRecords)}"
+                >+ ${extraDates.length} ${extraDates.length === 1 ? 'outro' : 'outros'}</button>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      }
+
+      function renderSummaryReport(report) {
+        return `
+          <div class="data-grid frequency-report-grid">
+            <div class="frequency-report-grid__header data-grid__header">
+              <div class="data-grid__cell">Nome</div>
+              <div class="data-grid__cell">Dias de atendimento</div>
+              <div class="data-grid__cell">Dias com presença</div>
+              <div class="data-grid__cell">Participações</div>
+              <div class="data-grid__cell">Registros</div>
+              <div class="data-grid__cell">Participação no período</div>
+            </div>
+
+            <div class="data-grid__body">
+              ${report.map((item, index) => {
+                const expected = item.expected_entries || 0;
+                const attended = item.attended_expected || 0;
+                const frequencyAvailable = item.frequency_available === true;
+                const frequency = frequencyAvailable ? Number(item.frequency_percentage || 0) : null;
+                const frequencyClass = frequency === null
+                  ? 'frequency-unavailable'
+                  : (frequency >= 70 ? 'frequency-high' : frequency >= 40 ? 'frequency-medium' : 'frequency-low');
+                const attendanceDetails = renderSummaryAttendanceDetails(item, index);
+
+                const nomePaciente = window.FormatadorTexto ? window.FormatadorTexto.formatarNomePessoa(item.name) : (item.name || '');
+
+                return `
+                  <div class="frequency-report-grid__row data-grid__row">
+                    <div class="data-grid__cell" data-label="Nome"><strong>${nomePaciente}</strong></div>
+                    <div class="data-grid__cell" data-label="Dias de atendimento"><span class="frequency-report-stat">${expected}</span></div>
+                    <div class="data-grid__cell" data-label="Dias com presença">${attended}</div>
+                    <div class="data-grid__cell" data-label="Participações">${item.total_entries || 0}</div>
+                    <div class="data-grid__cell" data-label="Registros"><div>${attendanceDetails}</div></div>
+                    <div class="data-grid__cell" data-label="Participação no período">
+                      <span class="frequency-badge ${frequencyClass}">${frequencyAvailable ? `${frequency.toFixed(1)}%` : 'Não calculada'}</span>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      function closeReportRecordsModal() {
+        const modal = document.getElementById('modal-registros-frequencia');
+        if (!modal) return;
+        modal.style.display = 'none';
+        document.body.classList.remove('modal-open');
+      }
+
+      function openReportRecordsModal(patientName, records = []) {
+        const modal = document.getElementById('modal-registros-frequencia');
+        const title = document.getElementById('modal-registros-frequencia-titulo');
+        const body = document.getElementById('modal-registros-frequencia-lista');
+        if (!modal || !body) return;
+
+        if (title) title.textContent = patientName ? `Registros — ${patientName}` : 'Registros de frequência';
+        body.innerHTML = records.map((record) => {
+          const prof = window.FormatadorTexto
+            ? window.FormatadorTexto.formatarNomePessoa(record.professional || '')
+            : (record.professional || '');
+          const meta = [record.course, record.activity, prof].filter(Boolean).join(' · ');
+          return `
+            <div class="report-record-modal-item${record.calendarCompatible === false ? ' is-incompatible' : ''}">
+              <div class="report-record-modal-item__header">
+                <strong>${formatDateToPtBr(record.date)}${record.time ? ` • ${record.time}` : ''}</strong>
+                ${record.calendarCompatible === false ? '<span class="report-record-modal-item__status">Fora do calendário</span>' : ''}
+              </div>
+              ${meta ? `<span class="report-record__meta">${meta}</span>` : ''}
+            </div>
+          `;
+        }).join('');
+
+        modal.style.display = 'flex';
+        document.body.classList.add('modal-open');
+        window.IconesCAIGE?.aplicar?.(modal);
+      }
+
+      document.getElementById('report-list').addEventListener('click', (event) => {
+        const button = event.target.closest('[data-report-records-modal]');
+        if (!button) return;
+        try {
+          openReportRecordsModal(
+            button.dataset.patient || '',
+            JSON.parse(decodeURIComponent(button.dataset.records || ''))
+          );
+        } catch (error) {
+          console.error('Erro ao abrir registros do relatório:', error);
+          notify.error('Não foi possível abrir os registros.');
+        }
+      });
+
+      document.addEventListener('click', (event) => {
+        if (event.target.closest('[data-close-report-records-modal]')) {
+          closeReportRecordsModal();
+          return;
+        }
+        const modal = document.getElementById('modal-registros-frequencia');
+        if (modal && event.target === modal) closeReportRecordsModal();
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') closeReportRecordsModal();
+      });
+
+      function renderAdministrativeReport(report, grouping) {
+        const sections = getAdministrativeSections(report, grouping);
+
+        return sections.map((section) => {
+          const nomeSecao = window.FormatadorTexto ? window.FormatadorTexto.formatarNomePessoa(section.name) : (section.name || '');
+          const emptyState = section.periods.length === 0
+            ? '<div class="report-admin-dates">Nenhuma presença no período selecionado.</div>'
+            : section.periods.map((period) => `
+                <div class="report-admin-group">
+                  <div class="report-admin-group-header">
+                    <span>${period.label}</span>
+                    <span>${formatarQuantidadeParticipacoes(period.total)}</span>
+                  </div>
+                  <div class="report-admin-dates">${period.records.map((record) => {
+                    const prof = window.FormatadorTexto && record.professional ? window.FormatadorTexto.formatarNomePessoa(record.professional) : (record.professional || '');
+                    return `${formatDateToPtBr(record.date)} ${record.time || ''} (${record.course} - ${record.activity} - ${prof})`;
+                  }).join(', ')}</div>
+                </div>
+              `).join('');
+
+          return `
+            <section class="report-admin-section">
+              <div class="report-admin-title">
+                <h4>${nomeSecao}</h4>
+                <div class="report-admin-meta">
+                  ${section.frequencyAvailable
+                    ? `${section.expected} previstos · ${section.attendedExpected} comparecimentos · ${section.absences} faltas · ${Number(section.frequency || 0).toFixed(1)}%`
+                    : 'Frequência não calculada para este filtro'}
+                </div>
+              </div>
+              ${emptyState}
+            </section>
+          `;
+        }).join('');
+      }
+
+      function formatarFrequenciaPdf(item) {
+        if (item?.frequency_available !== true) return 'Não calculada';
+        return `${Number(item.frequency_percentage || 0).toFixed(1)}%`;
+      }
+
+      function obterMetadadosFrequenciaPdf(formatoLabel, compacto = false) {
+        if (compacto) {
+          return [
+            { rotulo: 'Período', valor: `${currentFilters.startDate} a ${currentFilters.endDate}` },
+            { rotulo: 'Curso', valor: currentFilters.course || 'Todos os cursos' },
+            { rotulo: 'Atividade', valor: currentFilters.activity || 'Todas as atividades' }
+          ];
+        }
+
+        const totalPacientes = document.getElementById('stat-total-patients').textContent;
+        const pacienteSelecionado = currentFilters.patientName || 'Todos os pacientes';
+        const pacientes = pacienteSelecionado.length > 92
+          ? `${totalPacientes} pacientes no relatório`
+          : pacienteSelecionado;
+
+        return [
+          { rotulo: 'Período', valor: `${currentFilters.startDate} a ${currentFilters.endDate}` },
+          { rotulo: 'Pacientes', valor: pacientes },
+          { rotulo: 'Curso', valor: currentFilters.course || 'Todos os cursos' },
+          { rotulo: 'Atividade', valor: currentFilters.activity || 'Todas as atividades' },
+          { rotulo: 'Profissional', valor: currentFilters.professional || 'Todos os profissionais' },
+          { rotulo: 'Apresentação', valor: formatoLabel }
+        ];
+      }
+
+      function obterIndicadoresFrequenciaPdf() {
+        return [
+          { rotulo: 'Pacientes', valor: document.getElementById('stat-total-patients').textContent },
+          { rotulo: 'Participações', valor: document.getElementById('stat-total-entries').textContent },
+          { rotulo: 'Média de participação', valor: document.getElementById('stat-avg-frequency').textContent }
+        ];
+      }
+
+      function corFrequenciaPdf(item, cores) {
+        if (item?.frequency_available !== true) return cores.cinza500;
+
+        const valor = Number(item.frequency_percentage || 0);
+        if (valor >= 70) return [22, 101, 52];
+        if (valor >= 40) return [133, 77, 14];
+        return [153, 27, 27];
+      }
+
+      function collectReportFilters() {
+        return {
+          startDate: document.getElementById('start-date').value,
+          endDate: document.getElementById('end-date').value,
+          allPatientsSelected: reportAllPatientsSelected,
+          patientIds: reportAllPatientsSelected
+            ? []
+            : Array.from(reportPatientSelectedIds).map((id) => Number(id)).filter(Boolean),
+          patientNames: reportAllPatientsSelected ? [] : getReportPatientSelectionNames(),
+          patientName: reportAllPatientsSelected
+            ? 'Todos os pacientes'
+            : getReportPatientSelectionNames().join(', '),
+          course: document.getElementById('sector-filter').value,
+          activity: document.getElementById('activity-filter').value,
+          professional: document.getElementById('professional-filter').value,
+          reportView: document.getElementById('report-view').value,
+          adminGrouping: document.getElementById('admin-grouping').value
+        };
+      }
+
+      async function generateReport({ restoring = false, restoredState = null } = {}) {
+        const filters = collectReportFilters();
+
+        if (!filters.startDate || !filters.endDate) {
+          notify.error('Selecione um período');
+          return false;
+        }
+
+        if (new Date(`${filters.startDate}T00:00:00`) > new Date(`${filters.endDate}T00:00:00`)) {
+          notify.error('Data inicial não pode ser maior que data final');
+          return false;
+        }
+
+        if (!filters.allPatientsSelected && filters.patientIds.length === 0) {
+          // Restauração automática da guia não é uma ação do usuário. Se um
+          // estado antigo estiver marcado como relatório gerado, mas já não
+          // possuir pacientes válidos, apenas mantém a tela inicial silenciosa.
+          // O aviso deve aparecer somente após clique explícito em Gerar Relatório.
+          if (restoring) {
+            if (estadoRelatorioAtual) {
+              estadoRelatorioAtual.relatorioGerado = false;
+            }
+            return false;
+          }
+
+          notify.warning
+            ? notify.warning('Selecione um ou mais pacientes para gerar o relatório de frequência.')
+            : notify.error('Selecione um ou mais pacientes para gerar o relatório de frequência.');
+          return false;
+        }
+
+        try {
+          let url = `${API_URL}/api/frequencia/relatorio?start_date=${filters.startDate}&end_date=${filters.endDate}`;
+          if (!filters.allPatientsSelected && filters.patientIds.length > 0) {
+            url += `&patient_ids=${encodeURIComponent(filters.patientIds.join(','))}`;
+          }
+          if (filters.course) url += `&id_curso=${encodeURIComponent(filters.course)}`;
+          if (filters.activity) url += `&id_atividade=${encodeURIComponent(filters.activity)}`;
+          if (filters.professional) url += `&id_profissional=${encodeURIComponent(filters.professional)}`;
+
+          const response = await fetch(url, {
+            headers: UtilJWT.obterHeaders()
+          });
+          const data = await response.json();
+
+          if (!response.ok) {
+            const mensagem = data.message || 'Erro ao gerar relatório';
+
+            if (response.status === 409 && String(data.code || '').startsWith('CALENDARIO')) {
+              const statsGrid = document.getElementById('stats-grid');
+              const notaCalculo = document.getElementById('frequency-calculation-note');
+              const textoCalculo = document.getElementById('frequency-calculation-text');
+              const lista = document.getElementById('report-list');
+              const exportarPdf = document.getElementById('btn-export-pdf');
+
+              if (statsGrid) statsGrid.hidden = true;
+              if (exportarPdf) exportarPdf.hidden = true;
+              if (notaCalculo) {
+                notaCalculo.hidden = true;
+                notaCalculo.classList.remove('frequency-calculation-note--warning');
+              }
+              if (lista) {
+                lista.innerHTML = `
+                  <div class="empty-state">
+                    <span class="empty-state-icon icone" data-icone="informacao" aria-hidden="true"></span>
+                    <p class="calendar-warning-message"></p>
+                  </div>
+                `;
+                const avisoCalendario = lista.querySelector('.calendar-warning-message');
+                if (avisoCalendario) avisoCalendario.textContent = mensagem;
+                window.IconesCAIGE?.aplicar?.(lista);
+              }
+
+              if (!restoring) {
+                notify.warning ? notify.warning(mensagem) : notify.error(mensagem);
+              }
+            } else {
+              notify.error(mensagem);
+            }
+            return false;
+          }
+
+          renderReport(data, {
+            filters,
+            restoredState,
+            scrollToResult: !restoring
+          });
+          return true;
+        } catch (error) {
+          console.error('Erro:', error);
+          notify.error('Erro ao conectar com o servidor');
+          return false;
+        }
+      }
+
+      document.getElementById('btn-filter').addEventListener('click', () => {
+        generateReport();
+      });
+
+      async function clearFrequencyReportFilters() {
+        // Limpa também o estado visual/resultado para que a guia permaneça limpa
+        // ao navegar para outro módulo e retornar.
+        restaurandoEstadoRelatorio = true;
+
+        setDefaultDates();
+        clearReportPatientSelection();
+
+        const courseSelect = document.getElementById('sector-filter');
+        courseSelect.value = '';
+        await loadActivitiesFilter('');
+        populateProfessionalFilter('');
+
+        document.getElementById('report-view').value = 'summary';
+        document.getElementById('admin-grouping').value = 'monthly';
+        syncReportControls();
+
+        currentReportData = null;
+        currentFilters = {};
+        reportPagination?.definirItens([]);
+
+        document.getElementById('stats-grid').hidden = true;
+        document.getElementById('frequency-calculation-note').hidden = true;
+        document.getElementById('btn-export-pdf').hidden = true;
+        document.getElementById('frequency-report-pagination').hidden = true;
+        document.getElementById('report-title-text').textContent = 'Dados de Frequência';
+
+        const reportList = document.getElementById('report-list');
+        reportList.innerHTML = `
+          <div class="empty-state">
+            <span class="empty-state-icon icone" data-icone="caixa-vazia" aria-hidden="true"></span>
+            <p>Selecione um período e clique em "Gerar Relatório"</p>
+          </div>
+        `;
+        window.IconesCAIGE?.aplicar?.(reportList);
+
+        estadoRelatorioAtual = {
+          ...collectReportFilters(),
+          registrosPorPagina: reportPagination?.tamanhoPagina || 10,
+          paginaAtual: 1,
+          relatorioGerado: false
+        };
+
+        restaurandoEstadoRelatorio = false;
+        saveReportSessionState();
+      }
+
+      document.getElementById('btn-clear-filter').addEventListener('click', () => {
+        clearFrequencyReportFilters().catch((error) => {
+          console.error('Erro ao limpar filtros da frequência:', error);
+          notify.error('Não foi possível limpar os filtros');
+        });
+      });
+
+      function rolarParaResultadoRelatorio() {
+        const conteudo = document.querySelector('.content');
+        const estatisticas = document.getElementById('stats-grid');
+        const cartaoRelatorio = document.querySelector('.report-card');
+        const alvo = estatisticas && !estatisticas.hidden ? estatisticas : cartaoRelatorio;
+
+        if (!conteudo || !alvo) return;
+
+        requestAnimationFrame(() => {
+          const cabecalho = conteudo.querySelector('.content__header');
+          const margem = 8;
+          const alturaCabecalho = cabecalho ? cabecalho.getBoundingClientRect().height : 0;
+          const caixaConteudo = conteudo.getBoundingClientRect();
+          const caixaAlvo = alvo.getBoundingClientRect();
+          const destino = conteudo.scrollTop + caixaAlvo.top - caixaConteudo.top - alturaCabecalho - margem;
+
+          conteudo.scrollTo({
+            top: Math.max(0, destino),
+            behavior: 'smooth'
+          });
+        });
+      }
+
+      // Renderizar relatório
+      function renderReport(data, options = {}) {
+        const report = (data.report || []).map((item) => ({
+          ...item,
+          name: item.nomePaciente,
+          days_present: item.diasComPresenca,
+          total_entries: item.totalParticipacoes,
+          service_days: item.diasAtendimento,
+          expected_entries: item.diasAtendimento,
+          attended_expected: item.diasComPresenca,
+          absences: Math.max(0, Number(item.diasAtendimento || 0) - Number(item.diasComPresenca || 0)),
+          frequency_percentage: item.percentualFrequencia,
+          frequency_available: item.calculoFrequenciaDisponivel === true,
+          attendance_dates: item.datasPresenca,
+          attendance_records: (item.registros || []).map((registro) => ({
+            date: registro.data,
+            time: registro.horario,
+            course: registro.nomeCurso,
+            activity: registro.nomeAtividade,
+            professional: registro.nomeProfissional,
+            calendarCompatible: registro.compativelCalendario === true
+          }))
+        }));
+        const reportList = document.getElementById('report-list');
+        const statsGrid = document.getElementById('stats-grid');
+        const filters = options.filters || collectReportFilters();
+        const periodDays = data.period?.period_days || 1;
+
+        document.getElementById('report-title-text').textContent = filters.reportView === 'administrative'
+          ? `Relatório Administrativo ${getGroupingLabel(filters.adminGrouping)}`
+          : 'Dados de Frequência';
+
+        currentReportData = report;
+        currentFilters = {
+          startDate: formatIsoDateToPtBr(filters.startDate),
+          endDate: formatIsoDateToPtBr(filters.endDate),
+          patientName: filters.patientName || 'Todos os pacientes',
+          course: getSelectedOptionText('sector-filter', 'Todos os cursos'),
+          activity: getSelectedOptionText('activity-filter', 'Todas as atividades'),
+          professional: getSelectedOptionText('professional-filter', 'Todos os profissionais'),
+          reportView: filters.reportView,
+          adminGrouping: filters.adminGrouping,
+          periodDays
+        };
+
+        estadoRelatorioAtual = {
+          relatorioGerado: true,
+          ...filters,
+          registrosPorPagina: reportPagination?.tamanhoPagina || 10,
+          paginaAtual: options.restoredState?.paginaAtual || 1
+        };
+
+        if (report.length === 0) {
+          reportPagination?.definirItens([]);
+          reportList.innerHTML = `
+            <div class="empty-state">
+              <span class="empty-state-icon icone" data-icone="caixa-vazia" aria-hidden="true"></span>
+              <p>Nenhum registro no período selecionado</p>
+            </div>
+          `;
+          window.IconesCAIGE?.aplicar?.(reportList);
+          statsGrid.hidden = true;
+          document.getElementById('frequency-calculation-note').hidden = true;
+          document.getElementById('btn-export-pdf').hidden = true;
+          saveReportSessionState();
+
+          if (options.scrollToResult !== false) {
+            rolarParaResultadoRelatorio();
+          }
+          return;
+        }
+
+        const totalEntries = report.reduce((sum, item) => sum + (item.total_entries || 0), 0);
+        const totalPatients = report.length;
+        const frequenciasCalculadas = report
+          .filter((item) => item.frequency_available === true)
+          .map((item) => Number(item.frequency_percentage || 0));
+        const avgFrequency = frequenciasCalculadas.length
+          ? (frequenciasCalculadas.reduce((sum, valor) => sum + valor, 0) / frequenciasCalculadas.length)
+          : null;
+
+        document.getElementById('stat-total-patients').textContent = totalPatients;
+        document.getElementById('stat-total-entries').textContent = totalEntries;
+        document.getElementById('stat-avg-frequency').textContent = avgFrequency === null ? '—' : `${avgFrequency.toFixed(1)}%`;
+        statsGrid.hidden = false;
+
+        const notaCalculo = document.getElementById('frequency-calculation-note');
+        const textoCalculo = document.getElementById('frequency-calculation-text');
+        if (notaCalculo) notaCalculo.classList.remove('frequency-calculation-note--warning');
+        if (notaCalculo && textoCalculo) {
+          const motivoCalendario = data.calendar?.reason || '';
+          if (frequenciasCalculadas.length === 0 && motivoCalendario) {
+            textoCalculo.textContent = motivoCalendario;
+          } else {
+            textoCalculo.textContent = 'Participação no período = dias em que o paciente esteve presente ÷ dias de atendimento válidos no calendário. Várias atividades no mesmo dia contam como 1 dia com presença. Feriados, recessos e cancelamentos cadastrados são desconsiderados.';
+          }
+          notaCalculo.hidden = false;
+        }
+
+        document.getElementById('btn-export-pdf').hidden = false;
+
+        if (reportPagination) {
+          reportPagination.paginaAtual = options.restoredState?.paginaAtual || 1;
+          reportPagination.definirItens(report, true);
+        } else {
+          renderReportPage(report);
+        }
+
+        saveReportSessionState();
+
+        if (options.scrollToResult !== false) {
+          rolarParaResultadoRelatorio();
+        }
+      }
+
+      // Variável global para armazenar dados do relatório
+      let currentReportData = null;
+      let currentFilters = {};
+
+      function atualizarApresentacaoRelatorioAtual() {
+        if (!currentReportData) return;
+
+        const reportView = document.getElementById('report-view').value;
+        const adminGrouping = document.getElementById('admin-grouping').value;
+
+        currentFilters.reportView = reportView;
+        currentFilters.adminGrouping = adminGrouping;
+
+        document.getElementById('report-title-text').textContent = reportView === 'administrative'
+          ? `Relatório Administrativo ${getGroupingLabel(adminGrouping)}`
+          : 'Dados de Frequência';
+
+        if (estadoRelatorioAtual) {
+          estadoRelatorioAtual.reportView = reportView;
+          estadoRelatorioAtual.adminGrouping = adminGrouping;
+        }
+
+        if (reportPagination) {
+          reportPagination.renderizar();
+        } else {
+          renderReportPage(currentReportData);
+        }
+
+        saveReportSessionState();
+      }
+
+      function syncReportControls() {
+        const reportView = document.getElementById('report-view').value;
+        const groupingSelect = document.getElementById('admin-grouping');
+        groupingSelect.disabled = false;
+        groupingSelect.title = reportView === 'administrative'
+          ? ''
+          : 'Ao selecionar um agrupamento, o relatório muda para Administrativo automaticamente.';
+      }
+
+      // Exportação PDF institucional compartilhada com os demais relatórios do CAIGE.
+      document.getElementById('btn-export-pdf').addEventListener('click', async () => {
+        if (!currentReportData) {
+          notify.error('Gere um relatório primeiro');
+          return;
+        }
+
+        const gerador = window.GeradorPdfCAIGE;
+        if (!gerador || !window.jspdf?.jsPDF) {
+          notify.error('Não foi possível carregar o gerador de PDF.');
+          return;
+        }
+
+        const reportView = currentFilters.reportView || 'summary';
+        const adminGrouping = currentFilters.adminGrouping || 'monthly';
+        const formatoLabel = reportView === 'administrative'
+          ? `Administrativo por paciente · ${getGroupingLabel(adminGrouping)}`
+          : 'Resumo do período';
+        const orientacao = reportView === 'administrative' ? 'portrait' : 'landscape';
+        const nomeArquivoFormato = reportView === 'administrative' ? 'administrativo' : 'resumo';
+        const margemX = reportView === 'administrative' ? 8 : 8;
+        const agora = new Date();
+        const doc = gerador.criarDocumento({ orientation: orientacao });
+
+        if (!doc || typeof doc.autoTable !== 'function') {
+          notify.error('Não foi possível carregar a tabela do PDF.');
+          return;
+        }
+
+        try {
+          const logo = await gerador.carregarImagemComoDataUrl('/recursos/images/logocaige.png');
+          const paginasComCabecalho = new Set();
+
+          const desenharCabecalhoPagina = (pagina, completo = false) => {
+            let y = gerador.desenharCabecalho(doc, {
+              logo,
+              titulo: 'Relatório de Frequência',
+              subtitulo: formatoLabel,
+              pagina,
+              margemX
+            });
+
+            y = gerador.desenharMetadados(doc, {
+              itens: obterMetadadosFrequenciaPdf(formatoLabel, !completo),
+              y,
+              margemX,
+              colunas: 3
+            });
+
+            if (completo) {
+              y = gerador.desenharIndicadores(doc, {
+                itens: obterIndicadoresFrequenciaPdf(),
+                y,
+                margemX
+              });
+            }
+
+            paginasComCabecalho.add(pagina);
+            return y;
+          };
+
+          const yPrimeiraPagina = desenharCabecalhoPagina(1, true);
+          const yContinuacao = 44;
+          const estilosTabela = gerador.obterEstilosTabela({
+            fontSize: reportView === 'administrative' ? 8.2 : 9,
+            cabecalhoEscuro: true
+          });
+
+          const garantirCabecalhoPaginaAtual = () => {
+            const paginaAtual = doc.internal.getCurrentPageInfo().pageNumber;
+            if (!paginasComCabecalho.has(paginaAtual)) {
+              desenharCabecalhoPagina(paginaAtual, false);
+            }
+          };
+
+          if (reportView === 'summary') {
+            const corpo = currentReportData.map((item) => {
+              const nomePaciente = window.FormatadorTexto
+                ? window.FormatadorTexto.formatarNomePessoa(item.name)
+                : (item.name || '');
+
+              return [
+                nomePaciente,
+                item.expected_entries || 0,
+                item.attended_expected || 0,
+                item.total_entries || 0,
+                formatarFrequenciaPdf(item)
+              ];
+            });
+
+            doc.autoTable({
+              head: [['Paciente', 'Dias de atendimento', 'Dias com presença', 'Participações', 'Participação no período']],
+              body: corpo,
+              startY: yPrimeiraPagina,
+              margin: { top: yContinuacao, right: margemX, bottom: 16, left: margemX },
+              showHead: 'everyPage',
+              ...estilosTabela,
+              columnStyles: {
+                0: { cellWidth: 92 },
+                1: { cellWidth: 44, halign: 'center' },
+                2: { cellWidth: 44, halign: 'center' },
+                3: { cellWidth: 38, halign: 'center' },
+                4: { cellWidth: 52, halign: 'center' }
+              },
+              didParseCell: (data) => {
+                if (data.section !== 'body' || data.column.index !== 4) return;
+                const item = currentReportData[data.row.index];
+                data.cell.styles.textColor = corFrequenciaPdf(item, gerador.CORES);
+                data.cell.styles.fontStyle = 'bold';
+              },
+              didDrawPage: garantirCabecalhoPaginaAtual
+            });
+          } else {
+            const sections = getAdministrativeSections(currentReportData, adminGrouping);
+            const alturaPagina = doc.internal.pageSize.getHeight();
+            let cursorY = yPrimeiraPagina;
+
+            sections.forEach((section) => {
+              if (cursorY > alturaPagina - 48) {
+                doc.addPage();
+                garantirCabecalhoPaginaAtual();
+                cursorY = yContinuacao;
+              }
+
+              const nomePaciente = window.FormatadorTexto
+                ? window.FormatadorTexto.formatarNomePessoa(section.name)
+                : (section.name || '');
+              const totalParticipacoes = section.periods.reduce((sum, period) => sum + period.total, 0);
+              const frequencia = section.frequencyAvailable
+                ? `${Number(section.frequency || 0).toFixed(1)}%`
+                : 'Não calculada';
+              const resumoPaciente = `Previstos: ${section.expected || 0}   ·   Comparecimentos: ${section.attendedExpected || 0}   ·   Faltas: ${section.absences || 0}   ·   Participações: ${totalParticipacoes}   ·   Frequência: ${frequencia}`;
+              const corpo = [];
+
+              if (section.periods.length === 0) {
+                corpo.push([{
+                  content: 'Nenhuma presença no período selecionado.',
+                  colSpan: 4,
+                  styles: {
+                    textColor: gerador.CORES.cinza500,
+                    fillColor: gerador.CORES.cinza50,
+                    fontStyle: 'italic'
+                  }
+                }]);
+              } else {
+                section.periods.forEach((period) => {
+                  corpo.push([{
+                    content: `${period.label} · ${formatarQuantidadeParticipacoes(period.total)}`,
+                    colSpan: 4,
+                    styles: {
+                      fillColor: gerador.CORES.azul50,
+                      textColor: gerador.CORES.azul800,
+                      fontStyle: 'bold',
+                      fontSize: 8.2
+                    }
+                  }]);
+
+                  period.records.forEach((record) => {
+                    const profissional = window.FormatadorTexto && record.professional
+                      ? window.FormatadorTexto.formatarNomePessoa(record.professional)
+                      : (record.professional || 'Não informado');
+
+                    corpo.push([
+                      `${formatDateToPtBr(record.date)}${record.time ? ` · ${record.time}` : ''}`,
+                      record.course || 'Não informado',
+                      record.activity || 'Atividade não informada',
+                      profissional
+                    ]);
+                  });
+                });
+              }
+
+              doc.autoTable({
+                head: [
+                  [{
+                    content: `Paciente: ${nomePaciente}`,
+                    colSpan: 4,
+                    styles: {
+                      fillColor: gerador.CORES.azul50,
+                      textColor: gerador.CORES.azul800,
+                      fontStyle: 'bold',
+                      fontSize: 10,
+                      cellPadding: { top: 3, right: 3, bottom: 3, left: 3 }
+                    }
+                  }],
+                  [{
+                    content: resumoPaciente,
+                    colSpan: 4,
+                    styles: {
+                      fillColor: gerador.CORES.branco,
+                      textColor: gerador.CORES.cinza700,
+                      fontStyle: 'normal',
+                      fontSize: 8,
+                      cellPadding: { top: 2.2, right: 3, bottom: 2.2, left: 3 }
+                    }
+                  }],
+                  ['Data e hora', 'Curso', 'Atividade', 'Profissional']
+                ],
+                body: corpo,
+                startY: cursorY,
+                margin: { top: yContinuacao, right: margemX, bottom: 16, left: margemX },
+                showHead: 'everyPage',
+                ...estilosTabela,
+                columnStyles: {
+                  0: { cellWidth: 36 },
+                  1: { cellWidth: 43 },
+                  2: { cellWidth: 66 },
+                  3: { cellWidth: 48 }
+                },
+                didDrawPage: garantirCabecalhoPaginaAtual
+              });
+
+              cursorY = (doc.lastAutoTable?.finalY || cursorY) + 5;
+            });
+          }
+
+          gerador.adicionarRodapes(doc, {
+            agora,
+            margemX,
+            textoEsquerda: 'Relatório de Frequência · CAIGE'
+          });
+
+          const limparTrechoNomeArquivo = (valor) => String(valor || '')
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[^a-zA-Z0-9]+/g, '_')
+            .replace(/^_+|_+$/g, '');
+
+          const dataArquivo = [
+            String(agora.getDate()).padStart(2, '0'),
+            String(agora.getMonth() + 1).padStart(2, '0'),
+            agora.getFullYear()
+          ].join('-');
+
+          const pacienteArquivo = currentFilters.patientName && currentFilters.patientName !== 'Todos os pacientes'
+            ? limparTrechoNomeArquivo(currentFilters.patientName)
+            : '';
+          const cursoArquivo = currentFilters.course && currentFilters.course !== 'Todos os cursos'
+            ? limparTrechoNomeArquivo(currentFilters.course)
+            : '';
+          const contextoArquivo = pacienteArquivo || cursoArquivo;
+          const nomeArquivo = contextoArquivo
+            ? `Relatorio_de_Frequencia_${contextoArquivo}_${dataArquivo}.pdf`
+            : `Relatorio_de_Frequencia_${dataArquivo}.pdf`;
+
+          doc.save(nomeArquivo);
+          notify.success('PDF exportado com sucesso!');
+        } catch (error) {
+          console.error('Erro ao exportar PDF:', error);
+          notify.error('Não foi possível exportar o PDF');
+        }
+      });
+
+
+      async function loadActivitiesFilter(courseId, selectedActivity = '') {
+        const filter = document.getElementById('activity-filter');
+        filter.innerHTML = '<option value="">Todas as atividades</option>';
+
+        if (!courseId) return;
+
+        try {
+          const response = await fetch(`${API_URL}/api/atividades-atendimento/curso/${courseId}`, {
+            headers: UtilJWT.obterHeaders()
+          });
+          const activities = await response.json();
+
+          if (response.ok && Array.isArray(activities)) {
+            filter.innerHTML += activities
+              .map((activity) => `<option value="${activity.id}">${activity.nome}</option>`)
+              .join('');
+          }
+
+          filter.value = selectedActivity ? String(selectedActivity) : '';
+        } catch (error) {
+          console.error('Erro ao carregar atividades do filtro:', error);
+        }
+      }
+
+      async function restoreReportState() {
+        const state = readReportSessionState();
+        if (!state) return false;
+
+        estadoRelatorioAtual = { ...state };
+        restaurandoEstadoRelatorio = true;
+        setFilterDateValue('start-date', state.startDate);
+        setFilterDateValue('end-date', state.endDate);
+        restoreReportPatientSelection(state);
+
+        document.getElementById('sector-filter').value = state.course || '';
+        await loadActivitiesFilter(state.course || '', state.activity || '');
+        populateProfessionalFilter(state.course || '', state.professional || '');
+        document.getElementById('report-view').value = state.reportView || 'summary';
+        document.getElementById('admin-grouping').value = state.adminGrouping || 'monthly';
+        syncReportControls();
+        restaurandoEstadoRelatorio = false;
+
+        if (state.relatorioGerado) {
+          await generateReport({ restoring: true, restoredState: state });
+        }
+        return true;
+      }
+
+      document.getElementById('sector-filter').addEventListener('change', async (event) => {
+        const courseId = event.target.value;
+        await loadActivitiesFilter(courseId);
+        populateProfessionalFilter(courseId);
+        saveReportSessionState();
+      });
+
+      document.getElementById('report-view').addEventListener('change', () => {
+        syncReportControls();
+        atualizarApresentacaoRelatorioAtual();
+        saveReportSessionState();
+      });
+
+      document.getElementById('admin-grouping').addEventListener('change', () => {
+        const reportViewSelect = document.getElementById('report-view');
+        if (reportViewSelect.value !== 'administrative') {
+          reportViewSelect.value = 'administrative';
+        }
+        syncReportControls();
+        atualizarApresentacaoRelatorioAtual();
+        saveReportSessionState();
+      });
+
+      ['activity-filter', 'professional-filter', 'start-date', 'end-date'].forEach((id) => {
+        document.getElementById(id)?.addEventListener('change', saveReportSessionState);
+      });
+
+      function initializeAttendancePanel() {
+        if (painelRegistroFrequencia || typeof PainelRetratil === 'undefined') return;
+
+        painelRegistroFrequencia = PainelRetratil.inicializar('#attendance-panel', {
+          chaveEstado: ATTENDANCE_PANEL_STATE_KEY,
+          abertoInicial: false,
+          rotulo: 'registro de frequência'
+        });
+      }
+
+      function inicializarBarrasRolagemDiscretas() {
+        const alvos = [
+          document.querySelector('.content'),
+          document.getElementById('report-data-scroll'),
+          document.getElementById('patient-results'),
+          document.getElementById('attendance-patient-results')
+        ].filter(Boolean);
+
+        alvos.forEach((alvo) => {
+          if (alvo.dataset.scrollDiscretoInicializado === 'true') return;
+
+          alvo.dataset.scrollDiscretoInicializado = 'true';
+          alvo.classList.add('scroll-discreto');
+
+          let temporizador = null;
+
+          alvo.addEventListener('scroll', () => {
+            alvo.classList.add('is-scrolling');
+            window.clearTimeout(temporizador);
+            temporizador = window.setTimeout(() => {
+              alvo.classList.remove('is-scrolling');
+            }, 700);
+          }, { passive: true });
+        });
+      }
+
+      async function aguardarGuiasInternasCaige() {
+        if (window.CAIGEAbasNavegacao?.obterEstadoModulo) return;
+
+        await new Promise((resolve) => {
+          const inicio = Date.now();
+          const timer = window.setInterval(() => {
+            if (
+              window.CAIGEAbasNavegacao?.obterEstadoModulo ||
+              Date.now() - inicio > 1500
+            ) {
+              window.clearInterval(timer);
+              resolve();
+            }
+          }, 25);
+        });
+      }
+
+      async function initializeFrequencyReportPage() {
+        // IMPORTANTE:
+        // Durante a montagem inicial, Flatpickr dispara eventos "change" ao receber
+        // as datas padrão. Esses eventos não podem sobrescrever o estado que já
+        // pertence à guia Frequência antes de ele ser restaurado.
+        const estadoSalvoAntesDaInicializacao = readReportSessionState();
+        restaurandoEstadoRelatorio = true;
+
+        setDefaultDates();
+        initializeReportPagination();
+        initializeAttendancePanel();
+        configureReportPatientCombobox();
+        inicializarBarrasRolagemDiscretas();
+        syncReportControls();
+
+        try {
+          await populateSectorFilter();
+        } catch (error) {
+          console.error('Erro ao carregar contexto da frequência:', error);
+          notify.error('Não foi possível carregar as permissões da frequência');
+        }
+
+        if (estadoSalvoAntesDaInicializacao) {
+          estadoRelatorioAtual = { ...estadoSalvoAntesDaInicializacao };
+
+          setFilterDateValue('start-date', estadoSalvoAntesDaInicializacao.startDate);
+          setFilterDateValue('end-date', estadoSalvoAntesDaInicializacao.endDate);
+          restoreReportPatientSelection(estadoSalvoAntesDaInicializacao);
+
+          document.getElementById('sector-filter').value =
+            estadoSalvoAntesDaInicializacao.course || '';
+
+          await loadActivitiesFilter(
+            estadoSalvoAntesDaInicializacao.course || '',
+            estadoSalvoAntesDaInicializacao.activity || ''
+          );
+
+          document.getElementById('professional-filter').value =
+            estadoSalvoAntesDaInicializacao.professional || '';
+          document.getElementById('report-view').value =
+            estadoSalvoAntesDaInicializacao.reportView || 'summary';
+          document.getElementById('admin-grouping').value =
+            estadoSalvoAntesDaInicializacao.adminGrouping || 'monthly';
+
+          syncReportControls();
+        }
+
+        // Só a partir daqui alterações do usuário podem voltar a gravar o estado.
+        restaurandoEstadoRelatorio = false;
+
+        if (estadoSalvoAntesDaInicializacao?.relatorioGerado) {
+          await generateReport({
+            restoring: true,
+            restoredState: estadoSalvoAntesDaInicializacao
+          });
+        }
+      }
+
+      // Garante a gravação do estado imediatamente antes de sair desta página.
+      // Isso cobre navegação pelo menu lateral, Painel e guias internas do CAIGE.
+      document.addEventListener('click', (event) => {
+        const link = event.target.closest('a[href]');
+        if (!link) return;
+
+        try {
+          const destino = new URL(link.href, window.location.href);
+          if (destino.origin !== window.location.origin) return;
+
+          saveReportSessionState();
+          window.gerenciadorFrequencia?.salvarEstadoTrabalho?.();
+          window.gerenciadorFrequencia?.salvarEstadoPainelRegistro?.();
+        } catch {
+          // Link não navegável: não interfere no fluxo.
+        }
+      }, true);
+
+      window.addEventListener('pagehide', () => {
+        saveReportSessionState();
+        window.gerenciadorFrequencia?.salvarEstadoTrabalho?.();
+        window.gerenciadorFrequencia?.salvarEstadoPainelRegistro?.();
+      });
+
+      initializeFrequencyReportPage();
+    </script>
+    <script src="/recursos/js/pwa.js"></script>
+</body>
+</html>
+

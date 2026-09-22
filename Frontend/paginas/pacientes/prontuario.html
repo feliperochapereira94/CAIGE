@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prontuário do Paciente</title>
+  <link rel="stylesheet" href="../../recursos/css/base.css" />
+  <link rel="stylesheet" href="../../recursos/css/componentes.css" />
+  <link rel="stylesheet" href="../../recursos/css/layout.css" />
+  <link rel="stylesheet" href="../../recursos/css/responsive.css" />
+  <link rel="stylesheet" href="../../recursos/css/paginas/pacientes.css" />
+  <link rel="stylesheet" href="../../recursos/css/paginas/prontuarios.css" />
+  <link rel="stylesheet" href="../../recursos/css/paginas/prontuario-paciente.css" />
+  <link rel="stylesheet" href="../../recursos/css/paginas/prontuario-documento.css" />
+  <script src="../../recursos/js/text-normalizer.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#123a78" />
+    <meta name="application-name" content="CAIGE" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="CAIGE" />
+    <link rel="apple-touch-icon" href="/recursos/images/pwa/apple-touch-icon.png" />
+  </head>
+
+<body data-page-title="Prontuário do Paciente"
+  data-page-subtitle="Acompanhe a evolução interdisciplinar e registre prontuários no seu curso">
+  <div class="dashboard">
+    <div id="shell-sidebar"></div>
+
+    <main class="content">
+      <div id="shell-header"></div>
+
+      <div class="patient-mobile-topbar largura-pagina" aria-label="Navegação rápida do prontuário">
+        <a href="./visualizar.html" id="mobile-back-profile" class="patient-mobile-topbar__back" aria-label="Voltar para o perfil do paciente">
+          <span class="icone icone--sm" data-icone="seta-esquerda" aria-hidden="true"></span>
+          <span>Perfil</span>
+        </a>
+        <button type="button" class="btn-alt menu-acoes-trigger patient-mobile-topbar__menu" id="prontuario-mobile-menu" aria-label="Mais opções">
+          <span class="icone icone--sm" data-icone="menu" aria-hidden="true"></span>
+        </button>
+      </div>
+
+      <section class="profile-container largura-pagina">
+        <div class="profile-header-card">
+          <div class="profile-header">
+            <div class="profile-avatar" id="profile-avatar">--</div>
+            <div class="profile-header__info">
+              <h1 class="profile-header__name" id="profile-name">Carregando paciente...</h1>
+              <div class="profile-header__meta">
+                <span class="profile-meta-item">Idade: <span id="profile-age">-</span></span>
+                <span class="profile-meta-item">Nascimento: <span id="profile-birth">-</span></span>
+                <span class="profile-meta-item">Sexo: <span id="profile-gender">-</span></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-header-card__actions">
+            <button class="btn btn--secondary" id="btn-back-patient" type="button">
+              <span class="icone icone--sm" data-icone="seta-esquerda" aria-hidden="true"></span>
+              Voltar ao Paciente
+            </button>
+          </div>
+        </div>
+
+        <div class="profile-main">
+          <section class="profile-card">
+            <div class="questionnaire-section__header">
+              <h3 class="questionnaire-section__title">Prontuários por Curso</h3>
+            </div>
+            <div id="course-accordion">
+              <div class="questionnaire-empty">
+                <div class="questionnaire-empty__icon"><span class="loading-spinner" aria-hidden="true"></span></div>
+                <div class="questionnaire-empty__text">Carregando prontuários...</div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <aside class="profile-sidebar">
+          <div class="clinical-summary">
+            <h4 class="clinical-summary__header">
+              <span class="icone icone--md icone--primaria" data-icone="clinico" aria-hidden="true"></span>
+              <span>Resumo Clínico</span>
+            </h4>
+
+            <div class="clinical-summary__section">
+              <div class="clinical-summary__label">IMC Atual</div>
+              <div class="clinical-summary__imc-row">
+                <span class="clinical-summary__imc-value" id="resumo-clinico-imc">Não calculado</span>
+                <span class="status-pill" id="resumo-clinico-imc-classificacao" hidden></span>
+              </div>
+              <div class="clinical-summary__medidas" id="resumo-clinico-medidas"></div>
+            </div>
+
+            <div class="clinical-summary__divider"></div>
+
+            <section class="clinical-summary__section">
+              <div class="clinical-summary__subhead">
+                <span class="icone icone--sm icone--primaria" data-icone="saude" aria-hidden="true"></span>
+                <span>Condições de Saúde</span>
+              </div>
+              <div class="clinical-summary__chips" id="clinical-health-conditions"></div>
+            </section>
+
+            <section class="clinical-summary__section">
+              <div class="clinical-summary__subhead">
+                <span class="icone icone--sm icone--perigo" data-icone="alerta" aria-hidden="true"></span>
+                <span>Alergias</span>
+              </div>
+              <div class="clinical-summary__chips" id="clinical-allergies"></div>
+            </section>
+
+            <section class="clinical-summary__section">
+              <div class="clinical-summary__subhead">
+                <span class="icone icone--sm icone--suave" data-icone="medicamento" aria-hidden="true"></span>
+                <span>Medicamentos em Uso</span>
+              </div>
+              <div id="clinical-medications"></div>
+            </section>
+
+            <section class="clinical-summary__section">
+              <div class="clinical-summary__subhead">
+                <span class="icone icone--sm icone--suave" data-icone="observacao" aria-hidden="true"></span>
+                <span>Observações Clínicas</span>
+              </div>
+              <div class="clinical-summary__value" id="clinical-observations">Não informado</div>
+            </section>
+          </div>
+        </aside>
+      </section>
+
+      <div class="modal-overlay" id="modal-launch-select">
+        <div class="modal__content modal__content--large compare-prontuarios-modal">
+          <div class="modal__header modal__header--destaque">
+            <div>
+              <h2 class="modal__title">Lançar prontuário</h2>
+              <p class="prontuario-modal__subtitle" id="launch-select-course-name">
+                Selecione o prontuário que deseja lançar.
+              </p>
+            </div>
+            <button type="button" class="modal__close" id="btn-close-launch-select"
+              aria-label="Fechar seleção de prontuário">
+              <span class="icone icone--sm" data-icone="fechar" aria-hidden="true"></span>
+            </button>
+          </div>
+
+          <div class="modal__body">
+            <div class="prontuario-selection-options" id="launch-questionnaire-options"></div>
+
+            <div class="modal__form-actions">
+              <button type="button" class="btn-alt" id="btn-cancel-launch-select">
+                Cancelar
+              </button>
+              <button type="button" class="btn-main" id="btn-proceed-launch-select" disabled>
+                Prosseguir
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-overlay" id="modal-questionnaire">
+        <div class="modal__content modal__content--large prontuario-lancamento-modal">
+          <div class="modal__header modal__header--destaque">
+            <div class="prontuario-lancamento-modal__cabecalho">
+              <h2 class="modal__title" id="questionnaire-form-title">Prontuário</h2>
+              <p class="prontuario-modal__subtitle" id="questionnaire-form-description"></p>
+            </div>
+            <button type="button" class="modal__close" id="btn-close-questionnaire"
+              aria-label="Fechar lançamento">
+              <span class="icone icone--sm" data-icone="fechar" aria-hidden="true"></span>
+            </button>
+          </div>
+
+          <form id="form-questionnaire" class="modal__form prontuario-lancamento-form">
+            <div class="modal__body prontuario-lancamento-form__body">
+              <div class="questionnaire-questions" id="questionnaire-questions-container"></div>
+            </div>
+            <div class="modal__form-actions prontuario-lancamento-form__actions">
+              <button type="button" class="btn-alt" id="btn-cancel-questionnaire">Cancelar</button>
+              <button type="submit" class="btn-main" id="btn-submit-questionnaire">Salvar prontuário</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="modal-overlay" id="modal-compare-select">
+        <div class="modal__content modal__content--medium">
+          <div class="modal__header modal__header--destaque">
+            <div>
+              <h2 class="modal__title">Comparar prontuários</h2>
+              <p class="prontuario-modal__subtitle" id="compare-course-name">
+                Selecione 2 ou mais prontuários.
+              </p>
+            </div>
+            <button type="button" class="modal__close" id="btn-close-compare-select"
+              aria-label="Fechar comparação">
+              <span class="icone icone--sm" data-icone="fechar" aria-hidden="true"></span>
+            </button>
+          </div>
+
+          <div class="modal__body">
+            <div class="prontuario-selection-status" id="compare-selected-count">0 selecionados</div>
+            <div class="prontuario-selection-options" id="compare-record-options"></div>
+
+            <div class="modal__form-actions">
+              <button type="button" class="btn-alt" id="btn-cancel-compare-select">Cancelar</button>
+              <button type="button" class="btn-main" id="btn-proceed-compare-select" disabled>
+                Comparar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-overlay" id="modal-prontuario-documento">
+        <div class="modal__content prontuario-documento-modal">
+          <div class="modal__header modal__header--destaque prontuario-documento-modal__toolbar">
+            <div>
+              <h2 class="modal__title" id="document-view-title">Visualizar prontuário</h2>
+              <p class="prontuario-modal__subtitle" id="document-view-description">
+                Documento clínico em modo somente leitura.
+              </p>
+            </div>
+            <div class="prontuario-documento-modal__acoes">
+              <button type="button" class="btn-alt" id="btn-print-document">
+                <span class="icone icone--sm" data-icone="imprimir" aria-hidden="true"></span>
+                Imprimir
+              </button>
+            </div>
+            <button type="button" class="modal__close" id="btn-close-document-view"
+              aria-label="Fechar visualização">
+              <span class="icone icone--sm" data-icone="fechar" aria-hidden="true"></span>
+            </button>
+          </div>
+          <div class="modal__body prontuario-documento-modal__body">
+            <div id="prontuario-documento-container" class="prontuario-documento-container"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../recursos/js/icones.js"></script>
+  <script src="../../recursos/js/notificacoes.js"></script>
+  <script src="../../recursos/js/modal-confirmacao.js"></script>
+  <script src="../../recursos/js/util-jwt.js"></script>
+  <script src="../../recursos/js/shell-global.js"></script>
+  <script src="../../recursos/js/sidebar-menu.js"></script>
+  <script src="../../recursos/js/menu-usuario.js"></script>
+  <script src="../../recursos/js/menu-acoes.js"></script>
+  <script src="../../recursos/js/estado-sessao.js"></script>
+  <script src="../../recursos/js/gerenciador-questionarios.js"></script>
+  <script src="../../recursos/js/formatador-texto.js"></script>
+  <script src="../../recursos/js/gerador-pdf.js"></script>
+  <script src="../../recursos/js/renderizador-prontuario.js"></script>
+  <script src="../../recursos/js/paciente-form-utils.js"></script>
+  <script src="../../recursos/js/paciente-prontuario.js"></script>
+  <script src="/recursos/js/pwa.js"></script>
+</body>
+
+</html>

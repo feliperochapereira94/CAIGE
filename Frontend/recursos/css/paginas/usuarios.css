@@ -1,0 +1,3655 @@
+/* =========================================================
+   CAIGE - PAINEL DE GERENCIAMENTO
+
+   CSS EXCLUSIVO DA ÁREA ADMINISTRATIVA
+
+   Depende de:
+   - base.css
+   - componentes.css
+   - layout.css
+   - responsive.css
+   ========================================================= */
+
+
+/* =========================================================
+   1. ESTRUTURA DA PÁGINA
+   ========================================================= */
+
+.admin-page .content {
+    padding-bottom: 28px;
+}
+
+
+/* =========================================================
+   2. ABAS PRINCIPAIS
+   ========================================================= */
+
+.admin-page .admin-tabs {
+    width: 100%;
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    gap: 4px;
+
+    margin-bottom: 16px;
+    padding: 5px;
+
+    background: rgba(255, 255, 255, 0.82);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 3px 12px rgba(15, 23, 42, 0.04);
+
+    overflow: visible;
+    overflow-x: visible;
+}
+
+.admin-page .admin-tab-btn {
+    min-height: 36px;
+    flex: 0 0 auto;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    padding: 7px 12px;
+
+    color: var(--gray-600);
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-md);
+
+    font-family: inherit;
+    font-size: var(--fonte-tab);
+    line-height: 1;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        color var(--transition-default),
+        background-color var(--transition-default),
+        box-shadow var(--transition-default);
+}
+
+.admin-page .admin-tab-btn:hover {
+    color: var(--blue-700);
+    background: var(--blue-50);
+}
+
+.admin-page .admin-tab-btn.active {
+    color: var(--blue-700);
+    background: var(--white);
+    position: relative;
+    z-index: 1;
+    box-shadow:
+        0 3px 10px rgba(31, 96, 232, 0.10),
+        inset 0 -2px 0 var(--blue-500);
+}
+
+
+/* =========================================================
+   3. PAINÉIS DAS ABAS
+   ========================================================= */
+
+.admin-page .admin-tab-panel {
+    width: 100%;
+    min-width: 0;
+}
+
+.admin-page .users-container,
+.admin-page .courses-container {
+    width: 100%;
+
+    display: grid;
+    grid-template-columns:
+        minmax(300px, 0.85fr) minmax(420px, 1.6fr);
+
+    gap: 16px;
+
+    margin-bottom: 18px;
+}
+
+
+/* =========================================================
+   4. CARDS ADMINISTRATIVOS
+   ========================================================= */
+
+.admin-page .card,
+.admin-page .archive-card,
+.admin-page .audit-filters {
+    background:
+        linear-gradient(135deg,
+            var(--white) 0%,
+            #fbfdff 100%);
+
+    border: 1px solid rgba(31, 96, 232, 0.10);
+    border-radius: var(--radius-lg);
+
+    box-shadow:
+        0 5px 16px rgba(15, 23, 42, 0.05);
+}
+
+.admin-page .card {
+    min-height: 0;
+    padding: 18px;
+    gap: 0;
+}
+
+.admin-page .card:hover {
+    transform: none;
+}
+
+.admin-page .card h3,
+.admin-page .archive-card h3 {
+    margin: 0 0 16px;
+
+    color: var(--text-primary);
+
+    font-size: var(--fonte-titulo-card);
+    line-height: 1.25;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   5. FORMULÁRIOS
+   ========================================================= */
+
+.admin-page .form-group {
+    margin-bottom: 13px;
+    gap: 5px;
+}
+
+.admin-page .form-group label,
+.admin-page .modal__form-group label {
+    font-size: var(--fonte-label);
+    font-weight: 700;
+    color: var(--gray-700);
+}
+
+.admin-page .form-group input,
+.admin-page .form-group select {
+    min-height: 38px;
+    padding: 8px 10px;
+
+    font-size: var(--fonte-campo);
+
+    border-radius: var(--radius-md);
+}
+
+.admin-page .btn-create {
+    width: 100%;
+    min-height: 39px;
+
+    margin-top: 3px;
+    padding: 8px 12px;
+
+    color: var(--white);
+
+    background:
+        linear-gradient(135deg,
+            #10b981 0%,
+            #059669 100%);
+
+    border-radius: var(--radius-md);
+
+    box-shadow:
+        0 7px 15px rgba(16, 185, 129, 0.17);
+
+    font-size: var(--fonte-botao);
+}
+
+.admin-page .btn-create:hover {
+    box-shadow:
+        0 9px 18px rgba(16, 185, 129, 0.22);
+}
+
+
+/* =========================================================
+   6. CHECKBOXES
+   ========================================================= */
+
+.admin-page .checkbox-usuario-ativo,
+.admin-page .admin-checkbox {
+    min-height: 32px;
+
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center;
+    justify-content: flex-start;
+
+    gap: 7px;
+
+    margin: 0;
+
+    color: var(--gray-700);
+
+    cursor: pointer;
+}
+
+.admin-page .checkbox-usuario-ativo input,
+.admin-page .admin-checkbox input {
+    width: 16px !important;
+    height: 16px !important;
+    min-height: 16px !important;
+
+    flex: 0 0 16px;
+
+    margin: 0;
+
+    padding: 0;
+
+    box-shadow: none;
+}
+
+
+/* =========================================================
+   7. LISTA DE USUÁRIOS E CURSOS
+   ========================================================= */
+
+.admin-page .course-item:not(.data-grid__row) {
+    padding: 11px 12px;
+
+    border-radius: var(--radius-md);
+}
+
+/* =========================================================
+   8. BADGES
+   ========================================================= */
+
+.admin-page .role-badge,
+.admin-page .status-badge,
+.admin-page .tag,
+.admin-page .audit-type-tag,
+.admin-page .audit-role-tag {
+    width: fit-content;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 999px;
+
+    font-weight: 700;
+}
+
+.admin-page .role-badge {
+    padding: 3px 8px;
+
+    font-size: var(--fonte-badge);
+}
+
+.admin-page .user-role-cell .role-badge {
+    max-width: 100%;
+    white-space: nowrap;
+}
+
+.admin-page .user-role-cell.is-system-account {
+    flex-direction: column;
+    gap: 4px;
+}
+
+.admin-page .role-badge.supervisor {
+    color: var(--blue-700);
+
+    background: var(--blue-100);
+}
+
+.admin-page .role-badge.professor {
+    color: #047857;
+
+    background: #d1fae5;
+}
+
+.admin-page .status-badge {
+    padding: 3px 8px;
+
+    font-size: var(--fonte-badge);
+}
+
+.admin-page .status-badge.active {
+    color: #047857;
+
+    background: #d1fae5;
+}
+
+.admin-page .status-badge.inactive {
+    color: var(--gray-600);
+
+    background: var(--gray-200);
+}
+
+
+/* =========================================================
+   10. AUDITORIA
+   ========================================================= */
+
+.admin-page .audit-container {
+    display: grid;
+
+    grid-template-columns: 1fr;
+
+    gap: 14px;
+}
+
+.admin-page .audit-filters {
+    padding: 15px;
+}
+
+.admin-page .audit-filters-title {
+    margin-bottom: 10px;
+
+    font-size: var(--fonte-titulo-card);
+    font-weight: 700;
+
+    color: var(--text-primary);
+}
+
+.admin-page .audit-filter-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 10px;
+}
+
+.admin-page .audit-filter-block {
+    padding: 10px;
+
+    background: var(--white);
+
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-md);
+}
+
+.admin-page .audit-filter-label {
+    margin-bottom: 7px;
+
+    color: var(--gray-500);
+
+    font-size: var(--fonte-label);
+    line-height: 1.1;
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.035em;
+}
+
+.admin-page .audit-filter-row {
+    display: grid;
+
+    grid-template-columns: 1fr;
+
+    gap: 7px;
+}
+
+.admin-page .audit-filter-row select,
+.admin-page .audit-filter-row input,
+.admin-page .audit-range-row input {
+    min-height: 36px;
+
+    padding: 7px 9px;
+
+    font-size: var(--fonte-campo);
+
+    border-radius: var(--radius-md);
+}
+
+.admin-page .audit-filter-toggles {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+
+    gap: 12px;
+
+    margin-top: 10px;
+}
+
+.admin-page .audit-filter-toggles label {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+
+    gap: 6px;
+
+    color: var(--gray-700);
+
+    font-size: var(--fonte-label);
+
+    cursor: pointer;
+}
+
+.admin-page .audit-filter-toggles input {
+    width: 15px;
+    height: 15px;
+    min-height: 15px;
+
+    margin: 0;
+}
+
+.admin-page .audit-range-row {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 8px;
+
+    margin-top: 10px;
+}
+
+.admin-page .audit-range-row label {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: var(--gray-500);
+
+    font-size: var(--fonte-label);
+    font-weight: 700;
+}
+
+.admin-page .audit-filter-actions {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 7px;
+
+    margin-top: 10px;
+}
+
+.admin-page .audit-table-wrap {
+    overflow-x: auto;
+}
+
+.admin-page .audit-table {
+    min-width: 760px;
+}
+
+.admin-page .audit-table__date {
+    width: 135px;
+}
+
+.admin-page .audit-table__type {
+    width: 120px;
+}
+
+.admin-page .audit-table__responsible {
+    width: 190px;
+}
+
+.admin-page .audit-table__role {
+    width: 96px;
+}
+
+.admin-page .audit-table__description-cell {
+    overflow-wrap: anywhere;
+}
+
+.admin-page .audit-type-tag {
+    padding: 3px 7px;
+
+    color: var(--blue-700);
+
+    background: var(--blue-100);
+
+    font-size: var(--fonte-badge);
+}
+
+.admin-page .audit-role-tag {
+    padding: 3px 7px;
+
+    font-size: var(--fonte-badge);
+}
+
+.admin-page .audit-role-tag.supervisor {
+    color: var(--blue-700);
+
+    background: var(--blue-100);
+}
+
+.admin-page .audit-role-tag.professor {
+    color: #047857;
+
+    background: #d1fae5;
+}
+
+.admin-page .audit-role-tag.sistema {
+    color: var(--gray-600);
+
+    background: var(--gray-200);
+}
+
+.admin-page .audit-empty,
+.admin-page .admin-empty-state {
+    margin: 0;
+
+    padding: 20px;
+
+    color: var(--gray-400);
+
+    font-size: var(--fonte-meta);
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   11. ARQUIVADOS
+   ========================================================= */
+
+.admin-page .archive-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 14px;
+}
+
+.admin-page .archive-card {
+    padding: 16px;
+}
+
+.admin-page .archive-list {
+    max-height: 480px;
+}
+
+.admin-page .archive-item {
+    border-radius: var(--radius-md);
+}
+
+.admin-page .archive-title {
+    font-size: var(--fonte-corpo);
+}
+
+.admin-page .archive-meta {
+    font-size: var(--fonte-meta);
+}
+
+.admin-page .archive-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+
+    font-size: var(--fonte-meta);
+}
+
+
+/* =========================================================
+   12. MODAIS DA ADMINISTRAÇÃO
+   ========================================================= */
+
+.admin-page .account-tabs__navigation {
+    margin-bottom: 14px;
+}
+
+.admin-page .modal__form-actions {
+    margin-top: 2px;
+}
+
+
+/* =========================================================
+   13. TABLET
+   ========================================================= */
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+
+    .admin-page .users-container,
+    .admin-page .courses-container {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-page .archive-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-page .audit-table {
+        min-width: 720px;
+    }
+}
+
+
+/* =========================================================
+   14. MOBILE
+   ========================================================= */
+
+@media (max-width: 767px) {
+    .admin-page .admin-tabs {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        align-items: stretch;
+        gap: 4px;
+        margin-bottom: 10px;
+        padding: 4px;
+        border-radius: var(--radius-lg);
+    }
+
+    .admin-page .admin-tab-btn {
+        width: 100%;
+        min-width: 0;
+        min-height: 32px;
+        justify-content: center;
+        padding: 6px 5px;
+        font-size: var(--fonte-tab);
+        border-radius: var(--radius-md);
+    }
+
+    .admin-page .users-container,
+    .admin-page .courses-container,
+    .admin-page .audit-filter-grid,
+    .admin-page .audit-range-row,
+    .admin-page .archive-grid {
+        grid-template-columns: 1fr;
+
+        gap: 9px;
+    }
+
+    .admin-page .card,
+    .admin-page .archive-card,
+    .admin-page .audit-filters {
+        padding: 12px;
+
+        border-radius: var(--radius-lg);
+    }
+
+    .admin-page .card h3,
+    .admin-page .archive-card h3 {
+        margin-bottom: 11px;
+
+        font-size: var(--fonte-titulo-card);
+    }
+
+    .admin-page .form-group {
+        margin-bottom: 9px;
+    }
+
+    .admin-page .form-group label,
+    .admin-page .modal__form-group label {
+        font-size: var(--fonte-label);
+    }
+
+    .admin-page .form-group input,
+    .admin-page .form-group select,
+    .admin-page .audit-filter-row select,
+    .admin-page .audit-filter-row input,
+    .admin-page .audit-range-row input {
+        min-height: 38px;
+
+        /*
+           Mantém 16px nos campos mobile para evitar zoom
+           automático do Safari/iOS.
+        */
+        font-size: var(--fonte-campo);
+    }
+
+    .admin-page .btn-create {
+        min-height: 37px;
+
+        font-size: var(--fonte-botao);
+    }
+
+    .admin-page .course-item {
+        flex-direction: column;
+        align-items: stretch;
+
+        gap: 8px;
+
+        padding: 10px;
+    }
+
+    .admin-page .user-actions,
+    .admin-page .course-actions {
+        width: 100%;
+
+        display: grid;
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 6px;
+    }
+
+    .admin-page .user-actions>*,
+    .admin-page .course-actions>* {
+        width: 100%;
+    }
+
+    .admin-page .modal__content {
+        width: min(390px, 100%);
+    }
+
+    .admin-page .modal__form-actions {
+        display: grid;
+
+        grid-template-columns: 1fr;
+
+        gap: 7px;
+    }
+
+    .admin-page .modal__form-actions .modal__btn {
+        width: 100%;
+    }
+
+    .admin-page .account-tabs__navigation {
+        margin-bottom: 12px;
+    }
+}
+
+
+/* =========================================================
+   15. CELULARES PEQUENOS
+   ========================================================= */
+
+@media (max-width: 430px) {
+    .admin-page .admin-tab-btn {
+        padding: 6px 8px;
+
+        font-size: var(--fonte-tab);
+    }
+
+    .admin-page .card,
+    .admin-page .archive-card,
+    .admin-page .audit-filters {
+        padding: 10px;
+    }
+
+    .admin-page .user-actions,
+    .admin-page .course-actions {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================================================
+   16. REFINAMENTOS FINAIS - DESKTOP
+   ========================================================= */
+
+.admin-page .users-container,
+.admin-page .courses-container {
+    align-items: start;
+}
+
+.admin-page .admin-tab-btn.active {
+    box-shadow:
+        0 4px 12px rgba(31, 96, 232, 0.13),
+        inset 0 -2px 0 var(--blue-600);
+}
+
+
+/* =========================================================
+   17. TÍTULOS RETRÁTEIS
+   No desktop continuam com aparência de título comum.
+   ========================================================= */
+
+.admin-page .admin-section-toggle,
+.admin-page .admin-audit-toggle {
+    width: 100%;
+
+    padding: 0;
+    margin: 0 0 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 8px;
+
+    color: var(--text-primary);
+
+    background: transparent;
+
+    border: none;
+
+    font-family: inherit;
+    font-size: 15px;
+    line-height: 1.25;
+    font-weight: 700;
+
+    text-align: left;
+
+    cursor: default;
+}
+
+.admin-page .admin-section-toggle__icon {
+    display: none;
+}
+
+
+/* =========================================================
+   18. AÇÕES DE LINHA
+   No desktop mantemos os botões tradicionais.
+   ========================================================= */
+
+.admin-page .admin-row-actions-toggle {
+    display: none;
+}
+
+.admin-page .admin-actionable-item {
+    position: relative;
+}
+
+
+/* =========================================================
+   19. MAIS AÇÕES DA AUDITORIA
+   Desktop: os três botões continuam visíveis normalmente.
+   ========================================================= */
+
+.admin-page .admin-audit-more {
+    display: contents;
+}
+
+.admin-page .admin-audit-more__toggle {
+    display: none;
+}
+
+.admin-page .admin-audit-more__menu {
+    display: contents;
+}
+
+
+/* =========================================================
+   20. MOBILE - EXPERIÊNCIA ADMINISTRATIVA COMPACTA
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+    /* -----------------------------------------------------
+       Títulos retráteis de Novo Usuário / Novo Curso
+       ----------------------------------------------------- */
+
+    .admin-page .admin-section-toggle,
+    .admin-page .admin-audit-toggle {
+        min-height: 34px;
+
+        margin: 0;
+
+        padding: 4px 2px;
+
+        font-size: 12px;
+
+        cursor: pointer;
+    }
+
+    .admin-page .admin-section-toggle__icon {
+        display: inline-flex;
+
+        align-items: center;
+        justify-content: center;
+
+        width: 24px;
+        height: 24px;
+
+        flex: 0 0 24px;
+
+        color: var(--blue-700);
+
+        background: var(--blue-50);
+
+        border-radius: var(--radius-md);
+
+        font-size: 15px;
+
+        transition:
+            transform var(--transition-default),
+            background-color var(--transition-default);
+    }
+
+    .admin-page .admin-section-toggle[aria-expanded="true"] .admin-section-toggle__icon,
+
+    .admin-page .admin-audit-toggle[aria-expanded="true"] .admin-section-toggle__icon {
+        transform: rotate(180deg);
+
+        background: var(--blue-100);
+    }
+
+
+    /* -----------------------------------------------------
+       Formulários recolhidos inicialmente
+       ----------------------------------------------------- */
+
+    .admin-page .admin-mobile-collapsible {
+        display: none;
+
+        margin-top: 8px;
+    }
+
+    .admin-page .admin-mobile-collapsible--open {
+        display: block;
+    }
+
+
+    /* -----------------------------------------------------
+       Cards de criação mais compactos quando fechados
+       ----------------------------------------------------- */
+
+    .admin-page .users-container>.card:first-child,
+    .admin-page .courses-container>.card:first-child {
+        padding:
+            9px 11px;
+    }
+
+    .admin-page .users-container>.card:first-child:has(.admin-mobile-collapsible--open),
+
+    .admin-page .courses-container>.card:first-child:has(.admin-mobile-collapsible--open) {
+        padding: 12px;
+    }
+
+
+    /* -----------------------------------------------------
+       Usuários e cursos: linhas compactas + menu ⋮
+       ----------------------------------------------------- */
+
+    .admin-page .course-item {
+        position: relative;
+
+        min-height: 58px;
+
+        padding:
+            10px 44px 10px 10px;
+
+        display: block;
+
+        background: var(--white);
+
+        border-color:
+            rgba(31, 96, 232, 0.10);
+
+        box-shadow:
+            0 3px 10px rgba(15, 23, 42, 0.04);
+    }
+
+    .admin-page .course-name {
+        padding-right: 4px;
+
+        font-size: 12px;
+    }
+
+    .admin-page .course-status {
+        padding-right: 2px;
+
+        font-size: 11px;
+    }
+
+    .admin-page .admin-row-actions-toggle {
+        position: absolute;
+
+        top: 9px;
+        right: 9px;
+
+        width: 30px;
+        height: 30px;
+
+        padding: 0;
+
+        display: inline-flex;
+
+        align-items: center;
+        justify-content: center;
+
+        color: var(--gray-600);
+
+        background: var(--gray-50);
+
+        border:
+            1px solid var(--gray-200);
+
+        border-radius: var(--radius-md);
+
+        font-family: inherit;
+
+        font-size: 20px;
+        line-height: 1;
+        font-weight: 700;
+
+        cursor: pointer;
+
+        z-index: 4;
+    }
+
+    .admin-page .admin-row-actions-toggle:active {
+        background: var(--blue-50);
+
+        border-color: var(--blue-200);
+    }
+
+    .admin-page .admin-row-actions-menu {
+        position: absolute;
+
+        top: 42px;
+        right: 9px;
+
+        z-index: 5;
+
+        width: 142px;
+
+        padding: 5px;
+
+        display: none !important;
+
+        grid-template-columns: 1fr !important;
+
+        gap: 3px !important;
+
+        background:
+            rgba(255, 255, 255, 0.98);
+
+        border:
+            1px solid rgba(31, 96, 232, 0.12);
+
+        border-radius: var(--radius-lg);
+
+        box-shadow:
+            0 12px 26px rgba(15, 23, 42, 0.16);
+
+        backdrop-filter: blur(12px);
+
+        -webkit-backdrop-filter: blur(12px);
+    }
+
+    .admin-page .admin-actions-open .admin-row-actions-menu {
+        display: grid !important;
+    }
+
+    .admin-page .admin-row-actions-menu>* {
+        width: 100% !important;
+
+        min-height: 32px;
+
+        padding:
+            6px 8px;
+
+        justify-content: flex-start;
+
+        border: none;
+
+        border-radius: var(--radius-md);
+
+        text-align: left;
+
+        box-shadow: none;
+    }
+
+    .admin-page .admin-row-actions-menu .btn-small:hover {
+        background: var(--blue-50);
+    }
+
+    .admin-page .admin-row-actions-menu .btn-small-danger {
+        color: var(--danger-600);
+    }
+
+
+    /* -----------------------------------------------------
+       Lista não fica visualmente pesada
+       ----------------------------------------------------- */
+
+    /* -----------------------------------------------------
+       Auditoria em accordion
+       ----------------------------------------------------- */
+
+    .admin-page .audit-filters {
+        padding:
+            8px 10px;
+    }
+
+    .admin-page .audit-filters-title {
+        margin: 0;
+    }
+
+    .admin-page .audit-filters:not(.admin-audit-filters--open) .audit-filter-grid,
+
+    .admin-page .audit-filters:not(.admin-audit-filters--open) .audit-filter-toggles,
+
+    .admin-page .audit-filters:not(.admin-audit-filters--open) .audit-range-row,
+
+    .admin-page .audit-filters:not(.admin-audit-filters--open) .audit-filter-actions {
+        display: none !important;
+    }
+
+    .admin-page .admin-audit-filters--open {
+        padding: 10px;
+    }
+
+    .admin-page .admin-audit-filters--open .audit-filter-grid {
+        margin-top: 7px;
+    }
+
+
+    /* -----------------------------------------------------
+       Ações principais da auditoria
+       ----------------------------------------------------- */
+
+    .admin-page .audit-filter-actions {
+        position: relative;
+
+        display: grid;
+
+        grid-template-columns:
+            repeat(2,
+                minmax(0, 1fr));
+
+        gap: 6px;
+
+        margin-top: 9px;
+    }
+
+    .admin-page .audit-filter-actions>.btn-small {
+        width: 100%;
+    }
+
+    .admin-page .admin-audit-more {
+        position: relative;
+
+        grid-column:
+            1 / -1;
+
+        display: block;
+    }
+
+    .admin-page .admin-audit-more__toggle {
+        width: 100%;
+
+        display: inline-flex;
+
+        align-items: center;
+        justify-content: center;
+    }
+
+    .admin-page .admin-audit-more__menu {
+        position: absolute;
+
+        left: 0;
+        right: 0;
+
+        bottom:
+            calc(100% + 5px);
+
+        z-index: 8;
+
+        padding: 5px;
+
+        display: none;
+
+        background:
+            rgba(255, 255, 255, 0.99);
+
+        border:
+            1px solid rgba(31, 96, 232, 0.12);
+
+        border-radius: var(--radius-md);
+
+        box-shadow:
+            0 12px 26px rgba(15, 23, 42, 0.16);
+    }
+
+    .admin-page .admin-audit-more--open .admin-audit-more__menu {
+        display: grid;
+
+        gap: 3px;
+    }
+
+    .admin-page .admin-audit-more__menu .btn-small {
+        width: 100%;
+
+        justify-content: flex-start;
+
+        text-align: left;
+
+        border: none;
+    }
+
+
+    /* -----------------------------------------------------
+       Arquivados - estados vazios mais leves
+       ----------------------------------------------------- */
+
+    .admin-page .archive-card {
+        min-height: 92px;
+
+        padding:
+            10px 11px;
+    }
+
+    .admin-page .archive-empty {
+        padding:
+            12px 8px;
+    }
+
+    .admin-page .archive-empty::before {
+        margin-bottom: 4px;
+
+        font-size: 16px;
+    }
+}
+
+
+/* =========================================================
+   21. CELULARES PEQUENOS
+   ========================================================= */
+
+@media (max-width: 430px) {
+
+    .admin-page .admin-row-actions-menu {
+        width: 136px;
+    }
+}
+
+/* =========================================================
+   22. AJUSTES FINAIS MOBILE - PADRÃO VISUAL
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+    .admin-page .form-group label,
+    .admin-page .modal__form-group label,
+    .admin-page .audit-range-row label {
+        font-size: 12px;
+    }
+
+    .admin-page .form-group input,
+    .admin-page .form-group select,
+    .admin-page .audit-filter-row select,
+    .admin-page .audit-filter-row input,
+    .admin-page .audit-range-row input {
+        min-height: 36px;
+        padding: 7px 9px;
+        font-size: var(--fonte-campo);
+        line-height: 1.2;
+        border-radius: var(--radius-md);
+    }
+
+    .admin-page .form-group input::placeholder,
+    .admin-page .audit-filter-row input::placeholder {
+        font-size: 14px;
+    }
+
+    .admin-page .btn-create {
+        min-height: 36px;
+        font-size: var(--fonte-botao);
+    }
+
+    .admin-page .admin-section-toggle,
+    .admin-page .admin-audit-toggle {
+        min-height: 36px;
+        font-size: 12px;
+    }
+
+    .admin-page .course-item {
+        padding-right: 58px;
+    }
+
+    .admin-page .course-item>div:first-child {
+        min-width: 0;
+        max-width: calc(100% - 4px);
+    }
+
+    .admin-page .course-name {
+        padding-right: 8px;
+        overflow-wrap: anywhere;
+    }
+
+    .admin-page .course-status {
+        padding-right: 10px;
+        line-height: 1.35;
+        overflow-wrap: anywhere;
+    }
+
+    .admin-page .admin-row-actions-toggle {
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+    }
+
+    body>.admin-row-actions-menu--portal {
+        position: fixed;
+        z-index: 20000;
+
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 3px;
+
+        padding: 5px;
+
+        background:
+            rgba(255, 255, 255, 0.99);
+
+        border:
+            1px solid rgba(31, 96, 232, 0.14);
+
+        border-radius: var(--radius-lg);
+
+        box-shadow:
+            0 14px 30px rgba(15, 23, 42, 0.20);
+
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+
+        overflow: visible;
+    }
+
+    body>.admin-row-actions-menu--portal>* {
+        width: 100%;
+        min-height: 33px;
+
+        padding: 7px 9px;
+
+        justify-content: flex-start;
+
+        border: none;
+        border-radius: var(--radius-md);
+
+        font-size: 11px;
+        text-align: left;
+    }
+
+    .admin-page .audit-filter-block {
+        padding: 9px;
+    }
+
+    .admin-page .audit-filter-label {
+        margin-bottom: 6px;
+        font-size: var(--fonte-label);
+    }
+
+    .admin-page .audit-filter-row {
+        gap: 6px;
+    }
+
+    .admin-page .audit-filter-toggles {
+        gap: 7px 10px;
+        margin-top: 8px;
+    }
+
+    .admin-page .audit-filter-toggles label {
+        gap: 5px;
+        font-size: var(--fonte-label);
+        line-height: 1.2;
+    }
+
+    .admin-page .audit-filter-toggles input {
+        width: 14px;
+        height: 14px;
+        min-height: 14px;
+    }
+
+    .admin-page .audit-range-row {
+        gap: 7px;
+        margin-top: 8px;
+    }
+
+    .admin-page .audit-filter-actions {
+        margin-top: 8px;
+    }
+
+    .admin-page .audit-filter-actions .btn-small,
+    .admin-page .admin-audit-more__toggle {
+        min-height: 33px;
+        font-size: 11px;
+    }
+
+    .admin-page .audit-table {
+        font-size: var(--fonte-grid-corpo);
+        line-height: 1.35;
+    }
+
+    .admin-page .audit-type-tag,
+    .admin-page .audit-role-tag {
+        font-size: var(--fonte-badge);
+    }
+}
+
+@media (max-width: 430px) {
+    .admin-page .admin-tab-btn {
+        padding: 7px 9px;
+        font-size: var(--fonte-tab);
+    }
+
+    .admin-page .form-group input,
+    .admin-page .form-group select,
+    .admin-page .audit-filter-row select,
+    .admin-page .audit-filter-row input,
+    .admin-page .audit-range-row input {
+        font-size: 16px !important;
+    }
+}
+
+/* =========================================================
+   24. ACABAMENTO FINAL DA ADMINISTRAÇÃO
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+    /* -----------------------------------------------------
+       Abas superiores centralizadas e equilibradas
+       ----------------------------------------------------- */
+
+    /* -----------------------------------------------------
+       Conteúdo dos usuários/cursos sem invadir o ⋮
+       ----------------------------------------------------- */
+
+    .admin-page .course-item {
+        padding-right: 62px;
+    }
+
+    .admin-page .course-item>div:first-child {
+        width:
+            calc(100% - 4px);
+
+        min-width: 0;
+
+        padding-right: 2px;
+    }
+
+    .admin-page .course-name,
+    .admin-page .course-status {
+        max-width: 100%;
+
+        padding-right: 0;
+
+        overflow-wrap: anywhere;
+
+        word-break: normal;
+    }
+
+    .admin-page .admin-row-actions-toggle {
+        right: 10px;
+
+        width: 31px;
+
+        height: 31px;
+
+        color: #475569;
+
+        background: #f8fafc;
+
+        border:
+            1px solid #e2e8f0;
+
+        box-shadow:
+            0 2px 5px rgba(15,
+                23,
+                42,
+                0.05);
+    }
+
+
+    /* -----------------------------------------------------
+       Popover moderno das ações
+       ----------------------------------------------------- */
+
+    body>.admin-row-actions-menu--portal {
+        padding: 4px !important;
+
+        background:
+            rgba(255,
+                255,
+                255,
+                0.995) !important;
+
+        border:
+            1px solid rgba(15,
+                23,
+                42,
+                0.08) !important;
+
+        border-radius: var(--radius-lg) !important;
+
+        box-shadow:
+            0 16px 34px rgba(15,
+                23,
+                42,
+                0.18),
+            0 2px 8px rgba(15,
+                23,
+                42,
+                0.06) !important;
+    }
+
+    body>.admin-row-actions-menu--portal>* {
+        min-height: 34px !important;
+
+        padding:
+            7px 10px !important;
+
+        display: flex !important;
+
+        align-items: center !important;
+
+        color: #334155 !important;
+
+        background: transparent !important;
+
+        border: none !important;
+
+        border-radius: var(--radius-md) !important;
+
+        box-shadow: none !important;
+
+        font-size: 11px !important;
+
+        font-weight: 600 !important;
+    }
+
+    body>.admin-row-actions-menu--portal>*:hover,
+    body>.admin-row-actions-menu--portal>*:focus-visible {
+        background: #eff6ff !important;
+
+        color: var(--blue-700) !important;
+    }
+
+    body>.admin-row-actions-menu--portal .btn-small-danger {
+        color: #dc2626 !important;
+    }
+
+    body>.admin-row-actions-menu--portal .btn-small-danger:hover,
+    body>.admin-row-actions-menu--portal .btn-small-danger:focus-visible {
+        color: #b91c1c !important;
+
+        background: #fef2f2 !important;
+    }
+
+
+    /* -----------------------------------------------------
+       Auditoria: toolbar + scroll próprio
+       ----------------------------------------------------- */
+
+    .admin-page .audit-table-wrap {
+        max-height:
+            min(48svh,
+                430px);
+
+        overflow-y: auto;
+
+        overflow-x: auto;
+
+        overscroll-behavior: contain;
+
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .admin-page #audit-prev-page {
+        justify-self: stretch;
+    }
+
+    .admin-page #audit-next-page {
+        justify-self: stretch;
+    }
+
+
+    /* -----------------------------------------------------
+       Respiro acima da navegação inferior
+       ----------------------------------------------------- */
+
+    .admin-page .content {
+        padding-bottom:
+            calc(env(safe-area-inset-bottom,
+                    0px) + 118px);
+    }
+}
+
+
+/* =========================================================
+   25. AJUSTES FINAIS - AUDITORIA E USUÁRIOS
+   ========================================================= */
+
+.admin-page .audit-card-header {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 14px;
+
+    margin-bottom: 10px;
+}
+
+.admin-page .audit-card-header h3 {
+    margin: 0;
+
+    min-width: 0;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+    /* Usuários - área dos três pontos totalmente reservada */
+    .admin-page .admin-row-actions-toggle {
+        top: 50%;
+
+        right: 10px;
+
+        transform:
+            translateY(-50%);
+    }
+
+
+    /* Cabeçalho da Auditoria */
+    .admin-page .audit-card-header {
+        gap: 8px;
+
+        margin-bottom: 7px;
+    }
+
+    .admin-page .audit-card-header h3 {
+        font-size: 13px;
+
+        line-height: 1.2;
+    }
+
+}
+
+/* =========================================================
+   27. ADMINISTRAÇÃO APÓS PADRONIZAÇÃO GLOBAL
+   ========================================================= */
+
+/* Atividades dentro do modal */
+.admin-page #activities-list {
+    max-height: 180px;
+
+    overflow-y: auto;
+
+    overscroll-behavior: contain;
+}
+
+.admin-page #activities-list .inactive {
+    opacity: 0.62;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+    .admin-page .user-course-line {
+        display: block;
+
+        width: 100%;
+
+        margin-top: 4px;
+
+        padding-right: 4px;
+
+        line-height: 1.25;
+    }
+
+    .admin-page .audit-card-header {
+        gap: 7px;
+
+        margin-bottom: 7px;
+    }
+
+    .admin-page .audit-card-header h3 {
+        font-size: 13px;
+    }
+
+    .admin-page #activities-list {
+        max-height: 150px;
+    }
+}
+
+/* =========================================================
+   28. DADOS DO USUÁRIO - ESTRUTURA SEM REMENDOS
+   ========================================================= */
+
+.admin-page .user-primary-meta {
+    min-width: 0;
+
+    margin-top: 3px;
+
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 5px;
+}
+
+.admin-page .user-email-text {
+    min-width: 0;
+
+    color: var(--gray-500);
+
+    font-size: var(--fonte-meta);
+    line-height: 1.3;
+
+    overflow-wrap: anywhere;
+}
+
+.admin-page .user-course-line {
+    min-width: 0;
+
+    margin-top: 4px;
+
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 4px;
+
+    color: var(--gray-500);
+
+    font-size: var(--fonte-meta);
+    line-height: 1.3;
+}
+
+.admin-page .user-course-label {
+    font-weight: 700;
+}
+
+.admin-page .user-course-value {
+    min-width: 0;
+
+    overflow-wrap: anywhere;
+}
+
+.admin-page .user-status-separator {
+    color: var(--gray-400);
+}
+
+@media (max-width: 767px) {
+    .admin-page .user-primary-meta {
+        padding-right: 3px;
+    }
+
+    .admin-page .user-email-text,
+    .admin-page .user-course-line {
+        font-size: var(--fonte-meta);
+    }
+
+    .admin-page .user-course-line {
+        width: 100%;
+
+        margin-top: 4px;
+
+        padding-right: 3px;
+    }
+}
+
+
+/* =========================================================
+   28B. USUÁRIOS CADASTRADOS EM BLOCOS LEVES
+   ========================================================= */
+
+.admin-page .user-item:not(.data-grid__row) {
+    gap: 10px;
+
+    padding: 10px 11px;
+
+    border-radius: var(--radius-md);
+}
+
+.admin-page .user-primary-meta {
+    min-width: 0;
+
+    margin-top: 3px;
+
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 4px;
+}
+
+.admin-page .user-email-text {
+    min-width: 0;
+
+    overflow-wrap: anywhere;
+}
+
+.admin-page .user-course-line {
+    min-width: 0;
+
+    margin-top: 4px;
+
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 3px;
+}
+
+@media (max-width: 767px) {
+    .admin-page .user-item {
+        padding: 9px 10px;
+    }
+}
+
+
+/* =========================================================
+   29. CABEÇALHOS DE LISTAS PAGINADAS
+   ========================================================= */
+
+.admin-page .admin-list-header {
+    width: 100%;
+
+    margin-bottom: 9px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+}
+
+.admin-page .admin-list-header h3 {
+    min-width: 0;
+
+    margin: 0;
+}
+
+.admin-page #tab-panel-arquivados .admin-list-header h3 {
+    flex: 0 0 auto;
+
+    white-space: nowrap;
+}
+
+.admin-page #tab-panel-arquivados .admin-list-header .search-box {
+    width: 220px;
+    max-width: 220px;
+    min-width: 180px;
+
+    flex: 0 1 220px;
+}
+
+.admin-page #tab-panel-arquivados .admin-list-header .search-box__input {
+    width: 100%;
+    height: 34px;
+    min-height: 34px;
+
+    font-size: var(--fonte-campo);
+}
+
+.admin-page .archive-card .pagination-bar {
+    margin-top: 8px;
+}
+
+@media (max-width: 1024px) {
+    .admin-page #tab-panel-arquivados .admin-list-header .search-box {
+        width: 260px;
+        max-width: 260px;
+
+        flex-basis: 260px;
+    }
+}
+
+@media (max-width: 767px) {
+    .admin-page .admin-list-header {
+        gap: 7px;
+    }
+
+    .admin-page .admin-list-header h3 {
+        font-size: var(--fonte-titulo-card);
+        line-height: 1.2;
+    }
+
+    .admin-page #tab-panel-arquivados .admin-list-header {
+        flex-wrap: wrap;
+    }
+
+    .admin-page #tab-panel-arquivados .admin-list-header .search-box {
+        width: 100%;
+        max-width: none;
+        min-width: 0;
+
+        flex: 1 1 100%;
+    }
+
+    .admin-page #tab-panel-arquivados .admin-list-header .search-box__input {
+        font-size: var(--fonte-campo);
+    }
+
+    .admin-page .admin-list-header .page-size-control>span {
+        display: none;
+    }
+
+    .admin-page .admin-list-header .page-size-control::before {
+        content: "Qtd.";
+    }
+}
+/* =========================================================
+   CALENDÁRIO DE FREQUÊNCIA
+   Configuração semestral simples: dias da semana e exceções.
+   ========================================================= */
+
+.periodos-letivos {
+    display: grid;
+    gap: var(--space-4);
+}
+
+.periodos-letivos__configuracao,
+.periodo-letivo-detalhes__grid {
+    display: grid;
+    grid-template-columns: minmax(320px, 0.9fr) minmax(0, 1.1fr);
+    gap: var(--space-4);
+    align-items: start;
+}
+
+.periodo-letivo-form,
+.grade-periodo-form,
+.excecao-periodo-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+}
+
+.periodo-letivo-form__acoes,
+.grade-periodo-form__acoes,
+.excecao-periodo-form__acoes {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.admin-helper-text {
+    margin: var(--space-2) 0 var(--space-3);
+    color: var(--text-secondary);
+    font-size: var(--fonte-texto-auxiliar);
+    line-height: 1.45;
+}
+
+.periodo-item--selecionado {
+    border-color: var(--blue-300);
+    background: var(--blue-50);
+}
+
+.admin-page .status-badge.planned {
+    color: var(--blue-700);
+    background: var(--blue-50);
+    border: 1px solid var(--blue-200);
+}
+
+.periodo-letivo-detalhes {
+    display: grid;
+    gap: var(--space-4);
+}
+
+.periodo-letivo-detalhes__cabecalho {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-4);
+}
+
+.periodo-letivo-detalhes__cabecalho h3,
+.periodo-letivo-detalhes__cabecalho p {
+    margin: 0;
+}
+
+.periodo-letivo-detalhes__cabecalho .admin-helper-text {
+    max-width: 680px;
+    margin: 0;
+}
+
+.grade-dias-semana {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.grade-dias-semana legend {
+    width: 100%;
+    margin-bottom: 2px;
+    color: var(--gray-700);
+    font-size: var(--fonte-texto-auxiliar);
+    font-weight: 700;
+}
+
+.grade-dias-semana label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 58px;
+    padding: 8px 10px;
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    cursor: pointer;
+}
+
+.grade-dias-semana label:has(input:checked) {
+    border-color: var(--blue-300);
+    background: var(--blue-50);
+    color: var(--blue-700);
+}
+
+.grade-dias-semana input {
+    margin: 0;
+}
+
+.grade-periodo-lista,
+.excecoes-periodo-lista {
+    margin-top: var(--space-4);
+}
+
+.grade-item-dias {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 5px;
+}
+
+.grade-dia-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: var(--blue-50);
+    color: var(--blue-700);
+    font-size: var(--fonte-texto-auxiliar);
+    font-weight: 700;
+}
+
+.excecao-atendimento-campo,
+.excecao-motivo-campo {
+    grid-column: 1 / -1;
+}
+
+.excecao-item__data {
+    font-weight: 700;
+}
+
+@media (max-width: 1100px) {
+    .periodos-letivos__configuracao,
+    .periodo-letivo-detalhes__grid {
+        grid-template-columns: 1fr;
+    }
+
+    .periodo-letivo-detalhes__cabecalho {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 767px) {
+    .periodo-letivo-form,
+    .grade-periodo-form,
+    .excecao-periodo-form {
+        grid-template-columns: 1fr;
+    }
+
+    .grade-dias-semana {
+        gap: 6px;
+    }
+
+    .grade-dias-semana label {
+        min-width: 54px;
+        padding: 7px 8px;
+    }
+}
+
+@media (min-width: 1025px) {
+    .admin-page .admin-tabs {
+        gap: 14px;
+        padding: 0 8px;
+        background: var(--surface);
+        border-radius: var(--radius-md);
+        box-shadow: none;
+    }
+
+    .admin-page .admin-tab-btn {
+        min-height: 40px;
+        padding: 8px 2px;
+        border-bottom: 2px solid transparent;
+        border-radius: 0;
+    }
+
+    .admin-page .admin-tab-btn:hover,
+    .admin-page .admin-tab-btn.active {
+        background: transparent;
+    }
+
+    .admin-page .admin-tab-btn.active {
+        border-bottom-color: var(--blue-600);
+        box-shadow: none;
+    }
+
+    .admin-page .card,
+    .admin-page .archive-card,
+    .admin-page .audit-filters {
+        background: var(--surface);
+        border-color: var(--border-default);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-xs);
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE - auditoria no padrão de cards do CAIGE
+   Mesmo padrão visual usado em Pacientes e Movimentações:
+   card individual, borda discreta, barra azul lateral e gap.
+   ========================================================= */
+@media screen and (max-width: 600px) {
+    .admin-page .audit-table-wrap {
+        max-height: min(52svh, 470px);
+        overflow-x: hidden;
+        overflow-y: auto;
+        padding: 8px;
+    }
+
+    .admin-page .audit-table {
+        width: 100%;
+        min-width: 0;
+        border-collapse: separate;
+        border-spacing: 0;
+        background: transparent;
+    }
+
+    .admin-page .audit-table colgroup,
+    .admin-page .audit-table thead {
+        display: none;
+    }
+
+    .admin-page .audit-table tbody {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 7px;
+        background: transparent;
+    }
+
+    .admin-page .audit-table tbody tr {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "data tipo"
+            "acao acao"
+            "responsavel papel";
+        column-gap: 8px;
+        row-gap: 5px;
+        width: 100%;
+        min-width: 0;
+        min-height: 72px;
+        padding: 10px 12px;
+        margin: 0;
+        background: var(--surface);
+        border: 1px solid var(--border-default);
+        border-left: 3px solid var(--blue-600);
+        border-radius: var(--radius-sm);
+        box-shadow: var(--shadow-xs);
+        overflow: visible;
+    }
+
+    .admin-page .audit-table tbody td {
+        display: block;
+        min-width: 0;
+        padding: 0;
+        border: 0;
+        text-align: left;
+        white-space: normal;
+        overflow-wrap: break-word;
+    }
+
+    .admin-page .audit-table tbody td:nth-child(1) {
+        grid-area: data;
+        align-self: center;
+        color: var(--text-secondary);
+        font-size: 11px;
+        line-height: 1.3;
+        font-weight: 600;
+    }
+
+    .admin-page .audit-table tbody td:nth-child(2) {
+        grid-area: tipo;
+        justify-self: end;
+        align-self: center;
+    }
+
+    .admin-page .audit-table tbody td:nth-child(3) {
+        grid-area: acao;
+        color: var(--text-primary);
+        font-size: 13px;
+        line-height: 1.35;
+        font-weight: 600;
+    }
+
+    .admin-page .audit-table tbody td:nth-child(4) {
+        grid-area: responsavel;
+        align-self: center;
+        color: var(--text-secondary);
+        font-size: 11px;
+        line-height: 1.3;
+    }
+
+    .admin-page .audit-table tbody td:nth-child(5) {
+        grid-area: papel;
+        justify-self: end;
+        align-self: center;
+    }
+
+    .admin-page .audit-table tbody td::before,
+    .admin-page .audit-table tbody td:nth-child(4)::before {
+        content: none;
+        display: none;
+    }
+
+    .admin-page .audit-table .audit-empty {
+        display: block;
+        width: 100%;
+        min-height: 0;
+        padding: 14px;
+        text-align: center;
+        border-left-width: 1px;
+    }
+}
+
+
+/* =========================================================
+   PADRÃO CAIGE DESKTOP - GERENCIAMENTO
+   Alinhamento semântico, botões administrativos e auditoria.
+   ========================================================= */
+@media (min-width: 768px) {
+    /* Auditoria: datas/tipos/papéis são dados curtos;
+       ação e responsável são leitura textual. */
+    .audit-table th:nth-child(1),
+    .audit-table td:nth-child(1),
+    .audit-table th:nth-child(2),
+    .audit-table td:nth-child(2),
+    .audit-table th:nth-child(5),
+    .audit-table td:nth-child(5) {
+        text-align: center !important;
+    }
+
+    .audit-table th:nth-child(3),
+    .audit-table td:nth-child(3),
+    .audit-table th:nth-child(4),
+    .audit-table td:nth-child(4) {
+        text-align: left !important;
+    }
+
+    .audit-table th:nth-child(3),
+    .audit-table td:nth-child(3) {
+        padding-left: 18px !important;
+    }
+
+    .audit-table th:nth-child(4),
+    .audit-table td:nth-child(4) {
+        padding-left: 16px !important;
+    }
+
+    /* Ações de registros administrativos com geometria única. */
+    .admin-actions,
+    .entity-actions,
+    .lista-entidades__acoes,
+    .period-actions,
+    .archive-actions {
+        align-items: center;
+        gap: 7px;
+    }
+
+    .admin-actions button,
+    .admin-actions .btn,
+    .entity-actions button,
+    .entity-actions .btn,
+    .lista-entidades__acoes button,
+    .lista-entidades__acoes .btn,
+    .period-actions button,
+    .period-actions .btn,
+    .archive-actions button,
+    .archive-actions .btn {
+        min-height: 34px;
+        height: 34px;
+        padding: 0 13px;
+        border-radius: var(--radius-xs);
+        font-size: var(--fonte-texto-auxiliar);
+        font-weight: 600;
+        line-height: 1;
+    }
+}
+
+/* Ações primárias administrativas seguem a identidade azul CAIGE.
+   Verde fica reservado para estados/sucesso. */
+#btnCriarCurso,
+#btnSalvarSemestre,
+#btnAplicarFiltros,
+.btn-admin-primary,
+.admin-primary-action {
+    color: var(--white) !important;
+    background: var(--blue-600) !important;
+    border-color: var(--blue-600) !important;
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.16);
+}
+
+#btnCriarCurso:hover,
+#btnSalvarSemestre:hover,
+#btnAplicarFiltros:hover,
+.btn-admin-primary:hover,
+.admin-primary-action:hover {
+    background: var(--blue-700) !important;
+    border-color: var(--blue-700) !important;
+}
+
+/* Destrutivas continuam explicitamente vermelhas. */
+.btn-danger-outline,
+.btn-remover,
+.btn-excluir-permanentemente {
+    color: var(--danger-600);
+    background: var(--white);
+    border-color: var(--danger-500);
+}
+
+.btn-danger-outline:hover,
+.btn-remover:hover,
+.btn-excluir-permanentemente:hover {
+    color: var(--white);
+    background: var(--danger-600);
+    border-color: var(--danger-600);
+}
+
+
+/* =========================================================
+   HOTFIX 15/09/2026 - BOTÕES REAIS DO PAINEL ADMINISTRATIVO
+   Corrige a regra histórica de .btn-create verde na origem
+   visual da página e padroniza as classes efetivamente usadas.
+   ========================================================= */
+.admin-page .btn-create {
+    color: var(--white) !important;
+    background: linear-gradient(
+        135deg,
+        var(--blue-700) 0%,
+        var(--blue-600) 100%
+    ) !important;
+    border: 1px solid var(--blue-600) !important;
+    box-shadow: 0 5px 12px rgba(37, 99, 235, 0.16) !important;
+}
+
+.admin-page .btn-create:hover {
+    background: linear-gradient(
+        135deg,
+        var(--blue-800) 0%,
+        var(--blue-700) 100%
+    ) !important;
+    border-color: var(--blue-700) !important;
+    box-shadow: 0 7px 14px rgba(37, 99, 235, 0.20) !important;
+}
+
+.admin-page .btn-create:focus-visible {
+    outline: 2px solid var(--blue-300);
+    outline-offset: 2px;
+}
+
+.admin-page .btn-create:disabled {
+    color: var(--gray-400) !important;
+    background: var(--gray-100) !important;
+    border-color: var(--gray-200) !important;
+    box-shadow: none !important;
+    cursor: not-allowed;
+}
+
+/* Aplicar filtros é a ação primária real da auditoria. */
+.admin-page #audit-apply-filters {
+    color: var(--white);
+    background: var(--blue-600);
+    border-color: var(--blue-600);
+}
+
+.admin-page #audit-apply-filters:hover {
+    background: var(--blue-700);
+    border-color: var(--blue-700);
+}
+
+/* Demais .btn-small são secundários; perigo mantém vermelho. */
+.admin-page .btn-small:not(.btn-small-danger):not(#audit-apply-filters) {
+    color: var(--blue-800);
+    background: var(--white);
+    border-color: var(--blue-300);
+}
+
+.admin-page .btn-small:not(.btn-small-danger):not(#audit-apply-filters):hover {
+    color: var(--white);
+    background: var(--blue-700);
+    border-color: var(--blue-700);
+}
+
+.admin-page .btn-small-danger {
+    color: var(--danger-700);
+    background: var(--white);
+    border-color: var(--danger-500);
+}
+
+.admin-page .btn-small-danger:hover {
+    color: var(--white);
+    background: var(--danger-600);
+    border-color: var(--danger-600);
+}
+
+/* Geometria consistente dos botões de cards/listas do gerenciamento. */
+@media (min-width: 768px) {
+    .admin-page .lista-entidades__acoes .btn-small,
+    .admin-page .course-actions .btn-small,
+    .admin-page .archive-list .btn-small,
+    .admin-page .period-list .btn-small,
+    .admin-page .period-actions .btn-small {
+        min-height: 34px;
+        height: 34px;
+        padding: 0 13px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+    }
+}
+
+
+/* =========================================================
+   HOTFIX 15/09/2026 - SEMÂNTICA DE CANCELAMENTO
+   Cancelar/abortar edição = ação vermelha contornada.
+   Não compete visualmente com a ação primária azul.
+   ========================================================= */
+.admin-page .btn-cancel,
+.admin-page .btn-cancelar,
+.admin-page .cancel-edit,
+.admin-page [data-action="cancel"],
+.admin-page [data-action="cancelar"] {
+    color: var(--danger-700) !important;
+    background: var(--white) !important;
+    border-color: var(--danger-500) !important;
+    box-shadow: none !important;
+}
+
+.admin-page .btn-cancel:hover,
+.admin-page .btn-cancelar:hover,
+.admin-page .cancel-edit:hover,
+.admin-page [data-action="cancel"]:hover,
+.admin-page [data-action="cancelar"]:hover {
+    color: var(--white) !important;
+    background: var(--danger-600) !important;
+    border-color: var(--danger-600) !important;
+}
+
+.admin-page .btn-cancel:focus-visible,
+.admin-page .btn-cancelar:focus-visible,
+.admin-page .cancel-edit:focus-visible,
+.admin-page [data-action="cancel"]:focus-visible,
+.admin-page [data-action="cancelar"]:focus-visible {
+    outline: 2px solid var(--danger-100);
+    outline-offset: 2px;
+}
+
+.admin-page .btn-cancel:disabled,
+.admin-page .btn-cancelar:disabled,
+.admin-page .cancel-edit:disabled,
+.admin-page [data-action="cancel"]:disabled,
+.admin-page [data-action="cancelar"]:disabled {
+    color: var(--gray-400) !important;
+    background: var(--gray-100) !important;
+    border-color: var(--gray-200) !important;
+    cursor: not-allowed;
+}
+
+/* Classe semântica reutilizável para cancelamento futuro. */
+.btn--cancel,
+.btn-cancel {
+    color: var(--danger-700) !important;
+    background: var(--white) !important;
+    border-color: var(--danger-500) !important;
+}
+
+.btn--cancel:hover,
+.btn-cancel:hover {
+    color: var(--white) !important;
+    background: var(--danger-600) !important;
+    border-color: var(--danger-600) !important;
+}
+
+
+/* =========================================================
+   HOTFIX 15/09/2026 - IDs REAIS DOS CANCELAMENTOS
+   usuarios.html:
+   - #periodo-letivo-cancelar
+   - #grade-periodo-cancelar
+   ========================================================= */
+.admin-page #periodo-letivo-cancelar,
+.admin-page #grade-periodo-cancelar {
+    color: var(--danger-700) !important;
+    background: var(--white) !important;
+    border-color: var(--danger-500) !important;
+    box-shadow: none !important;
+}
+
+.admin-page #periodo-letivo-cancelar:hover,
+.admin-page #grade-periodo-cancelar:hover {
+    color: var(--white) !important;
+    background: var(--danger-600) !important;
+    border-color: var(--danger-600) !important;
+}
+
+.admin-page #periodo-letivo-cancelar:focus-visible,
+.admin-page #grade-periodo-cancelar:focus-visible {
+    outline: 2px solid var(--danger-100);
+    outline-offset: 2px;
+}
+
+
+/* =========================================================
+   HISTÓRICO DE SEMESTRES - 15/09/2026
+   Mantém ativo/planejado + 2 encerrados recentes em destaque.
+   Demais encerrados ficam em histórico cronológico expansível.
+   ========================================================= */
+.periodos-principais,
+.periodos-historico__lista {
+    display: grid;
+    gap: var(--space-2);
+}
+
+.periodos-historico {
+    margin-top: var(--space-3);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--border-light);
+}
+
+.periodos-historico__toggle {
+    width: 100%;
+    min-height: 40px;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    color: var(--blue-700);
+    background: var(--blue-50);
+    border: 1px solid var(--blue-200);
+    border-radius: var(--radius-xs);
+    font: inherit;
+    font-size: var(--fonte-texto-auxiliar);
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.periodos-historico__toggle:hover {
+    background: var(--blue-100);
+    border-color: var(--blue-300);
+}
+
+.periodos-historico__toggle:focus-visible {
+    outline: 2px solid var(--blue-300);
+    outline-offset: 2px;
+}
+
+.periodos-historico__seta {
+    font-size: 18px;
+    line-height: 1;
+    transition: transform var(--transition-fast);
+}
+
+.periodos-historico__toggle[aria-expanded="true"] .periodos-historico__seta {
+    transform: rotate(180deg);
+}
+
+.periodos-historico__conteudo {
+    margin-top: var(--space-3);
+}
+
+.periodos-historico__conteudo[hidden] {
+    display: none !important;
+}
+
+.periodos-historico__ano + .periodos-historico__ano {
+    margin-top: var(--space-4);
+}
+
+.periodos-historico__titulo-ano {
+    margin: 0 0 var(--space-2);
+    color: var(--text-secondary);
+    font-size: var(--fonte-texto-auxiliar);
+    font-weight: 800;
+}
+
+.periodo-item--historico {
+    background: var(--gray-50);
+}
+
+@media (max-width: 767px) {
+    .periodos-historico__toggle {
+        min-height: 44px;
+    }
+}
+
+
+/* =========================================================
+   REFERÊNCIA APROVADA - HISTÓRICO DE SEMESTRES
+   Linha compacta e alinhada; calendário histórico mantém modal.
+   ========================================================= */
+.periodos-historico__barra {
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.periodos-historico__resumo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    color: var(--text-primary);
+    font-size: var(--fonte-texto-auxiliar);
+}
+
+.periodos-historico__contador {
+    display: inline-flex;
+    align-items: center;
+    min-height: 20px;
+    padding: 1px 7px;
+    border-radius: 999px;
+    color: var(--text-secondary);
+    background: var(--gray-100);
+    font-size: var(--fonte-meta);
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.periodos-historico__toggle.periodos-historico__toggle--compacto {
+    width: auto;
+    min-width: 0;
+    min-height: 30px;
+    padding: 3px 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    color: var(--blue-700);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius-xs);
+    box-shadow: none;
+    font-size: var(--fonte-meta);
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.periodos-historico__toggle.periodos-historico__toggle--compacto:hover {
+    color: var(--blue-800);
+    background: var(--blue-50);
+    border-color: transparent;
+}
+
+.periodos-historico__toggle.periodos-historico__toggle--compacto .periodos-historico__seta {
+    width: 14px;
+    height: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 14px;
+    font-size: 16px;
+    line-height: 1;
+}
+
+@media (max-width: 767px) {
+    .periodos-historico__barra {
+        min-height: 42px;
+    }
+
+    .periodos-historico__resumo {
+        gap: 6px;
+    }
+
+    .periodos-historico__toggle.periodos-historico__toggle--compacto {
+        min-height: 34px;
+    }
+}
+
+
+/* =========================================================
+   CORREÇÃO FINAL - HISTÓRICO / MODAL DE CALENDÁRIO
+   ========================================================= */
+.periodos-historico {
+    margin-top: 12px;
+    padding-top: 10px;
+}
+
+.periodos-historico__barra {
+    min-height: 34px;
+}
+
+.periodos-historico__conteudo {
+    margin-top: 8px;
+}
+
+.periodos-historico__titulo-ano {
+    margin: 0 0 7px;
+}
+
+.periodo-item--historico {
+    background: var(--gray-50);
+}
+
+.calendario-periodo-modal {
+    max-width: 440px;
+}
+
+.calendario-periodo-resumo {
+    margin: 0;
+    display: grid;
+    gap: 8px;
+}
+
+.calendario-periodo-resumo > div {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 6px;
+    align-items: start;
+}
+
+.calendario-periodo-resumo dt {
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.calendario-periodo-resumo dd {
+    margin: 0;
+    color: var(--text-secondary);
+}
+
+.calendario-periodo-modal__acoes {
+    margin-top: 16px;
+    justify-content: flex-end;
+}
+
+
+/* =========================================================
+   ACCORDION DO HISTÓRICO DE SEMESTRES - 15/09/2026
+   Referência: barra única clicável, chevron alinhado e fluxo natural.
+   ========================================================= */
+.periodos-historico {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-light);
+}
+
+.periodos-historico__accordion {
+    width: 100%;
+    min-height: 40px;
+    padding: 7px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    color: var(--text-primary);
+    background: var(--gray-50);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-xs);
+    font: inherit;
+    cursor: pointer;
+    text-align: left;
+}
+
+.periodos-historico__accordion:hover {
+    background: var(--blue-50);
+    border-color: var(--blue-200);
+}
+
+.periodos-historico__accordion:focus-visible {
+    outline: 2px solid var(--blue-300);
+    outline-offset: 2px;
+}
+
+.periodos-historico__accordion .periodos-historico__resumo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+.periodos-historico__accordion .periodos-historico__seta {
+    width: 8px;
+    height: 8px;
+    margin: -3px 3px 0 0;
+    flex: 0 0 8px;
+    border-right: 2px solid var(--blue-700);
+    border-bottom: 2px solid var(--blue-700);
+    transform: rotate(45deg);
+    transition: transform var(--transition-fast);
+}
+
+.periodos-historico__accordion[aria-expanded="true"] .periodos-historico__seta {
+    margin-top: 3px;
+    transform: rotate(225deg);
+}
+
+.periodos-historico__conteudo {
+    margin-top: 10px;
+    max-height: none;
+    overflow: visible;
+}
+
+.periodos-historico__conteudo[hidden] {
+    display: none !important;
+}
+
+@media (max-width: 767px) {
+    .periodos-historico__accordion {
+        min-height: 44px;
+        padding: 8px 10px;
+    }
+}
+
+/* =========================================================
+   HOTFIX MOBILE 16/09/2026
+   Calendário de Frequência: Data inicial/final lado a lado.
+   ========================================================= */
+@media (max-width: 767px) {
+    .admin-page .periodo-letivo-form {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        column-gap: 8px;
+        row-gap: var(--space-3);
+    }
+
+    .admin-page .periodo-letivo-form > .form-group {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .admin-page .periodo-letivo-form > .form-group:nth-child(1),
+    .admin-page .periodo-letivo-form > .form-group:nth-child(2),
+    .admin-page .periodo-letivo-form > .form-group:nth-child(5) {
+        grid-column: 1 / -1;
+    }
+
+    .admin-page .periodo-letivo-form > .form-group:nth-child(3),
+    .admin-page .periodo-letivo-form > .form-group:nth-child(4) {
+        grid-column: auto;
+    }
+
+    .admin-page .periodo-letivo-form input,
+    .admin-page .periodo-letivo-form select {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    .admin-page .periodo-letivo-form__acoes {
+        grid-column: 1 / -1;
+    }
+}
+
+/* =========================================================
+   GERENCIAMENTO 02 - CALENDÁRIO DE FREQUÊNCIA
+   Reutiliza MenuAcoes e PainelRetratil globais.
+   ========================================================= */
+.periodo-item__acoes { position: relative; align-items: center; }
+
+.periodo-modal-form { gap: 0; }
+.periodo-modal-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 11px 14px;
+}
+.periodo-modal-grid .form-group { min-width: 0; margin: 0; }
+.periodo-modal-grid__full { grid-column: 1 / -1; }
+.periodo-modal-actions {
+  margin: 0;
+  padding: 10px 14px 14px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.periodo-modal-actions .modal__btn { width: 100%; }
+
+.grade-periodo-form--lote { display: block; }
+.grade-editor-ajuda { margin: 4px 0 7px; }
+.grade-atividades-editor {
+  border: 1px solid #dbe3ee;
+  background: #f8faff;
+  padding: 6px;
+  max-height: 310px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.grade-atividade-linha {
+  padding: 6px 7px;
+  background: #fff;
+  border: 1px solid #e0e6ef;
+  margin-bottom: 5px;
+}
+.grade-atividade-linha:last-child { margin-bottom: 0; }
+.grade-atividade-linha > strong { display: block; margin-bottom: 5px; font-size: 12px; }
+.grade-atividade-dias {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+}
+.grade-atividade-dias label {
+  min-width: 0;
+  min-height: 38px;
+  padding: 3px 1px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border: 1px solid #d8e0eb;
+  background: #f9fbff;
+  font-size: 10px;
+  line-height: 1;
+  cursor: pointer;
+}
+.grade-atividade-dias input { width: 14px; height: 14px; margin: 0; }
+
+.grade-periodo-lista { display: grid; gap: 7px; margin-top: 12px; }
+.grade-curso-grupo { border: 1px solid #d9e2ef; background: #fff; overflow: hidden; }
+.grade-curso-grupo__cabecalho {
+  min-height: 42px;
+  background: #f3f7ff;
+  color: #17468f;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 10px;
+  cursor: pointer;
+}
+.grade-curso-grupo__cabecalho > span:first-child { display: flex; align-items: baseline; gap: 8px; }
+.grade-curso-grupo__cabecalho small { color: #72819a; font-weight: 400; }
+.grade-curso-grupo__cabecalho .cabecalho-destaque__toggle { color: #fff; }
+.grade-curso-grupo__conteudo { padding: 5px 9px 8px; }
+.grade-item-compacto {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  min-height: 32px; padding: 4px 3px; border-bottom: 1px solid #edf1f6;
+}
+.grade-item-compacto:last-child { border-bottom: 0; }
+.grade-item-compacto__dias { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+.grade-item-compacto__dias b {
+  background: #eef4ff; color: #1553c7; padding: 3px 6px; font-size: 10px; font-weight: 700;
+}
+
+@media (max-width: 767px) {
+  .periodo-modal-grid { grid-template-columns: 1fr; }
+  .periodo-modal-grid__full { grid-column: auto; }
+  .periodo-modal-actions { grid-template-columns: 1fr 1fr; }
+  .grade-atividade-dias { gap: 2px; }
+  .grade-atividade-dias label { min-height: 36px; font-size: 9px; }
+}
+
+
+/* Calendário de frequência — ajuste fino sobre componentes existentes */
+.grade-curso-grupo__cabecalho .cabecalho-destaque__toggle {
+    color: var(--white);
+    background: var(--primary-500, #2463d4);
+}
+
+.grade-curso-grupo__cabecalho .cabecalho-destaque__toggle:hover,
+.grade-curso-grupo__cabecalho .cabecalho-destaque__toggle:focus-visible {
+    color: var(--white);
+    background: var(--primary-600, #1f55bd);
+}
+
+.grade-curso-grupo__cabecalho .cabecalho-destaque__toggle-icon {
+    border-right-color: currentColor;
+    border-bottom-color: currentColor;
+}
+
+.grade-atividades-editor {
+    padding: 4px;
+    max-height: 250px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.grade-atividade-linha {
+    padding: 5px 6px 6px;
+    margin-bottom: 3px;
+}
+
+.grade-atividade-linha > strong {
+    margin-bottom: 4px;
+    font-size: 11px;
+    line-height: 1.15;
+}
+
+.grade-atividade-dias {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 0;
+    width: min(100%, 315px);
+}
+
+.grade-atividade-dias label {
+    display: block;
+    min-width: 0;
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+}
+
+.grade-atividade-dias label input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.grade-atividade-dias label span {
+    height: 22px;
+    padding: 0 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: -1px;
+    border: 1px solid #cfd6df;
+    background: #f2f4f7;
+    color: #344054;
+    font-size: 9px;
+    line-height: 1;
+    user-select: none;
+}
+
+.grade-atividade-dias label:first-child span {
+    margin-left: 0;
+    border-radius: 4px 0 0 4px;
+}
+
+.grade-atividade-dias label:last-child span {
+    border-radius: 0 4px 4px 0;
+}
+
+.grade-atividade-dias label input:checked + span {
+    position: relative;
+    z-index: 1;
+    border-color: var(--primary-500, #2463d4);
+    background: var(--primary-500, #2463d4);
+    color: var(--white);
+    font-weight: 700;
+}
+
+.grade-atividade-dias label input:focus-visible + span {
+    position: relative;
+    z-index: 2;
+    outline: 2px solid rgba(36, 99, 212, .24);
+    outline-offset: 1px;
+}
+
+@media (max-width: 767px) {
+    .grade-atividade-dias {
+        width: 100%;
+    }
+
+    .grade-atividade-dias label span {
+        height: 21px;
+        padding: 0 2px;
+        font-size: 8px;
+    }
+}
+
+
+/* Ajuste fino: centralizar a faixa compacta de dias no card da atividade */
+.grade-atividade-dias {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+/* Arquivados — card compacto compartilhado por pacientes e usuários */
+.admin-page .archive-item--compact { padding: 9px 10px; min-height: 0; align-items: center; }
+.admin-page .archive-item--compact .archive-item__content { min-width: 0; gap: 3px; }
+.admin-page .archive-item--compact .archive-item__title-row { display:flex; align-items:center; gap:7px; min-width:0; line-height:1.2; }
+.admin-page .archive-item--compact .archive-item__name { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.admin-page .archive-item--compact .archive-item__status { flex:0 0 auto; white-space:nowrap; font-size:var(--fonte-meta); }
+.admin-page .archive-item--compact .archive-item__details { display:flex; flex-wrap:wrap; gap:2px 12px; line-height:1.25; }
+.admin-page .archive-item--compact .archive-item__details span { white-space:nowrap; }
+.admin-page .archive-item--compact .archive-item__details strong { font-weight:600; color:inherit; }
+@media (max-width:767px) {
+ .admin-page .archive-item--compact { padding:8px 9px; }
+ .admin-page .archive-item--compact .archive-item__title-row { padding-right:2px; }
+ .admin-page .archive-item--compact .archive-item__details { gap:2px 9px; }
+ .admin-page .archive-item--compact .archive-item__details span:last-child { flex-basis:100%; }
+}
+
+
+/* AUDITORIA MOBILE — cards individuais sem container branco externo */
+@media screen and (max-width: 600px) {
+    .admin-page .audit-results-card {
+        padding: 0;
+        background: transparent;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+        overflow: visible;
+    }
+    .admin-page .audit-results-card .audit-card-header {
+        padding: 0 2px;
+        margin: 0 0 8px;
+    }
+    .admin-page .audit-results-card .audit-table-wrap {
+        padding: 0;
+        background: transparent;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
+    .admin-page .audit-results-card #audit-pagination { margin-top: 8px; }
+}
+
+/* =========================================================
+   AUDITORIA MOBILE — remove linhas horizontais dos cards
+   Mantém somente a barra azul lateral do padrão aprovado.
+   ========================================================= */
+@media screen and (max-width: 600px) {
+    .admin-page .audit-results-card .audit-table tbody tr {
+        border-top: 0;
+        border-right: 0;
+        border-bottom: 0;
+        border-left: 3px solid var(--blue-600);
+        box-shadow: var(--shadow-xs);
+    }
+}
+
+/* =========================================================
+   AUDITORIA MOBILE — acabamento igual aos cards de Pacientes
+   ========================================================= */
+@media screen and (max-width: 600px) {
+    /* Remove o respiro antigo de 118px da área administrativa. */
+    body.caige-has-mobile-bottom-nav.admin-page .content,
+    body.caige-has-mobile-bottom-nav .admin-page .content,
+    .admin-page .content {
+        padding-bottom: 10px;
+    }
+
+    /* Mesma separação real entre cards usada em Pacientes. */
+    .admin-page .audit-results-card .audit-table tbody {
+        gap: 10px;
+    }
+
+    /* O espaço entre registros pertence ao fundo da lista, não ao card. */
+    .admin-page .audit-results-card .audit-table tbody tr {
+        margin: 0;
+        background: var(--surface);
+        border: 0;
+        border-left: 3px solid var(--blue-600);
+        box-shadow: var(--shadow-sm);
+    }
+}
+
+/* 17/09/2026 — Auditoria mobile: remove a moldura contínua da tabela e
+   mantém a paginação acima da navegação inferior fixa. */
+@media screen and (max-width: 600px) {
+    .admin-page .audit-results-card,
+    .admin-page .audit-results-card .audit-table-wrap,
+    .admin-page .audit-results-card .audit-table,
+    .admin-page .audit-results-card .audit-table tbody {
+        background: transparent !important;
+        border: 0 !important;
+        outline: 0 !important;
+        box-shadow: none !important;
+    }
+
+    .admin-page .audit-results-card .audit-table {
+        border-collapse: separate !important;
+        border-spacing: 0 !important;
+    }
+
+    .admin-page .audit-results-card .audit-table tbody {
+        gap: 10px !important;
+        padding: 0 !important;
+    }
+
+    .admin-page .audit-results-card .audit-table tbody tr {
+        border: 0 !important;
+        border-left: 3px solid var(--blue-600) !important;
+        outline: 0 !important;
+        margin: 0 !important;
+        box-shadow: var(--shadow-xs) !important;
+    }
+
+    .admin-page .audit-results-card #audit-pagination {
+        position: sticky;
+        bottom: calc(64px + env(safe-area-inset-bottom, 0px));
+        z-index: 30;
+        margin-top: 8px;
+        background: var(--surface);
+    }
+}
+
+/* 17/09/2026 — Auditoria mobile: cards realmente separados e paginação fora do scroll. */
+@media screen and (max-width: 600px) {
+    .admin-page .audit-results-card .audit-table-wrap {
+        padding: 0 !important;
+        margin: 0 !important;
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+    }
+
+    .admin-page .audit-results-card .audit-table tbody {
+        gap: 10px !important;
+    }
+
+    .admin-page .audit-results-card .audit-table tbody tr {
+        border: 0 !important;
+        border-left: 3px solid var(--blue-600) !important;
+        border-radius: var(--radius-sm) !important;
+        background: var(--surface) !important;
+        box-shadow: var(--shadow-xs) !important;
+    }
+
+    .admin-page .audit-results-card #audit-pagination {
+        position: relative !important;
+        inset: auto !important;
+        z-index: 2;
+        margin: 8px 0 0 !important;
+        background: var(--surface);
+    }
+}
+
+
+/* 17/09/2026 — Auditoria: fechamento mobile e rodapé acima da navegação */
+@media (max-width: 767px) {
+    .admin-page .audit-filters:not(.admin-audit-filters--open) .audit-period-side {
+        display: none !important;
+    }
+    body.caige-has-mobile-bottom-nav.admin-page .content,
+    body.caige-has-mobile-bottom-nav .admin-page .content,
+    .admin-page .content {
+        padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+    .admin-page .audit-results-card #audit-pagination {
+        position: relative !important;
+        inset: auto !important;
+        z-index: 2 !important;
+        margin: 8px 0 0 !important;
+    }
+}
+
+/* Ajustes 17/09/2026 */
+.admin-page .user-status-text.is-active { color:#15803d; font-weight:700; }
+.admin-page .user-status-text.is-inactive { color:#c62828; font-weight:700; }
+
+
+
+
+
+@media (min-width: 768px) {
+  .admin-page #lista-usuarios,
+  .admin-page #courses-list,
+  .admin-page #activities-list {
+    max-height:none !important;
+    overflow:visible !important;
+    overscroll-behavior:auto !important;
+  }
+}
+/* Calendário de Frequência: detalhe só após clicar no botão Calendário do semestre. */
+#periodo-letivo-detalhes[hidden] { display: none !important; }
+
+
+/* Calendário de Frequência: detalhe só aparece após escolher Calendário do semestre. */
+#periodo-letivo-detalhes[hidden] {
+    display: none !important;
+}
+
+/* Lista compacta de cursos. Sem animação de grid para evitar faixa branca residual. */
+#tab-panel-periodos .grade-curso-grupo {
+    overflow: hidden;
+}
+
+#tab-panel-periodos .grade-curso-grupo__cabecalho {
+    min-height: 36px;
+    margin: 0 !important;
+    padding: 5px 10px;
+    border-radius: 0 !important;
+}
+
+#tab-panel-periodos .grade-curso-grupo.is-collapsed > .painel-retratil__conteudo {
+    display: none !important;
+}
+
+#tab-panel-periodos .grade-curso-grupo:not(.is-collapsed) > .painel-retratil__conteudo {
+    display: block !important;
+    opacity: 1 !important;
+}
+
+#tab-panel-periodos .grade-curso-grupo:not(.is-collapsed) > .painel-retratil__conteudo > .painel-retratil__conteudo-inner {
+    display: block !important;
+    min-height: 1px !important;
+    overflow: visible !important;
+}
+
+/* =========================================================
+   GERENCIAMENTO — LAYOUT DAS GRADES ADMINISTRATIVAS
+   Aparência, divisórias, zebra, hover e ações vêm dos
+   componentes globais .data-grid e .menu-acoes-trigger.
+   Este bloco define apenas proporções e adaptação mobile.
+   ========================================================= */
+@media (min-width: 768px) {
+    /* Edição administrativa: checkbox e ações compartilham a mesma faixa compacta. */
+    .admin-page #form-editar-usuario,
+    .admin-page #form-edit-course {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        column-gap: 12px;
+        align-items: end;
+    }
+
+    .admin-page #form-editar-usuario > .modal__form-group:not(:last-of-type),
+    .admin-page #form-edit-course > .modal__form-group:not(:last-of-type) {
+        grid-column: 1 / -1;
+    }
+
+    /* A faixa final usa o mesmo arranjo do cadastro/edição de atividade:
+       checkbox à esquerda e ações à direita, na mesma altura. */
+    .admin-page #form-editar-usuario > .modal__form-group:has(#ativo-edicao),
+    .admin-page #form-edit-course > .modal__form-group:has(#edit-course-active) {
+        grid-column: 1;
+        margin: 0;
+        align-self: center;
+    }
+
+    .admin-page #form-editar-usuario > .modal__form-actions,
+    .admin-page #form-edit-course > .modal__form-actions {
+        grid-column: 2;
+        margin: 0;
+        padding-top: 0;
+        white-space: nowrap;
+        align-self: center;
+    }
+
+    .admin-page .admin-data-grid--users .data-grid__header,
+    .admin-page .admin-data-grid--users .data-grid__row {
+        grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1.1fr) 90px 64px;
+    }
+
+    /* O bloco exclusivo do mobile (.user-meta-mobile) fica entre Usuário e Perfil
+       no DOM. Por isso, no desktop o seletor global de células adjacentes não
+       alcança a célula Perfil. Repõe somente essa divisória da grade. */
+    .admin-page .admin-data-grid--users .user-role-cell {
+        border-left: 1px solid var(--cor-grid-divisoria);
+    }
+
+    .admin-page .admin-data-grid--courses .data-grid__header,
+    .admin-page .admin-data-grid--courses .data-grid__row {
+        grid-template-columns: minmax(0, 1fr) 120px 64px;
+    }
+
+    .admin-page .admin-data-grid--activities .data-grid__header,
+    .admin-page .admin-data-grid--activities .data-grid__row {
+        grid-template-columns: minmax(0, 1fr) 120px 64px;
+    }
+
+    .admin-page .admin-data-grid .data-grid__body {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .admin-page .admin-data-grid .data-grid__row {
+        gap: 0;
+        padding: 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .admin-page .admin-data-grid .user-info,
+    .admin-page .admin-data-grid .user-role-cell,
+    .admin-page .admin-data-grid .user-course-cell,
+    .admin-page .admin-data-grid .user-status-cell,
+    .admin-page .admin-data-grid .user-actions,
+    .admin-page .admin-data-grid .course-name,
+    .admin-page .admin-data-grid .course-status,
+    .admin-page .admin-data-grid .course-actions,
+    .admin-page .admin-data-grid .modal-list-item__title,
+    .admin-page .admin-data-grid .modal-list-item__meta,
+    .admin-page .admin-data-grid .activity-row-actions {
+        margin: 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .admin-page .admin-data-grid .user-name,
+    .admin-page .admin-data-grid .modal-list-item__title,
+    .admin-page .admin-data-grid .course-name {
+        font-weight: 700;
+    }
+
+    .admin-page .admin-data-grid .user-email-text {
+        margin-top: 2px;
+        font-size: var(--fonte-meta);
+    }
+}
+
+/* Elementos exclusivos da adaptação mobile dos cards de usuários. */
+.admin-page .user-avatar-mobile,
+.admin-page .user-meta-mobile {
+    display: none;
+}
+
+@media (max-width: 767px) {
+    .admin-page .admin-data-grid {
+        background: transparent;
+        border: 0;
+        border-radius: 0;
+        overflow: visible;
+    }
+
+    .admin-page .admin-data-grid > .data-grid__header {
+        display: none;
+    }
+
+    .admin-page .admin-data-grid .data-grid__body {
+        display: grid;
+        gap: 8px;
+    }
+
+    .admin-page .admin-data-grid .data-grid__row {
+        position: relative;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 5px 10px;
+        padding: 10px 44px 10px 10px;
+        background: linear-gradient(
+            90deg,
+            var(--blue-50) 0%,
+            var(--surface-soft) 54%,
+            var(--surface) 100%
+        );
+        border: 1px solid var(--blue-200);
+        border-left: 3px solid var(--blue-600);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .admin-page .admin-data-grid .data-grid__cell,
+    .admin-page .admin-data-grid .data-grid__cell + .data-grid__cell {
+        min-width: 0;
+        padding: 0;
+        justify-content: flex-start;
+        text-align: left;
+        border-left: 0;
+    }
+
+    .admin-page .admin-data-grid .course-name,
+    .admin-page .admin-data-grid .modal-list-item__title {
+        grid-column: 1 / -1;
+    }
+
+    /*
+       Usuários reutilizam a geometria visual aprovada dos cards de Pacientes:
+       avatar à esquerda, duas linhas de conteúdo e status/ações centralizados
+       à direita. A tabela desktop continua usando as células originais.
+    */
+    .admin-page .admin-data-grid--users .data-grid__row {
+        grid-template-columns: 44px minmax(0, 1fr) auto auto;
+        grid-template-areas:
+            "avatar identity status actions"
+            "avatar details status actions";
+        min-height: 72px;
+        padding: 11px;
+        column-gap: 9px;
+        row-gap: 3px;
+    }
+
+    .admin-page .admin-data-grid--users .user-avatar-mobile {
+        grid-area: avatar;
+        width: 42px;
+        height: 42px;
+        align-self: center;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: var(--blue-100);
+        border: 1px solid var(--blue-300);
+        color: var(--blue-700);
+        box-shadow: inset 0 0 0 1px var(--blue-50);
+        font-size: 13px;
+        line-height: 1;
+        font-weight: 700;
+        letter-spacing: .02em;
+    }
+
+    .admin-page .admin-data-grid--users .user-info {
+        grid-area: identity;
+        align-self: end;
+        min-width: 0;
+    }
+
+    .admin-page .admin-data-grid--users .user-name {
+        display: block;
+        overflow: hidden;
+        font-size: 15px;
+        line-height: 1.2;
+        font-weight: 700;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .admin-page .admin-data-grid--users .user-email-text {
+        display: block;
+        max-width: 100%;
+        margin-top: 1px;
+        overflow: hidden;
+        color: var(--text-muted);
+        font-size: var(--fonte-meta);
+        line-height: 1.2;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .admin-page .admin-data-grid--users .user-meta-mobile {
+        grid-area: details;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        align-self: start;
+        gap: 5px;
+        overflow: hidden;
+    }
+
+    .admin-page .admin-data-grid--users .user-meta-mobile .role-badge {
+        flex: 0 0 auto;
+        padding: 3px 7px;
+    }
+
+    .admin-page .admin-data-grid--users .user-meta-mobile__separator {
+        flex: 0 0 auto;
+        color: var(--text-muted);
+        font-size: var(--fonte-meta);
+    }
+
+    .admin-page .admin-data-grid--users .user-meta-mobile__course {
+        min-width: 0;
+        overflow: hidden;
+        color: var(--text-secondary);
+        font-size: var(--fonte-meta);
+        line-height: 1.2;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .admin-page .admin-data-grid--users .user-role-cell,
+    .admin-page .admin-data-grid--users .user-course-cell {
+        display: none;
+    }
+
+    .admin-page .admin-data-grid--users .user-status-cell {
+        grid-area: status;
+        align-self: stretch;
+        justify-self: end;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .admin-page .admin-data-grid--users .user-status-text {
+        width: fit-content;
+        padding: 3px 7px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius-sm);
+        font-size: var(--fonte-badge);
+        line-height: 1.1;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .admin-page .admin-data-grid--users .user-status-text.is-active {
+        color: var(--success-800);
+        background: var(--success-100);
+    }
+
+    .admin-page .admin-data-grid--users .user-status-text.is-inactive {
+        color: var(--danger-800);
+        background: var(--danger-100);
+    }
+
+    .admin-page .admin-data-grid .user-actions,
+    .admin-page .admin-data-grid .course-actions,
+    .admin-page .admin-data-grid .activity-row-actions {
+        position: absolute;
+        top: 50%;
+        right: 9px;
+        transform: translateY(-50%);
+        width: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        grid-template-columns: none;
+        gap: 0;
+    }
+
+    /* No card de usuário, status e ações ocupam colunas próprias como em Pacientes. */
+    .admin-page .admin-data-grid--users .user-actions {
+        grid-area: actions;
+        position: static;
+        top: auto;
+        right: auto;
+        transform: none;
+        align-self: stretch;
+        justify-self: end;
+    }
+
+    .admin-page .admin-data-grid .user-actions > .menu-acoes-trigger,
+    .admin-page .admin-data-grid .course-actions > .menu-acoes-trigger,
+    .admin-page .admin-data-grid .activity-row-actions > .menu-acoes-trigger {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        min-height: 36px;
+        padding: 0;
+        flex: 0 0 36px;
+        color: var(--blue-700);
+        background: var(--blue-50);
+        border-color: var(--blue-200);
+        box-shadow: var(--shadow-xs);
+    }
+}

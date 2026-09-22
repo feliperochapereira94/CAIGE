@@ -1,0 +1,952 @@
+/* =========================================================
+   CAIGE - PRONTUÁRIOS
+
+   CSS EXCLUSIVO DAS TELAS:
+   - pacientes/questionario-detalhes.html
+   - pacientes/questionarios.html
+
+   Depende de:
+   - base.css
+   - componentes.css
+   - layout.css
+   - responsive.css
+
+   Migrado dos blocos <style> embutidos nas duas telas
+   (RC-1 da AUDITORIA_GLOBAL_2026-08-29.md). Regras que já
+   existiam globalmente (.panel, .btn-main, .btn-alt,
+   .btn-danger, .field, .actions, .grid-2, .hidden) foram
+   removidas daqui e passaram a herdar de componentes.css.
+   ========================================================= */
+
+
+/* =========================================================
+   1. PRONTUÁRIO DO PACIENTE
+   ========================================================= */
+
+body[data-page-title="Prontuário do Paciente"] .profile-container {
+    padding: var(--space-4);
+
+    gap: var(--space-5);
+}
+
+body[data-page-title="Prontuário do Paciente"] .profile-header-card {
+    grid-column: 1 / -1;
+
+    margin: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+
+    background: var(--white);
+
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+
+    box-shadow: var(--shadow-md);
+}
+
+body[data-page-title="Prontuário do Paciente"] .profile-header-card .profile-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: var(--space-4);
+    padding: var(--space-4);
+
+    border: 0;
+    box-shadow: none;
+}
+
+body[data-page-title="Prontuário do Paciente"] .profile-header-card .profile-header__info {
+    min-width: 0;
+    text-align: left;
+}
+
+body[data-page-title="Prontuário do Paciente"] .profile-header-card__actions {
+    flex: 0 0 auto;
+
+    padding-right: var(--space-4);
+}
+
+body[data-page-title="Prontuário do Paciente"] .profile-header-card__actions .btn {
+    white-space: nowrap;
+}
+
+@media (min-width: 768px) {
+    body[data-page-title="Prontuário do Paciente"] .profile-header-card .profile-header {
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+}
+
+body[data-page-title="Prontuário do Paciente"] .profile-main>.profile-card {
+    min-height: 100%;
+}
+
+body[data-page-title="Prontuário do Paciente"] .questionnaire-section__header {
+    margin-bottom: var(--space-3);
+}
+
+/* =========================================================
+   2. UTILITÁRIO DE VISIBILIDADE
+   ========================================================= */
+
+.hidden {
+    display: none;
+}
+
+
+/* =========================================================
+   3. RESPONSIVO
+   ========================================================= */
+
+@media (max-width: 900px) {
+    .grid-2 {
+        grid-template-columns: 1fr;
+    }
+
+
+}
+
+@media (max-width: 767px) {
+    .configuracao-resposta__adicionar {
+        width: 100%;
+    }
+
+    body[data-page-title="Prontuário do Paciente"] .patient-mobile-topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 48px;
+        margin-bottom: var(--space-3);
+        padding: 0 var(--space-1);
+    }
+
+    body[data-page-title="Prontuário do Paciente"] .patient-mobile-topbar__back {
+        min-height: 44px;
+        padding: var(--space-2) var(--space-3);
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        color: var(--blue-600);
+        background: var(--surface);
+        border: 1px solid var(--border-default);
+        border-radius: var(--radius-md);
+        font-size: var(--fonte-botao);
+        font-weight: 600;
+        text-decoration: none;
+        box-shadow: var(--shadow-xs);
+        transition: background-color var(--transition-default);
+    }
+
+    body[data-page-title="Prontuário do Paciente"] .patient-mobile-topbar__back:hover {
+        background: var(--blue-50);
+        border-color: var(--blue-300);
+    }
+
+    body[data-page-title="Prontuário do Paciente"] .patient-mobile-topbar__menu {
+        width: 44px;
+        height: 44px;
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        color: var(--text-secondary);
+        background: var(--surface);
+        border: 1px solid var(--border-default);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-xs);
+        cursor: pointer;
+    }
+
+    body[data-page-title="Prontuário do Paciente"] .profile-header-card {
+        display: block;
+    }
+
+    body[data-page-title="Prontuário do Paciente"] .profile-header-card__actions {
+        display: none;
+    }
+
+    body[data-page-title="Prontuário do Paciente"] .profile-header-card .profile-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: var(--space-3);
+    }
+
+    body[data-page-title="Prontuário do Paciente"] .profile-header-card .profile-header__info {
+        width: 100%;
+        text-align: center;
+    }
+
+    body[data-page-title="Prontuário do Paciente"] .profile-header-card .profile-header__meta {
+        justify-content: center;
+        width: 100%;
+        align-self: stretch;
+        padding-top: var(--space-3);
+        border-top: 1px solid var(--border-default);
+    }
+
+    body[data-page-title="Prontuário do Paciente"] .profile-header-card .profile-avatar {
+        width: 52px;
+        height: 52px;
+        flex: 0 0 52px;
+        font-size: 18px;
+    }
+
+    body[data-page-title="Prontuário do Paciente"] .course-accordion__toggle {
+        min-height: 48px;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: var(--space-2);
+        padding: var(--space-3);
+    }
+
+    body[data-page-title="Prontuário do Paciente"] .course-accordion__menu {
+        width: 44px;
+        height: 44px;
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: var(--space-1);
+    }
+
+    .clinical-course-launch {
+        grid-template-columns: 1fr;
+    }
+
+    .clinical-course-launch__button {
+        width: 100%;
+        min-width: 0;
+    }
+
+
+    .content__header p a {
+        display: none;
+    }
+
+}
+
+@media (max-width: 430px) {
+
+    .content__header h2 {
+        letter-spacing: -0.01em;
+    }
+
+    .panel {
+        border-radius: var(--radius-sm);
+        border-color: var(--gray-200);
+
+        box-shadow: var(--shadow-xs);
+    }
+
+    .panel {
+        padding: var(--space-3);
+    }
+
+    .field label,
+    .hint {
+        font-size: var(--fonte-label);
+
+        color: var(--gray-500);
+    }
+
+
+    .btn-main,
+    .btn-alt,
+    .btn-danger {
+        width: 100%;
+    }
+
+}
+/* =========================================================
+   CADASTRO DE PERGUNTAS - COMPOSIÇÃO DA PÁGINA
+   ========================================================= */
+
+#form-question {
+    display: grid;
+    gap: var(--space-4);
+}
+
+#form-question .actions {
+    margin-top: 0;
+}
+
+.question-config-grid {
+    max-width: 860px;
+    align-items: start;
+}
+
+body[data-page-title="Cadastro de Perguntas"] .list-toolbar {
+    margin-bottom: var(--space-3);
+}
+
+/* =========================================================
+   4. GESTÃO DE PRONTUÁRIOS - COMPOSIÇÃO DA PÁGINA
+   Usa panel, field, search-box, status-pill, botões, menu de
+   ações e paginação definidos globalmente em componentes.css.
+   ========================================================= */
+
+.prontuario-builder-grid {
+    display: grid;
+    grid-template-columns: minmax(220px, 0.8fr) minmax(320px, 1.2fr);
+    gap: var(--space-4);
+    margin-bottom: var(--space-4);
+}
+
+#form-questionnaire > .field {
+    margin-bottom: var(--space-4);
+}
+
+.prontuario-question-section {
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--border-default);
+}
+
+.prontuario-question-section__header {
+    align-items: center;
+}
+
+.prontuario-selected-count,
+.prontuario-catalog-count {
+    flex: 0 0 auto;
+    color: var(--text-muted);
+    font-size: var(--fonte-texto-auxiliar);
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.prontuario-question-toolbar {
+    margin-bottom: var(--space-3);
+}
+
+.prontuario-selected-only {
+    min-height: 40px;
+    padding: 0 var(--space-3);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--text-secondary);
+    font-size: var(--fonte-texto-auxiliar);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.prontuario-selected-only input,
+.prontuario-question-row__check input {
+    width: 16px;
+    height: 16px;
+    min-height: 16px;
+    margin: 0;
+    flex: 0 0 16px;
+    box-shadow: none;
+    accent-color: var(--blue-600);
+}
+
+.prontuario-question-list {
+    min-height: 96px;
+    max-height: 340px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+}
+
+.prontuario-question-row {
+    min-width: 0;
+    padding: var(--space-3);
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: var(--space-3);
+    border-bottom: 1px solid var(--border-light);
+    transition: background-color var(--transition-default);
+}
+
+.prontuario-question-row:last-child {
+    border-bottom: 0;
+}
+
+.prontuario-question-row:hover,
+.prontuario-question-row[data-selected="true"] {
+    background: var(--blue-50);
+}
+
+.prontuario-question-row__check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.prontuario-question-row__content {
+    min-width: 0;
+}
+
+.prontuario-question-row__title-line {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+}
+
+.prontuario-question-row__title-line strong {
+    min-width: 0;
+    color: var(--text-primary);
+    font-size: var(--fonte-corpo);
+}
+
+.prontuario-question-row__content > p {
+    margin-top: var(--space-1);
+    color: var(--text-muted);
+    font-size: var(--fonte-texto-auxiliar);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.prontuario-question-row__order {
+    display: grid;
+    grid-template-columns: auto 64px;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--text-muted);
+    font-size: var(--fonte-texto-auxiliar);
+    font-weight: 600;
+}
+
+.prontuario-question-row__order .order-input {
+    width: 64px;
+    min-height: 34px;
+}
+
+.prontuario-question-row__layout {
+    display: grid;
+    grid-template-columns: auto minmax(130px, 160px);
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--text-muted);
+    font-size: var(--fonte-texto-auxiliar);
+    font-weight: 600;
+}
+
+.prontuario-question-row__layout select {
+    min-height: 34px;
+}
+
+.prontuario-preview__descricao {
+    margin: 3px 0 0;
+    color: var(--text-muted);
+    font-size: var(--fonte-texto-auxiliar);
+    font-weight: 400;
+}
+
+.prontuario-preview__placeholder {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.prontuario-catalog-toolbar {
+    margin-bottom: var(--space-4);
+}
+
+.prontuario-catalog-toolbar .filter-select {
+    width: min(190px, 100%);
+}
+
+.prontuario-catalog-toolbar--professor {
+    grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.prontuario-course-groups {
+    display: grid;
+    gap: var(--space-2);
+}
+
+.prontuario-course-group,
+body[data-page-title="Prontuário do Paciente"] .course-accordion {
+    overflow: hidden;
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    box-shadow: var(--shadow-xs);
+}
+
+.prontuario-course-group__header,
+body[data-page-title="Prontuário do Paciente"] .course-accordion__header {
+    width: 100%;
+    min-height: 46px;
+    padding: var(--space-3) var(--space-4);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: var(--space-3);
+    color: var(--text-primary);
+    background: var(--surface-soft);
+    border: 0;
+    text-align: left;
+    cursor: pointer;
+}
+
+.prontuario-course-group__name,
+body[data-page-title="Prontuário do Paciente"] .course-accordion__title {
+    min-width: 0;
+    font-size: var(--fonte-corpo);
+    font-weight: 700;
+}
+
+.prontuario-course-group__count,
+body[data-page-title="Prontuário do Paciente"] .course-accordion__badge {
+    color: var(--text-muted);
+    font-size: var(--fonte-texto-auxiliar);
+    font-weight: 700;
+}
+
+.prontuario-course-group__chevron,
+body[data-page-title="Prontuário do Paciente"] .course-accordion__chevron {
+    color: var(--gray-500);
+    font-size: var(--fonte-titulo-secao);
+    line-height: 1;
+    transition: transform var(--transition-default);
+}
+
+.prontuario-course-group.open .prontuario-course-group__chevron,
+.prontuario-course-group:not(.is-collapsed) .prontuario-course-group__chevron,
+body[data-page-title="Prontuário do Paciente"] .course-accordion.open .course-accordion__chevron {
+    transform: rotate(90deg);
+}
+
+.prontuario-course-group__body,
+.prontuario-course-group.is-collapsed .prontuario-course-group__body,
+body[data-page-title="Prontuário do Paciente"] .course-accordion__body {
+    display: none;
+}
+
+.prontuario-course-group.open .prontuario-course-group__body,
+.prontuario-course-group:not(.is-collapsed) .prontuario-course-group__body,
+body[data-page-title="Prontuário do Paciente"] .course-accordion.open .course-accordion__body {
+    display: block;
+}
+
+.prontuario-catalog-row {
+    min-width: 0;
+    padding: var(--space-3) var(--space-4);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-3);
+    border-top: 1px solid var(--border-light);
+}
+
+.prontuario-catalog-row__main {
+    min-width: 0;
+}
+
+.prontuario-catalog-row__title-line {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+}
+
+.prontuario-catalog-row__title-line strong {
+    color: var(--text-primary);
+    font-size: var(--fonte-corpo);
+}
+
+.prontuario-catalog-row__main > p {
+    margin-top: var(--space-1);
+    color: var(--text-secondary);
+    font-size: var(--fonte-texto-auxiliar);
+}
+
+.prontuario-catalog-row__meta {
+    display: inline-block;
+    margin-top: var(--space-1);
+    color: var(--text-muted);
+    font-size: var(--fonte-texto-auxiliar);
+}
+
+
+/* =========================================================
+   5. PRONTUÁRIO DO PACIENTE - EVOLUÇÃO INTERDISCIPLINAR
+   ========================================================= */
+
+body[data-page-title="Prontuário do Paciente"] #course-accordion {
+    display: grid;
+    gap: var(--space-2);
+}
+
+body[data-page-title="Prontuário do Paciente"] .course-accordion__header {
+    padding: 0;
+
+    grid-template-columns: minmax(0, 1fr) auto;
+
+    gap: 0;
+
+    cursor: default;
+}
+
+.patient-mobile-topbar {
+    display: none;
+}
+
+body[data-page-title="Prontuário do Paciente"] .course-accordion__toggle {
+    width: 100%;
+    min-height: 40px;
+
+    padding: var(--space-2) var(--space-3);
+
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+
+    align-items: center;
+
+    gap: var(--space-3);
+
+    color: var(--text-primary);
+    background: transparent;
+
+    border: 0;
+
+    text-align: left;
+
+    cursor: pointer;
+}
+
+.course-accordion__header-main {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    text-align: left;
+}
+
+.course-accordion__header-row {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.course-accordion__subtext {
+    font-size: var(--fonte-texto-auxiliar);
+    color: var(--text-muted);
+    font-weight: 400;
+    line-height: 1.25;
+}
+
+body[data-page-title="Prontuário do Paciente"] .course-accordion__menu {
+    margin-right: var(--space-2);
+
+    align-self: center;
+}
+
+body[data-page-title="Prontuário do Paciente"] .course-accordion__toggle:hover {
+    background: var(--blue-50);
+}
+
+body[data-page-title="Prontuário do Paciente"] .course-accordion__body {
+    padding: 0;
+    background: var(--surface);
+}
+
+/* =========================================================
+   CONFIGURAÇÃO DO TIPO DE PERGUNTA
+   Particularidade do cadastro de perguntas.
+   ========================================================= */
+
+.configuracao-resposta {
+    padding: var(--space-3);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    background: var(--blue-50);
+}
+
+.configuracao-resposta__header {
+    margin-bottom: var(--space-3);
+}
+
+.configuracao-resposta__header h4 {
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.configuracao-resposta__header p {
+    margin: var(--space-1) 0 0;
+    color: var(--text-muted);
+}
+
+.configuracao-resposta__conteudo,
+.configuracao-resposta__alternativas {
+    display: grid;
+    gap: var(--space-2);
+}
+
+.configuracao-resposta__conteudo textarea {
+    min-height: 72px;
+    resize: none;
+}
+
+.configuracao-resposta__opcoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.configuracao-resposta__opcao {
+    min-height: 38px;
+    padding: 8px 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    background: var(--white);
+    color: var(--text-secondary);
+}
+
+.configuracao-resposta__opcao input[type="radio"] {
+    appearance: auto;
+    width: 16px;
+    min-width: 16px;
+    min-height: 16px;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+}
+
+.configuracao-resposta__alternativa {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 40px;
+    gap: var(--space-2);
+    align-items: center;
+}
+
+.configuracao-resposta__remover {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-md);
+    background: var(--white);
+    color: var(--gray-600);
+    font: inherit;
+    cursor: pointer;
+}
+
+.configuracao-resposta__remover:hover {
+    border-color: var(--danger-100);
+    background: var(--danger-50);
+    color: var(--danger-700);
+}
+
+.configuracao-resposta__adicionar {
+    width: fit-content;
+    margin-top: var(--space-1);
+}
+
+
+/* =========================================================
+   6. RESPONSIVO EXCLUSIVO DOS FLUXOS DE PRONTUÁRIO
+   ========================================================= */
+
+@media (max-width: 900px) {
+    .prontuario-builder-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .prontuario-question-row {
+        grid-template-columns: auto minmax(0, 1fr);
+    }
+
+    .prontuario-question-row__order,
+    .prontuario-question-row__layout {
+        grid-column: 2;
+        justify-self: start;
+    }
+
+    .clinical-template-row,
+    .clinical-history-record__button {
+        grid-template-columns: 1fr;
+    }
+
+    .clinical-template-row__action,
+    .clinical-history-record__view {
+        justify-self: start;
+    }
+}
+
+@media (max-width: 767px) {
+    .prontuario-question-toolbar .list-toolbar__main {
+        grid-template-columns: 1fr;
+    }
+
+    .prontuario-selected-only {
+        padding-left: 0;
+    }
+
+    .prontuario-catalog-toolbar .list-toolbar__main {
+        grid-template-columns: 1fr;
+    }
+
+    .prontuario-catalog-toolbar .filter-select {
+        width: 100%;
+    }
+
+    .prontuario-course-group__header,
+    body[data-page-title="Prontuário do Paciente"] .course-accordion__header {
+        grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .prontuario-course-group__count,
+    body[data-page-title="Prontuário do Paciente"] .course-accordion__badge {
+        grid-column: 1;
+        grid-row: 2;
+    }
+
+    .prontuario-course-group__chevron,
+    body[data-page-title="Prontuário do Paciente"] .course-accordion__chevron {
+        grid-column: 2;
+        grid-row: 1 / span 2;
+    }
+
+    .prontuario-catalog-row {
+        align-items: start;
+    }
+
+    .clinical-history-record__title-line {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: var(--space-1);
+    }
+
+    /* Cartões de perguntas compactos em telas móveis com acionador ⋮ no topo direito */
+    .question-card,
+    #questions-list .lista-entidades__item--horizontal {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: start;
+        gap: 2px 8px;
+        padding: 9px 12px;
+        border-radius: var(--radius-sm);
+        margin-bottom: 6px;
+    }
+
+    .question-card .lista-entidades__conteudo,
+    #questions-list .lista-entidades__conteudo {
+        grid-column: 1 / 2;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    .question-card .lista-entidades__titulo,
+    #questions-list .lista-entidades__titulo {
+        font-size: var(--fonte-corpo);
+        line-height: 1.35;
+        font-weight: 700;
+        color: var(--text-primary);
+        word-break: normal;
+        overflow-wrap: break-word;
+    }
+
+    .question-card .lista-entidades__meta,
+    #questions-list .lista-entidades__meta {
+        margin-top: 0;
+        font-size: var(--fonte-meta);
+        line-height: 1.35;
+        color: var(--text-secondary);
+        word-break: normal;
+        overflow-wrap: break-word;
+    }
+
+    .question-card .lista-entidades__descricao,
+    #questions-list .lista-entidades__descricao {
+        color: var(--text-muted);
+        font-size: var(--fonte-corpo);
+        line-height: 1.35;
+    }
+
+    .question-card .lista-entidades__acoes,
+    #questions-list .lista-entidades__acoes {
+        grid-column: 2 / 3;
+        grid-row: 1;
+        width: auto;
+        display: flex;
+        justify-content: flex-end;
+        align-self: start;
+        margin: 0;
+        padding: 0;
+    }
+
+    .question-card .menu-acoes-trigger,
+    #questions-list .menu-acoes-trigger {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        min-height: 36px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+/* =========================================================
+   HOTFIX - PREVIA DO PRONTUARIO
+   Mantem alternativas curtas na mesma linha quando houver
+   espaco e normaliza o respiro do rodape do modal.
+   ========================================================= */
+#questionnaire-preview-modal .prontuario-documento__opcoes {
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+#questionnaire-preview-modal .prontuario-documento__opcao {
+    flex: 0 0 auto;
+    padding: 5px 7px;
+    white-space: nowrap;
+}
+
+#questionnaire-preview-modal .modal__form-actions {
+    flex: 0 0 auto;
+    margin: 0;
+    padding: 12px 14px 14px;
+    border-top: 1px solid var(--gray-200);
+    background: var(--white);
+}
+
+@media (min-width: 768px) {
+    #questionnaire-preview-modal .prontuario-documento__pergunta:not(.prontuario-documento__pergunta--larga) .prontuario-documento__opcoes {
+        gap: 5px;
+    }
+
+    #questionnaire-preview-modal .prontuario-documento__pergunta:not(.prontuario-documento__pergunta--larga) .prontuario-documento__opcao {
+        padding-inline: 6px;
+    }
+}
+
+@media (min-width: 768px) {
+  .prontuario-question-list {
+    max-height:none !important;
+    overflow:visible !important;
+    overscroll-behavior:auto !important;
+  }
+}
+
+/* Cadastro de Perguntas: sem área de scroll própria; paginação permanece no fluxo. */
+body[data-page-title="Cadastro de Perguntas"] #questions-list,
+body[data-page-title="Cadastro de Perguntas"] .lista-entidades {
+  max-height: none !important;
+  height: auto !important;
+  overflow-y: visible !important;
+  overscroll-behavior: auto !important;
+}

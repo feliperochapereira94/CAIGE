@@ -1,0 +1,1290 @@
+/* =========================================================
+   CAIGE - MOVIMENTAÇÕES IMPORTANTES
+
+   CSS EXCLUSIVO DA TELA DE MOVIMENTAÇÕES
+
+   Depende de:
+   - base.css
+   - componentes.css
+   - layout.css
+   - responsive.css
+
+   Responsabilidades:
+   - indicadores;
+   - filtros;
+   - Flatpickr desta tela;
+   - lista de movimentações;
+   - tipos de eventos;
+   - comportamento específico da página.
+   ========================================================= */
+
+
+/* =========================================================
+   1. INDICADORES
+   ========================================================= */
+
+.activities-page .stats-summary {
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(5, minmax(0, 1fr));
+
+    gap: 12px;
+
+    margin-bottom: 18px;
+}
+
+
+.activities-page .stat-card {
+    min-width: 0;
+
+    min-height: 86px;
+
+    padding: 12px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 2px;
+
+    text-align: center;
+
+    background: var(--white);
+
+    border:
+        1px solid rgba(31, 96, 232, 0.08);
+
+    border-radius: var(--radius-lg);
+
+    box-shadow:
+        0 4px 14px rgba(15, 23, 42, 0.05);
+}
+
+
+.activities-page .stat-card h3 {
+    margin: 0;
+
+    font-size: var(--fonte-indicador);
+
+    line-height: 1;
+
+    font-weight: 700;
+
+    color: var(--blue-600);
+}
+
+
+.activities-page .stat-card p {
+    margin: 3px 0 0;
+
+    font-size: var(--fonte-meta);
+
+    line-height: 1.2;
+
+    font-weight: 700;
+
+    color: var(--gray-600);
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.04em;
+}
+
+
+/* =========================================================
+   2. FILTROS
+   ========================================================= */
+
+.activities-page .activities-filters {
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+        132px 132px 170px minmax(220px, 1fr) auto;
+
+    align-items: end;
+
+    gap: 10px;
+
+    padding:
+        13px 14px;
+
+    margin-bottom: 16px;
+
+    background: var(--white);
+
+    border:
+        1px solid rgba(31, 96, 232, 0.08);
+
+    border-radius: var(--radius-lg);
+
+    box-shadow:
+        0 4px 14px rgba(15, 23, 42, 0.05);
+}
+
+
+.activities-page .filter-group {
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+
+.activities-page .filter-group label {
+    margin: 0;
+
+    font-size: var(--fonte-label);
+
+    line-height: 1.15;
+
+    font-weight: 700;
+
+    color: var(--gray-700);
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.035em;
+}
+
+
+.activities-page .filter-group input,
+.activities-page .filter-group select {
+    width: 100%;
+
+    min-width: 0;
+
+    height: 40px;
+
+    min-height: 40px;
+
+    padding:
+        7px 10px;
+
+    font-size: var(--fonte-campo);
+
+    line-height: 1.2;
+
+    border-radius: var(--radius-md);
+}
+
+
+.activities-page .activity-date-filter {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+}
+
+.activities-page .activity-date-filter input,
+.activities-page .activity-date-filter .flatpickr-input + input,
+.activities-page .activity-date-filter .form-control.input {
+    width: 100%;
+    padding-right: 36px;
+}
+
+.activities-page .activity-date-filter__calendar {
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    z-index: 3;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    transform: translateY(-50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-600, #1f60e8);
+    background: transparent;
+    border: 0;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.activities-page .activity-date-filter__calendar:hover,
+.activities-page .activity-date-filter__calendar:focus-visible {
+    background: rgba(31, 96, 232, 0.08);
+    outline: none;
+}
+
+.activities-page .activity-date-filter__calendar .icone {
+    pointer-events: none;
+}
+
+
+.activities-page .filter-group select {
+    cursor: pointer;
+}
+
+
+.activities-page .filters-actions {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: flex-end;
+
+    gap: 8px;
+
+    min-width: 0;
+}
+
+
+.activities-page .btn-filter {
+    min-width: 76px;
+
+    height: 40px;
+
+    min-height: 40px;
+
+    padding:
+        7px 12px;
+
+    font-size: var(--fonte-botao);
+
+    border-radius: var(--radius-md);
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+
+/* =========================================================
+   9. TABELA / LISTA
+   ========================================================= */
+
+.activities-page .activities-table {
+    min-width: 0;
+}
+
+
+/* =========================================================
+   10. CABEÇALHO DA TABELA
+   ========================================================= */
+
+.activities-page .activities-table-header {
+    grid-template-columns:
+        var(--data-grid-columns, 145px 145px minmax(0, 1fr) 170px);
+}
+
+
+/* =========================================================
+   11. CORPO DA TABELA
+   ========================================================= */
+
+.activities-page .activities-table-body {
+    width: 100%;
+
+    min-width: 0;
+
+    max-height:
+        min(520px,
+            calc(100vh - 360px));
+
+    overflow-y: auto;
+
+    overflow-x: hidden;
+
+    scrollbar-gutter: stable;
+
+    overscroll-behavior: contain;
+}
+
+/* O cabeçalho e as linhas usam exatamente a mesma largura da grid.
+   O fundo do próprio cabeçalho já cobre a área junto à barra de rolagem,
+   portanto não é necessário reduzir suas colunas com padding lateral. */
+.activities-page .activities-table-header {
+    padding-right: 0;
+}
+
+
+/* =========================================================
+   12. REGISTRO DESKTOP
+   ========================================================= */
+
+.activities-page .activities-row {
+    grid-template-columns:
+        var(--data-grid-columns, 145px 145px minmax(0, 1fr) 170px);
+}
+
+
+/* =========================================================
+   13. DATA
+   ========================================================= */
+
+.activities-page .activity-date {
+    min-width: 0;
+
+    white-space: nowrap;
+}
+
+.activities-page .activity-date__date,
+.activities-page .activity-date__separator,
+.activities-page .activity-date__time {
+    display: inline;
+}
+
+
+/* =========================================================
+   14. TIPO
+   ========================================================= */
+
+.activities-page .activity-type {
+    max-width: 130px;
+}
+
+
+/* =========================================================
+   15. DESCRIÇÃO
+   ========================================================= */
+
+.activities-page .activity-description {
+    width: 100%;
+
+    min-width: 0;
+
+    white-space: normal;
+}
+
+
+/* =========================================================
+   16. RESPONSÁVEL
+   ========================================================= */
+
+.activities-page .activity-responsible {
+    min-width: 0;
+
+    white-space: normal;
+}
+
+
+/* =========================================================
+   17. CORES DOS EVENTOS
+   ========================================================= */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========================================================
+   18. ESTADO VAZIO
+   ========================================================= */
+
+.activities-page .empty-state--movements {
+    padding:
+        50px 20px;
+}
+
+
+.activities-page .empty-state__icon {
+    margin-bottom: 8px;
+
+    font-size: 36px;
+
+    line-height: 1;
+}
+
+
+.activities-page .empty-state--movements p {
+    margin: 0;
+
+    font-size: var(--fonte-corpo);
+
+    line-height: 1.45;
+
+    color: var(--gray-500);
+}
+
+
+/* =========================================================
+   19. ABAS DO MODAL
+   ========================================================= */
+
+.activities-page .account-tabs__navigation {
+    margin-bottom: 16px;
+}
+
+
+/* =========================================================
+   20. TABLET
+   768px até 1024px
+   ========================================================= */
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+
+    .activities-page .stats-summary {
+        grid-template-columns:
+            repeat(3,
+                minmax(0, 1fr));
+
+        gap: 10px;
+    }
+
+
+    .activities-page .stat-card {
+        min-height: 82px;
+    }
+
+
+    .activities-page .activities-filters {
+        grid-template-columns:
+            repeat(2,
+                minmax(0, 1fr));
+
+        gap: 10px;
+    }
+
+
+    .activities-page .filters-actions {
+        grid-column:
+            1 / -1;
+
+        display: grid;
+
+        grid-template-columns:
+            repeat(2,
+                minmax(0, 1fr));
+    }
+
+
+    .activities-page .btn-filter {
+        width: 100%;
+    }
+
+
+    .activities-page .activities-table {
+        overflow-x: auto;
+    }
+
+
+    .activities-page .activities-table-header,
+    .activities-page .activities-row {
+        min-width: 700px;
+
+        grid-template-columns:
+            110px 130px minmax(280px, 1fr) 110px;
+    }
+}
+
+
+/* =========================================================
+   20.1 TABLET EM RETRATO
+   Layout intermediário: mantém tabela/grid, organiza os cinco
+   indicadores sem buracos e apresenta Data/Hora em duas linhas.
+   ========================================================= */
+
+@media screen and (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+
+    /* 3 indicadores na primeira linha; 2 ocupando toda a segunda. */
+    .activities-page .stats-summary {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .activities-page .stats-summary > .stat-card,
+    .activities-page .stats-summary > .card--kpi {
+        grid-column: span 2;
+        min-height: 82px;
+    }
+
+    .activities-page .stats-summary > .stat-card:nth-child(4),
+    .activities-page .stats-summary > .stat-card:nth-child(5),
+    .activities-page .stats-summary > .card--kpi:nth-child(4),
+    .activities-page .stats-summary > .card--kpi:nth-child(5) {
+        grid-column: span 3;
+    }
+
+    .activities-page .activities-table {
+        --data-grid-columns:
+            124px
+            136px
+            minmax(0, 1fr)
+            132px !important;
+        overflow-x: hidden;
+    }
+
+    .activities-page .activities-table-header,
+    .activities-page .activities-row {
+        width: 100%;
+        min-width: 0;
+        grid-template-columns: var(--data-grid-columns) !important;
+    }
+
+    .activities-page .activities-table-header > .data-grid__cell,
+    .activities-page .activities-row > .data-grid__cell {
+        min-width: 0;
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .activities-page .activities-table-header > .data-grid__cell {
+        white-space: nowrap;
+        overflow-wrap: normal;
+        word-break: normal;
+        font-size: var(--fonte-grid-cabecalho);
+    }
+
+    .activities-page .activity-cell--date {
+        overflow: visible;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .activities-page .activity-date {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+        overflow-wrap: normal;
+        word-break: normal;
+        font-variant-numeric: tabular-nums;
+        line-height: 1.25;
+        text-align: center;
+    }
+
+    .activities-page .activity-date__date,
+    .activities-page .activity-date__time {
+        display: block;
+        width: 100%;
+        white-space: nowrap;
+        text-align: center;
+    }
+
+    .activities-page .activity-date__separator {
+        display: none;
+    }
+
+    .activities-page .activity-cell--type {
+        overflow: visible;
+        justify-content: center;
+    }
+
+    .activities-page .activity-type {
+        max-width: 100%;
+        white-space: normal;
+        overflow-wrap: normal;
+        word-break: normal;
+        text-align: center;
+    }
+
+    .activities-page .activity-cell--resp {
+        overflow: visible;
+    }
+
+    .activities-page .activity-responsible {
+        width: 100%;
+        min-width: 0;
+        white-space: normal;
+        overflow-wrap: normal;
+        word-break: normal;
+        hyphens: none;
+        line-height: 1.25;
+        text-align: center;
+    }
+
+    .activities-page .activities-table .data-grid-resize-handle {
+        display: none !important;
+    }
+}
+
+
+/* =========================================================
+   21. MOBILE
+   Até 767px
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+    /* =====================================================
+       INDICADORES
+       ===================================================== */
+
+    .activities-page .stats-summary {
+        grid-template-columns:
+            repeat(2,
+                minmax(0, 1fr));
+
+        gap: 8px;
+
+        margin-bottom: 10px;
+    }
+
+
+    .activities-page .stats-summary > .card--kpi:last-child:nth-child(odd),
+    .activities-page .stats-summary > .stat-card:last-child:nth-child(odd) {
+        grid-column:
+            1 / -1;
+    }
+
+
+    /* =====================================================
+       FILTROS - MOBILE COMPACTO
+       ===================================================== */
+
+    .activities-page .activities-filters {
+        grid-template-columns: 1fr;
+
+        column-gap: 7px;
+        row-gap: 6px;
+
+        padding: 8px;
+
+        margin-bottom: 10px;
+
+        background: var(--surface);
+
+        border: 1px solid var(--border-default);
+
+        border-radius: var(--radius-md);
+
+        box-shadow: var(--shadow-xs);
+    }
+
+
+    .activities-page .filter-group {
+        gap: 3px;
+    }
+
+
+    .activities-page .filter-group label {
+        font-size: var(--fonte-grid-badge);
+
+        line-height: 1.25;
+
+        font-weight: 700;
+
+        color: var(--gray-700);
+
+        letter-spacing: 0.025em;
+    }
+
+
+    .activities-page .activities-filters .filter-group input,
+    .activities-page .activities-filters .filter-group select {
+        height: 36px;
+
+        min-height: 36px;
+
+        padding: 4px 7px;
+
+        /* 16px evita zoom automático dos campos no Safari/iOS. */
+        font-size: 16px;
+
+        line-height: 1.1;
+
+        border-radius: var(--radius-sm);
+    }
+
+
+    .activities-page .activities-filters .filter-group input::placeholder {
+        font-size: 14px;
+    }
+
+
+    .activities-page .filters-actions {
+        grid-column:
+            1 / -1;
+
+        display: grid;
+
+        grid-template-columns:
+            repeat(2,
+                minmax(0, 1fr));
+
+        gap: 7px;
+
+        margin-top: 2px;
+    }
+
+
+    .activities-page .btn-filter {
+        width: 100%;
+
+        min-width: 0;
+
+        height: 38px;
+
+        min-height: 38px;
+
+        padding: 6px 10px;
+
+        font-size: var(--fonte-label);
+
+        font-weight: 600;
+
+        line-height: 1.2;
+
+        border-radius: var(--radius-sm);
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+    }
+
+
+    /* =====================================================
+       CONTAINER EXTERNO DA TABELA (FUNDAÇÃO R1.2)
+       ===================================================== */
+
+    .activities-page .activities-table-card {
+        min-height: 0;
+    }
+
+
+    /* =====================================================
+       LISTA
+       ===================================================== */
+
+    .activities-page .activities-table {
+        padding: 0;
+
+        background: transparent;
+
+        border: none;
+
+        border-radius: 0;
+
+        box-shadow: none;
+    }
+
+
+    .activities-page .activities-table-header {
+        display: none;
+    }
+
+
+    .activities-page .activities-table-body {
+        width: 100%;
+
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 7px;
+
+        padding: 0;
+
+        overflow: visible;
+    }
+
+
+    /* =====================================================
+       CARD DA MOVIMENTAÇÃO (SUPERFÍCIE CANÔNICA)
+       ===================================================== */
+
+    .activities-page .activities-table-body > .activities-row {
+        width: 100%;
+
+        min-width: 0;
+
+        min-height: 72px;
+
+        height: auto;
+
+        flex: 0 0 auto;
+
+        display: grid;
+
+        grid-template-columns:
+            minmax(0, 1fr) auto;
+
+        grid-template-areas:
+            "data tipo"
+            "descricao descricao"
+            "responsavel responsavel";
+
+        column-gap: 8px;
+
+        row-gap: 5px;
+
+        align-items: start;
+
+        padding:
+            10px 12px;
+
+        margin: 0;
+
+        background: var(--surface);
+
+        border:
+            1px solid var(--border-default);
+        border-left:
+            3px solid var(--blue-600);
+
+        border-radius: var(--radius-sm);
+
+        box-shadow:
+            var(--shadow-xs);
+
+        overflow: visible;
+    }
+
+
+    .activities-page .activity-cell {
+        min-width: 0;
+
+        padding: 0;
+
+        border: 0;
+    }
+
+
+    .activities-page .activity-cell--date {
+        grid-area: data;
+    }
+
+
+    .activities-page .activity-cell--type {
+        grid-area: tipo;
+
+        justify-self: end;
+    }
+
+
+    .activities-page .activity-cell--desc {
+        grid-area: descricao;
+    }
+
+
+    .activities-page .activity-cell--resp {
+        grid-area: responsavel;
+    }
+
+
+    /* =====================================================
+       DATA
+       ===================================================== */
+
+    .activities-page .activities-row .activity-date {
+        font-size: var(--fonte-grid-badge);
+
+        font-weight: 500;
+
+        color: var(--text-secondary);
+
+        white-space: nowrap;
+    }
+
+
+    /* =====================================================
+       TIPO
+       ===================================================== */
+
+    .activities-page .activities-row .activity-type {
+        font-size: var(--fonte-badge);
+
+        line-height: 1.15;
+
+        font-weight: 700;
+
+        padding: 3px 8px;
+
+        border-radius: var(--radius-full);
+    }
+
+
+    /* =====================================================
+       DESCRIÇÃO
+       ===================================================== */
+
+    .activities-page .activities-row .activity-description {
+        font-size: var(--fonte-corpo);
+
+        line-height: 1.35;
+
+        font-weight: 500;
+
+        color: var(--text-primary);
+
+        word-break: normal;
+
+        overflow-wrap: break-word;
+    }
+
+
+    /* =====================================================
+       RESPONSÁVEL
+       ===================================================== */
+
+    .activities-page .activities-row .activity-responsible {
+        font-size: var(--fonte-grid-badge);
+
+        line-height: 1.3;
+
+        color: var(--text-muted);
+
+        padding-top: 4px;
+
+        border-top:
+            1px solid var(--border-light);
+
+        white-space: normal;
+    }
+
+
+    /* =====================================================
+       ESTADO VAZIO
+       ===================================================== */
+
+    .activities-page .empty-state--movements {
+        padding:
+            34px 12px;
+    }
+
+
+    .activities-page .empty-state__icon {
+        font-size: 28px;
+    }
+
+
+    .activities-page .empty-state--movements p {
+        font-size: var(--fonte-corpo);
+    }
+
+
+    .activities-page .account-tabs__navigation {
+        margin-bottom: 12px;
+    }
+}
+
+
+/* =========================================================
+   22. CELULARES PEQUENOS
+   Até 430px
+   ========================================================= */
+
+@media (max-width: 430px) {
+
+    .activities-page .activities-table-body > .activities-row {
+        min-height: 70px;
+
+        padding:
+            9px 10px;
+
+        row-gap: 4px;
+    }
+
+}
+
+
+/* =========================================================
+   23. CELULARES MUITO PEQUENOS
+   Até 360px
+   ========================================================= */
+
+@media (max-width: 360px) {
+
+    .activities-page .activities-filters {
+        column-gap: 5px;
+
+        row-gap: 5px;
+
+        padding: 7px;
+    }
+
+
+    .activities-page .stats-summary {
+        gap: 6px;
+    }
+
+
+    .activities-page .activities-table-body > .activities-row {
+        padding: 8px 9px;
+    }
+
+}
+
+
+/* =========================================================
+   24. DESKTOP
+   ========================================================= */
+
+@media screen and (min-width: 1025px) {
+
+    .activities-page .activities-table-body {
+        max-height:
+            min(520px,
+                calc(100vh - 360px));
+    }
+}
+
+@media (min-width: 1025px) {
+    .activities-page .stat-card,
+    .activities-page .activities-filters {
+        border-color: var(--gray-200);
+        border-radius: var(--radius-md);
+        box-shadow: none;
+    }
+}
+
+
+/* =========================================================
+   HOTFIX MOBILE - ROLAGEM ÚNICA DA PÁGINA
+   Evita disputa de gesto entre o scroll vertical da página e o
+   scroll interno herdado de .admin-list__body em dispositivos touch.
+   No mobile, a lista de movimentações cresce com o conteúdo e a
+   rolagem fica exclusivamente a cargo da página.
+   ========================================================= */
+@media (max-width: 767px) {
+    .activities-page .activities-table-card.admin-list {
+        overflow: visible;
+    }
+
+    .activities-page .activities-table.admin-list__body {
+        flex: 0 0 auto;
+        max-height: none;
+        overflow: visible;
+        overscroll-behavior: auto;
+        -webkit-overflow-scrolling: auto;
+        touch-action: pan-y;
+    }
+
+    .activities-page .activities-table-body {
+        max-height: none;
+        overflow: visible;
+        overscroll-behavior: auto;
+        touch-action: pan-y;
+    }
+}
+
+/* =========================================================
+   HOTFIX MOBILE V1 - MOVIMENTAÇÕES COMO LISTA/TIMELINE
+   Eventos são histórico: uma superfície contínua, sem card por item.
+   ========================================================= */
+@media (max-width: 767px) {
+    .activities-page .activities-table-card.admin-list {
+        padding: 0;
+        background: var(--surface);
+        border: 1px solid var(--border-default);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-xs);
+        overflow: visible;
+    }
+
+    .activities-page .activities-table-body {
+        gap: 0;
+        padding: 0 12px;
+    }
+
+    .activities-page .activities-table-body > .activities-row {
+        position: relative;
+        min-height: 76px;
+        padding: 12px 4px 12px 22px;
+        background: transparent;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .activities-page .activities-table-body > .activities-row + .activities-row {
+        border-top: 1px solid var(--border-light);
+    }
+
+    .activities-page .activities-table-body > .activities-row::before {
+        content: '';
+        position: absolute;
+        left: 5px;
+        top: 18px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--blue-600);
+        box-shadow: 0 0 0 3px var(--blue-50);
+    }
+
+    .activities-page .activities-table-body > .activities-row::after {
+        content: '';
+        position: absolute;
+        left: 8.5px;
+        top: 29px;
+        bottom: -1px;
+        width: 1px;
+        background: var(--blue-100);
+    }
+
+    .activities-page .activities-table-body > .activities-row:last-child::after {
+        display: none;
+    }
+
+    .activities-page .activities-row .activity-responsible {
+        border-top: 0;
+        padding-top: 1px;
+    }
+}
+
+
+/* =========================================================
+   HOTFIX MOBILE V2 - TIMELINE CONTÍNUA
+   O separador horizontal não atravessa mais o trilho vertical.
+   ========================================================= */
+@media (max-width: 767px) {
+    .activities-page .activities-table-body > .activities-row {
+        background-image:
+            linear-gradient(var(--border-light), var(--border-light));
+        background-repeat: no-repeat;
+        background-position: right bottom;
+        background-size: calc(100% - 22px) 1px;
+    }
+
+    .activities-page .activities-table-body > .activities-row + .activities-row {
+        border-top: 0;
+    }
+
+    .activities-page .activities-table-body > .activities-row:last-child {
+        background-image: none;
+    }
+
+    .activities-page .activities-table-body > .activities-row::after {
+        top: 26px;
+        bottom: -26px;
+        z-index: 0;
+    }
+
+    .activities-page .activities-table-body > .activities-row::before {
+        z-index: 1;
+    }
+
+    .activities-page .activities-table-body > .activities-row:last-child::after {
+        display: none;
+    }
+}
+
+/* =========================================================
+   HOTFIX MOBILE 16/09/2026
+   Datas lado a lado; demais filtros preservam largura útil.
+   ========================================================= */
+@media (max-width: 767px) {
+    .activities-page .activities-filters {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .activities-page .activities-filters > .filter-group:nth-child(1),
+    .activities-page .activities-filters > .filter-group:nth-child(2) {
+        grid-column: auto;
+        min-width: 0;
+    }
+
+    .activities-page .activities-filters > .filter-group:nth-child(n+3) {
+        grid-column: 1 / -1;
+    }
+
+    .activities-page .filters-actions {
+        grid-column: 1 / -1;
+    }
+
+    .activities-page .activity-date-filter,
+    .activities-page .activity-date-filter input {
+        width: 100%;
+        min-width: 0;
+    }
+}
+
+/* =========================================================
+   REVISÃO FINAL - MOVIMENTAÇÕES
+   Desktop:
+   - cabeçalho azul cobre a reserva da barra de rolagem;
+   - Data/Hora e Evento centralizados;
+   - Detalhes e Responsável alinhados à esquerda.
+   Mobile:
+   - mantém composição em cards;
+   - alternância suave em azul CAIGE para facilitar leitura.
+   ========================================================= */
+
+/* DESKTOP / TABLET: alinhamento semântico das colunas */
+@media (min-width: 768px) {
+    .activities-page .activities-table-header {
+        /* O padding-right de 10px é necessário para acompanhar a scrollbar
+           do corpo. O fundo no próprio cabeçalho elimina a faixa branca. */
+        background: linear-gradient(180deg, var(--blue-800) 0%, var(--blue-700) 100%);
+        background-clip: border-box;
+    }
+
+    .activities-page .activities-table-header > .data-grid__cell:nth-child(1),
+    .activities-page .activities-table-header > .data-grid__cell:nth-child(2),
+    .activities-page .activities-row > .activity-cell--date,
+    .activities-page .activities-row > .activity-cell--type {
+        justify-content: center;
+        text-align: center;
+    }
+
+    .activities-page .activities-table-header > .data-grid__cell:nth-child(3),
+    .activities-page .activities-table-header > .activity-header--responsible,
+    .activities-page .activities-row > .activity-cell--desc,
+    .activities-page .activities-row > .activity-cell--resp {
+        justify-content: flex-start;
+        text-align: left;
+    }
+
+    .activities-page .activity-description,
+    .activities-page .activity-responsible {
+        text-align: left;
+    }
+}
+
+/* MOBILE: zebra CAIGE sem reduzir a leitura da timeline.
+   A faixa da timeline permanece neutra, como no Painel aprovado. */
+@media (max-width: 767px) {
+    .activities-page .activities-table-body > .activities-row:nth-child(odd) {
+        background: #fbfdff;
+        border-color: #e1ebf8;
+    }
+
+    .activities-page .activities-table-body > .activities-row:nth-child(even) {
+        background: #f1f6fd;
+        border-color: #d8e5f6;
+    }
+
+    .activities-page .activities-table-body > .activities-row:hover {
+        background: #edf4fd;
+    }
+
+    /* Mantém a linha/ponto com a mesma leitura visual do Painel:
+       o fundo da área da timeline não recebe o azul do zebrado. */
+    .activities-page .activities-table-body > .activities-row::before,
+    .activities-page .activities-table-body > .activities-row::after {
+        z-index: 2;
+    }
+
+    .activities-page .activities-table-body {
+        --activity-timeline-gutter-bg: #ffffff;
+    }
+}
+
+
+@media (min-width: 768px) {
+  .activities-page .activities-table-body {
+    max-height:none !important;
+    overflow:visible !important;
+    scrollbar-gutter:auto !important;
+    overscroll-behavior:auto !important;
+  }
+}

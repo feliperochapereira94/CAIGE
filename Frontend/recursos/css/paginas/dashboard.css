@@ -1,0 +1,943 @@
+/* =========================================================
+   CAIGE - PAINEL
+
+   CSS EXCLUSIVO DO PAINEL
+
+   Depende de:
+   - base.css
+   - componentes.css
+   - layout.css
+   - responsive.css
+
+   Responsabilidades:
+   - indicadores;
+   - painel de movimentações;
+   - tabela resumida;
+   - accordion;
+   - adaptação específica para telas grandes;
+   - adaptação específica para telas móveis.
+   ========================================================= */
+
+.dashboard .content {
+    position: relative;
+}
+
+.dashboard-stats-section {
+    margin-bottom: 16px;
+}
+
+.dashboard-section-title {
+    margin: 0 0 10px;
+    font-size: var(--fonte-titulo-secao);
+    line-height: 1.25;
+    font-weight: var(--peso-titulo-secao);
+    color: var(--text-primary);
+}
+
+.dashboard .dashboard-cards {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.dashboard .dashboard-card {
+    min-width: 0;
+    min-height: 136px;
+    padding: 14px 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background: var(--white);
+    border: 1px solid rgba(31, 96, 232, 0.08);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+}
+
+.dashboard .dashboard-card:hover {
+    transform: translateY(-1px);
+}
+
+.dashboard .dashboard-card .card__top {
+    margin-bottom: 4px;
+}
+
+.dashboard .dashboard-card .card__icon {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-md);
+    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dashboard .dashboard-card .card__icon.icone svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+    stroke-width: 2;
+}
+
+.dashboard-events-empty__icon.icone svg {
+    width: 32px;
+    height: 32px;
+    stroke: var(--text-muted);
+    stroke-width: 1.75;
+}
+
+.dashboard .dashboard-card .card__delta {
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dashboard .dashboard-card .card__value {
+    margin-top: 1px;
+    font-size: var(--fonte-indicador);
+    line-height: 1;
+    font-weight: 700;
+    color: var(--blue-600);
+}
+
+.dashboard .dashboard-card .card__title {
+    margin-top: 2px;
+    font-size: var(--fonte-corpo);
+    line-height: 1.2;
+    font-weight: 700;
+    color: var(--gray-700);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.dashboard .dashboard-card .card__note {
+    margin-top: 1px;
+    font-size: var(--fonte-meta);
+    line-height: 1.35;
+    color: var(--text-muted);
+}
+
+.dashboard-main {
+    width: 100%;
+    min-width: 0;
+}
+
+.dashboard-events-panel {
+    width: 100%;
+    min-width: 0;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-lg);
+    box-shadow: none;
+    overflow: hidden;
+}
+
+.dashboard-events-header {
+    position: relative;
+    width: 100%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.72);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    cursor: pointer;
+    transition:
+        border-color var(--transition-default),
+        border-radius var(--transition-default),
+        box-shadow var(--transition-default);
+}
+
+.dashboard-events-panel.is-collapsed .dashboard-events-header {
+    border-bottom-color: transparent;
+    border-radius: var(--radius-lg);
+}
+
+.dashboard-events-title {
+    min-width: 0;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.dashboard-events-title h3 {
+    margin: 0;
+    color: var(--white);
+    font-size: var(--fonte-titulo-card);
+    line-height: 1.2;
+    font-weight: 700;
+}
+
+.dashboard-events-actions {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dashboard-events-link {
+    color: rgba(255, 255, 255, 0.95);
+    font-size: var(--fonte-meta);
+    line-height: 1;
+    font-weight: 700;
+}
+
+.dashboard-events-link:hover {
+    color: var(--white);
+}
+
+.dashboard-events-body {
+    width: 100%;
+    max-height: 460px;
+    opacity: 1;
+    visibility: visible;
+    background: var(--white);
+    border: 1px solid var(--border-default);
+    border-top: none;
+    border-radius: 0 0 16px 16px;
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
+    overflow-x: auto;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    transition:
+        max-height 0.25s ease,
+        opacity 0.2s ease;
+}
+
+.dashboard-events-panel.is-collapsed .dashboard-events-body {
+    max-height: 0;
+    opacity: 0;
+    visibility: hidden;
+    overflow: hidden;
+}
+
+.dashboard-events-table {
+    width: 100%;
+    min-width: 0;
+}
+
+.dashboard-event-row {
+    display: grid;
+    grid-template-columns:
+        var(--data-grid-columns, 150px 116px minmax(0, 1fr) 140px);
+}
+
+.dashboard-event-row--header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+.dashboard-event-date {
+    min-width: 0;
+    font: inherit;
+    color: inherit;
+    white-space: nowrap;
+}
+
+.dashboard-event-date__date,
+.dashboard-event-date__separator,
+.dashboard-event-date__time {
+    display: inline;
+}
+
+.dashboard-event-type {
+    min-width: 90px;
+}
+
+.dashboard-event-description {
+    min-width: 0;
+    font: inherit;
+    color: inherit;
+    overflow-wrap: anywhere;
+}
+
+.dashboard-event-responsible {
+    min-width: 0;
+    font: inherit;
+    color: inherit;
+    text-align: inherit;
+    overflow-wrap: anywhere;
+}
+
+
+
+
+
+
+
+
+
+.dashboard-events-empty {
+    width: 100%;
+    min-height: 120px;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+.dashboard-events-empty__icon {
+    font-size: 26px;
+    line-height: 1;
+}
+
+.dashboard-events-empty p {
+    margin: 0;
+    font-size: var(--fonte-meta);
+    line-height: 1.35;
+}
+
+/* =========================================================
+   MONITORES GRANDES
+   ========================================================= */
+
+@media screen and (min-width: 1600px) {
+    .dashboard-section-title {
+        margin-bottom: 11px;
+    }
+
+    .dashboard .dashboard-card {
+        min-height: 144px;
+        padding: 16px 17px;
+    }
+
+    .dashboard .dashboard-card .card__icon {
+        width: 38px;
+        height: 38px;
+    }
+
+}
+
+@media screen and (min-width: 1920px) {
+
+    .dashboard .dashboard-cards {
+        gap: 14px;
+    }
+
+    .dashboard .dashboard-card {
+        min-height: 148px;
+    }
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+    .dashboard .dashboard-cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .dashboard-event-row {
+        min-width: 700px;
+        grid-template-columns:
+            var(--data-grid-columns, 110px 135px minmax(260px, 1fr) 110px);
+    }
+
+    .dashboard-events-body {
+        overflow-x: auto;
+    }
+}
+
+
+/* =========================================================
+   TABLET EM RETRATO
+   Layout intermediário: navegação mobile + conteúdo de tablet.
+   Mantém tabela, elimina espaços vazios nos indicadores e usa
+   Data/Hora em duas linhas quando necessário.
+   ========================================================= */
+
+@media screen and (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+    .dashboard .dashboard-cards {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .dashboard .dashboard-card {
+        min-height: 128px;
+        padding: 12px 13px;
+    }
+
+    .dashboard .dashboard-card .card__title {
+        font-size: var(--fonte-grid-corpo);
+    }
+
+    .dashboard .dashboard-card .card__note {
+        font-size: var(--fonte-meta);
+    }
+
+    .dashboard-events-body {
+        overflow-x: hidden;
+    }
+
+    .dashboard-events-table {
+        --data-grid-columns:
+            122px
+            132px
+            minmax(0, 1fr)
+            136px !important;
+    }
+
+    .dashboard-event-row {
+        width: 100%;
+        min-width: 0;
+        grid-template-columns: var(--data-grid-columns) !important;
+    }
+
+    .dashboard-event-row > .data-grid__cell {
+        min-width: 0;
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .dashboard-event-row--header > .data-grid__cell {
+        white-space: nowrap;
+        overflow-wrap: normal;
+        word-break: normal;
+        font-size: var(--fonte-grid-cabecalho);
+    }
+
+    .dashboard-event-date {
+        width: 100%;
+        min-width: 0;
+        white-space: normal;
+        overflow-wrap: normal;
+        word-break: normal;
+        font-variant-numeric: tabular-nums;
+        line-height: 1.25;
+        text-align: center;
+    }
+
+    .dashboard-event-date__date,
+    .dashboard-event-date__time {
+        display: block;
+        width: 100%;
+        white-space: nowrap;
+        text-align: center;
+    }
+
+    .dashboard-event-date__separator {
+        display: none;
+    }
+
+    .dashboard-event-responsible {
+        width: 100%;
+        min-width: 0;
+        white-space: normal;
+        overflow-wrap: normal;
+        word-break: normal;
+        hyphens: none;
+        text-align: center;
+    }
+
+    .dashboard-events-table .data-grid-resize-handle {
+        display: none !important;
+    }
+}
+
+/* =========================================================
+   TELAS MÓVEIS
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+    .dashboard-stats-section {
+        margin-bottom: 11px;
+    }
+
+    .dashboard-section-title {
+        margin-bottom: 8px;
+        font-size: var(--fonte-titulo-card);
+    }
+
+    /* Indicadores em linha única horizontal compacta */
+    .dashboard .dashboard-cards {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .dashboard .dashboard-card {
+        position: relative;
+        min-width: 0;
+        min-height: auto;
+        padding: 10px 14px;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        grid-template-rows: auto auto;
+        grid-template-areas:
+            "icon title value"
+            "icon note  delta";
+        align-items: center;
+        column-gap: 12px;
+        row-gap: 2px;
+        text-align: left;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--border-default);
+        background: var(--surface);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .dashboard .dashboard-card .card__top {
+        display: contents;
+    }
+
+    .dashboard .dashboard-card .card__icon {
+        grid-area: icon;
+        width: 36px;
+        height: 36px;
+        border-radius: var(--radius-sm);
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .dashboard .dashboard-card .card__title {
+        grid-area: title;
+        margin: 0;
+        max-width: 100%;
+        font-size: var(--fonte-corpo);
+        line-height: 1.25;
+        font-weight: 700;
+        color: var(--text-primary);
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .dashboard .dashboard-card .card__note {
+        grid-area: note;
+        margin: 0;
+        max-width: 100%;
+        font-size: var(--fonte-meta);
+        line-height: 1.3;
+        color: var(--text-muted);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .dashboard .dashboard-card .card__value {
+        grid-area: value;
+        margin: 0;
+        font-size: var(--fonte-indicador);
+        line-height: 1;
+        font-weight: 700;
+        color: var(--blue-600);
+        text-align: right;
+    }
+
+    .dashboard .dashboard-card .card__delta {
+        grid-area: delta;
+        position: static;
+        margin: 0;
+        padding: 2px 6px;
+        font-size: var(--fonte-badge);
+        line-height: 1.15;
+        font-weight: 600;
+        text-align: right;
+        justify-self: end;
+        border-radius: var(--radius-xs);
+        max-width: none;
+    }
+
+    .dashboard-events-panel {
+        border-radius: var(--radius-lg);
+    }
+
+    .dashboard-events-header {
+        min-height: 42px;
+        padding: 8px 10px;
+        gap: 7px;
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        box-shadow: 0 7px 18px rgba(31, 96, 232, 0.20);
+    }
+
+    .dashboard-events-panel.is-collapsed .dashboard-events-header {
+        border-radius: var(--radius-lg);
+    }
+
+    .dashboard-events-title {
+        gap: 5px;
+    }
+
+    .dashboard-events-title h3 {
+        font-size: var(--fonte-titulo-card);
+    }
+
+    .dashboard-events-link {
+        font-size: var(--fonte-meta);
+    }
+
+    .dashboard-events-toggle {
+        width: 24px;
+        height: 24px;
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .dashboard-events-toggle__icon {
+        width: 7px;
+        height: 7px;
+    }
+
+    .dashboard-events-body {
+        border-radius: 0 0 13px 13px;
+        background: #f8fbff;
+        border-color: rgba(31, 96, 232, 0.12);
+        box-shadow:
+            0 10px 24px rgba(15, 23, 42, 0.10),
+            0 2px 6px rgba(31, 96, 232, 0.04);
+    }
+
+    .dashboard-events-body {
+        max-height: 400px;
+    }
+
+    .dashboard .dashboard-event-row--header {
+        display: none !important;
+    }
+
+    .dashboard-events-table {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 8px;
+        background: transparent;
+    }
+
+    .dashboard .dashboard-event-row:not(.dashboard-event-row--header) {
+        width: 100%;
+        min-width: 0;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "data tipo"
+            "descricao descricao"
+            "responsavel responsavel";
+        column-gap: 7px;
+        row-gap: 5px;
+        padding: 9px 10px;
+        background: var(--white);
+        border: 1px solid rgba(31, 96, 232, 0.12);
+        border-left: 3px solid var(--blue-600);
+        border-radius: var(--radius-lg);
+        box-shadow:
+            0 5px 14px rgba(15, 23, 42, 0.10),
+            0 1px 3px rgba(31, 96, 232, 0.05);
+    }
+
+    .dashboard-event-date {
+        grid-area: data;
+        font-size: var(--fonte-meta);
+        line-height: 1.2;
+        font-weight: 600;
+        color: #64748b;
+    }
+
+    .dashboard-event-type {
+        grid-area: tipo;
+        justify-self: end;
+        min-width: 60px;
+        max-width: 110px;
+        padding: 3px 6px;
+        font-size: var(--fonte-badge);
+        line-height: 1.15;
+        white-space: nowrap;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28);
+    }
+
+    .dashboard-event-description {
+        grid-area: descricao;
+        font-size: var(--fonte-corpo);
+        line-height: 1.35;
+        font-weight: 500;
+        color: #1f2937;
+    }
+
+    .dashboard-event-responsible {
+        grid-area: responsavel;
+        padding-top: 4px;
+        border-top: 1px solid #e8edf5;
+        font-size: var(--fonte-meta);
+        line-height: 1.2;
+        color: #64748b;
+        text-align: left;
+    }
+
+    .dashboard-events-empty {
+        min-height: 100px;
+        padding: 18px;
+    }
+}
+
+/* =========================================================
+   CELULARES PEQUENOS
+   ========================================================= */
+
+@media (max-width: 430px) {
+    .dashboard-events-table {
+        gap: 7px;
+        padding: 7px;
+    }
+
+    .dashboard .dashboard-event-row:not(.dashboard-event-row--header) {
+        padding: 8px 9px;
+    }
+}
+
+/* =========================================================
+   CELULARES MUITO PEQUENOS
+   ========================================================= */
+
+@media (max-width: 360px) {
+    .dashboard .dashboard-card {
+        padding: 8px 10px;
+        column-gap: 8px;
+    }
+
+    .dashboard .dashboard-card .card__icon {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+@media (min-width: 1025px) {
+    .dashboard .dashboard-card {
+        min-height: 108px;
+        border-color: var(--gray-200);
+        border-radius: var(--radius-md);
+        box-shadow: none;
+    }
+
+    .dashboard-events-panel,
+    .dashboard-events-header {
+        border-radius: var(--radius-md) var(--radius-md) 0 0;
+    }
+
+    .dashboard-events-panel.is-collapsed .dashboard-events-header {
+        border-radius: var(--radius-md);
+    }
+
+    .dashboard-events-body {
+        border-radius: 0 0 var(--radius-md) var(--radius-md);
+        box-shadow: none;
+    }
+}
+
+
+/* =========================================================
+   HOTFIX MOBILE V1 - MESMA LINGUAGEM DE MOVIMENTAÇÕES
+   Painel reutiliza visualmente a timeline da tela Movimentações.
+   ========================================================= */
+@media (max-width: 767px) {
+    .dashboard-events-body {
+        max-height: 400px;
+        background: var(--surface);
+        overflow-x: hidden;
+    }
+
+    .dashboard-events-table {
+        gap: 0;
+        padding: 0 12px;
+    }
+
+    .dashboard .dashboard-event-row:not(.dashboard-event-row--header) {
+        position: relative;
+        min-height: 76px;
+        padding: 12px 4px 12px 22px;
+        background: transparent;
+        border: 0;
+        border-left: 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .dashboard .dashboard-event-row:not(.dashboard-event-row--header) + .dashboard-event-row:not(.dashboard-event-row--header) {
+        border-top: 1px solid var(--border-light);
+    }
+
+    .dashboard .dashboard-event-row:not(.dashboard-event-row--header)::before {
+        content: '';
+        position: absolute;
+        left: 5px;
+        top: 18px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--blue-600);
+        box-shadow: 0 0 0 3px var(--blue-50);
+    }
+
+    .dashboard .dashboard-event-row:not(.dashboard-event-row--header)::after {
+        content: '';
+        position: absolute;
+        left: 8.5px;
+        top: 29px;
+        bottom: -1px;
+        width: 1px;
+        background: var(--blue-100);
+    }
+
+    .dashboard .dashboard-event-row:not(.dashboard-event-row--header):last-child::after {
+        display: none;
+    }
+
+    .dashboard-event-responsible {
+        padding-top: 1px;
+        border-top: 0;
+    }
+}
+
+
+/* =========================================================
+   HOTFIX MOBILE V2 - PAINEL = MESMA TIMELINE DE MOVIMENTAÇÕES
+   Remove divisões internas herdadas do data-grid e replica
+   a composição visual da página de Movimentações.
+   ========================================================= */
+@media (max-width: 767px) {
+    .dashboard-events-body {
+        background: var(--surface);
+    }
+
+    .dashboard-events-table {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        padding: 0 12px;
+        background: transparent;
+    }
+
+    .dashboard .dashboard-event-row:not(.dashboard-event-row--header) {
+        width: 100%;
+        min-width: 0;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "data tipo"
+            "descricao descricao"
+            "responsavel responsavel";
+        column-gap: 8px;
+        row-gap: 5px;
+        min-height: 76px;
+        padding: 12px 4px 12px 22px;
+        background-color: transparent;
+        background-image:
+            linear-gradient(var(--border-light), var(--border-light));
+        background-repeat: no-repeat;
+        background-position: right bottom;
+        background-size: calc(100% - 22px) 1px;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .dashboard .dashboard-event-row:not(.dashboard-event-row--header) + .dashboard-event-row:not(.dashboard-event-row--header) {
+        border-top: 0;
+    }
+
+    .dashboard .dashboard-event-row:not(.dashboard-event-row--header):last-child {
+        background-image: none;
+    }
+
+    .dashboard .dashboard-event-row:not(.dashboard-event-row--header) > .data-grid__cell {
+        min-width: 0;
+        padding: 0;
+        margin: 0;
+        border: 0 !important;
+        box-shadow: none !important;
+        background: transparent !important;
+    }
+
+    .dashboard .dashboard-event-row:not(.dashboard-event-row--header)::after {
+        top: 26px;
+        bottom: -26px;
+        z-index: 0;
+    }
+
+    .dashboard .dashboard-event-row:not(.dashboard-event-row--header)::before {
+        z-index: 1;
+    }
+
+    .dashboard .dashboard-event-row:not(.dashboard-event-row--header):last-child::after {
+        display: none;
+    }
+
+    .dashboard-event-date {
+        grid-area: data;
+        align-self: center;
+        padding: 0;
+        border: 0;
+        font-size: var(--fonte-meta);
+        line-height: 1.2;
+        font-weight: 600;
+        color: #64748b;
+    }
+
+    .dashboard-event-type {
+        grid-area: tipo;
+        justify-self: end;
+        align-self: center;
+    }
+
+    .dashboard-event-description {
+        grid-area: descricao;
+        padding: 0;
+        border: 0;
+        font-size: var(--fonte-corpo);
+        line-height: 1.35;
+        font-weight: 500;
+        color: #1f2937;
+    }
+
+    .dashboard-event-responsible {
+        grid-area: responsavel;
+        justify-self: end;
+        padding: 0;
+        border: 0 !important;
+        font-size: var(--fonte-meta);
+        line-height: 1.2;
+        color: #64748b;
+        text-align: right;
+    }
+}
+
+
+/* =========================================================
+   REFERÊNCIA APROVADA - TOGGLE MOVIMENTAÇÕES IMPORTANTES
+   Botão circular azul com chevron branco no cabeçalho azul.
+   ========================================================= */
+.dashboard-events-toggle.cabecalho-destaque__toggle {
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    min-height: 28px !important;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #fff !important;
+    background: rgba(255, 255, 255, 0.12) !important;
+    border: 0 !important;
+    border-radius: 50% !important;
+    box-shadow: none !important;
+}
+
+.dashboard-events-toggle.cabecalho-destaque__toggle:hover,
+.dashboard-events-toggle.cabecalho-destaque__toggle:focus-visible {
+    color: #fff !important;
+    background: rgba(255, 255, 255, 0.20) !important;
+}
+
+.dashboard-events-toggle__icon.cabecalho-destaque__toggle-icon {
+    width: 8px !important;
+    height: 8px !important;
+    border-right: 2px solid currentColor !important;
+    border-bottom: 2px solid currentColor !important;
+}

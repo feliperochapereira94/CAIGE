@@ -1,0 +1,5712 @@
+/* =========================================================
+   CAIGE - COMPONENTES
+   Componentes visuais reutilizáveis do frontend.
+
+   Este arquivo contém:
+   - botões;
+   - campos;
+   - cards;
+   - painéis;
+   - badges;
+   - menu do usuário;
+   - modal;
+   - formulários;
+   - estados vazios;
+   - tabelas base.
+
+   NÃO colocar aqui:
+   - sidebar;
+   - estrutura principal da página;
+   - navegação mobile;
+   - regras exclusivas de uma tela.
+   ========================================================= */
+
+
+/* =========================================================
+   0. NAVEGAÇÃO DE CONTEXTO (BREADCRUMB)
+   ========================================================= */
+
+.breadcrumb {
+    width: 100%;
+
+    margin: 2px 0 12px;
+
+    color: var(--text-muted);
+
+    font-size: var(--fonte-breadcrumb);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+
+/* =========================================================
+   0.1 SUBNAVEGAÇÃO / CONTROLE SEGMENTADO
+   Reutilizável para alternância de contexto no topo de páginas
+   ========================================================= */
+
+.subnav-tabs {
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    padding: 4px;
+
+    margin-bottom: 14px;
+
+    background: var(--surface-subtle, var(--gray-100));
+
+    border: 1px solid var(--border-default);
+
+    border-radius: var(--radius-md);
+
+    box-sizing: border-box;
+}
+
+.subnav-tab {
+    flex: 1 1 0;
+
+    min-width: 0;
+
+    padding: 7px 12px;
+
+    font-size: var(--fonte-tab);
+    font-weight: 600;
+    line-height: 1.25;
+
+    text-align: center;
+
+    color: var(--text-secondary);
+
+    text-decoration: none;
+
+    border-radius: var(--radius-sm);
+
+    transition:
+        background-color var(--transition-fast),
+        color var(--transition-fast),
+        box-shadow var(--transition-fast);
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+.subnav-tab:hover {
+    color: var(--text-primary);
+}
+
+.subnav-tab--active {
+    background: var(--surface);
+
+    color: var(--blue-600);
+
+    font-weight: 700;
+
+    box-shadow: var(--shadow-xs);
+}
+
+/* Helper para subnavegação exclusiva de telas pequenas */
+.subnav-tabs--mobile-only {
+    display: none;
+}
+
+@media (max-width: 767px) {
+
+    .subnav-tabs--mobile-only {
+        display: flex;
+    }
+}
+
+
+/* =========================================================
+   1. SUPERFÍCIES COMPARTILHADAS
+   ========================================================= */
+
+.card,
+.panel,
+.form-container,
+.form-section,
+.filters,
+.filters-card,
+.list-shell,
+.report-card,
+.profile-container,
+.profile-section,
+.profile-header,
+.questionnaire-section,
+.questionnaire-form {
+    background: var(--surface);
+
+    border: 1px solid var(--border-default);
+
+    border-radius: var(--radius-lg);
+
+    box-shadow: var(--shadow-md);
+}
+
+
+/* =========================================================
+   1.1 SUPERFÍCIE CANÔNICA MOBILE
+   Formalização da superfície administrativa padrão em telas <=767px:
+   fundo branco, borda suave, raio reduzido e sombra leve.
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+    .card-surface,
+    .card--canonical {
+        background: var(--surface);
+
+        border: 1px solid var(--border-default);
+
+        border-radius: var(--radius-md);
+
+        box-shadow: var(--shadow-xs);
+    }
+}
+
+
+/* =========================================================
+   1.2 SUPERFÍCIE PRINCIPAL MOBILE (.surface-primary / .card-surface--primary)
+   Superfície branca principal diretamente apoiada sobre o fundo
+   da aplicação (--app-background) em telas mobile (<=767px).
+   Possui contorno institucional delicado (1px solid var(--blue-200))
+   para delimitar a área administrativa sem peso visual excessivo.
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+    .surface-primary,
+    .card-surface--primary {
+        background: var(--surface);
+
+        border: 1px solid var(--blue-200);
+
+        border-radius: var(--radius-md);
+
+        box-shadow: var(--shadow-xs);
+    }
+}
+
+
+/* =========================================================
+   2. BOTÕES - BASE
+   ========================================================= */
+
+.btn,
+.btn-main,
+.btn-alt,
+.btn-filter,
+.btn-create,
+.modal__btn,
+.questionnaire-btn,
+.patient-card__button,
+.table-action-btn,
+.page-btn {
+    min-height: 40px;
+
+    padding: 9px 14px;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    font-family: inherit;
+    font-size: var(--fonte-botao);
+    line-height: 1.2;
+    font-weight: 700;
+
+    text-align: center;
+
+    border: none;
+
+    border-radius: var(--radius-md);
+
+    cursor: pointer;
+
+    transition:
+        background-color var(--transition-default),
+        color var(--transition-default),
+        border-color var(--transition-default),
+        box-shadow var(--transition-default);
+
+    white-space: nowrap;
+}
+
+/* =========================================================
+   3. BOTÃO PRIMÁRIO
+   ========================================================= */
+
+.btn--primary,
+.btn-main,
+.btn-filter,
+.btn-create,
+.modal__btn--primary,
+.questionnaire-btn--submit {
+    color: var(--white);
+
+    background:
+        linear-gradient(135deg,
+            var(--blue-600),
+            var(--blue-500));
+
+    box-shadow: var(--shadow-sm);
+}
+
+.btn--primary:hover,
+.btn-main:hover,
+.btn-filter:hover,
+.btn-create:hover,
+.modal__btn--primary:hover,
+.questionnaire-btn--submit:hover {
+    background:
+        linear-gradient(135deg,
+            var(--blue-700),
+            var(--blue-600));
+
+    box-shadow: var(--shadow-md);
+}
+
+
+/* =========================================================
+   4. BOTÕES SECUNDÁRIOS
+   ========================================================= */
+
+.btn--secondary,
+.btn-alt,
+.modal__btn--cancel,
+.modal__btn--secondary,
+.btn-filter-clear,
+.questionnaire-btn--cancel {
+    color: var(--gray-700);
+
+    background: var(--gray-100);
+
+    border: 1px solid var(--gray-200);
+
+    box-shadow: none;
+}
+
+.btn--secondary:hover,
+.btn-alt:hover,
+.modal__btn--cancel:hover,
+.modal__btn--secondary:hover,
+.btn-filter-clear:hover,
+.questionnaire-btn--cancel:hover {
+    background: var(--gray-200);
+}
+
+
+/* =========================================================
+   5. BOTÕES DE PERIGO
+   ========================================================= */
+
+.btn--danger,
+.btn-danger,
+.modal__btn--danger {
+    color: var(--white);
+
+    background: var(--danger-600);
+}
+
+.btn--danger:hover,
+.btn-danger:hover,
+.modal__btn--danger:hover {
+    background: var(--danger-700);
+}
+
+.modal__btn--warning,
+.modal__btn--success {
+    color: var(--white);
+    background: var(--blue-700);
+}
+
+.modal__btn--warning:hover,
+.modal__btn--success:hover {
+    background: var(--blue-800);
+}
+
+
+/* =========================================================
+   6. BOTÕES DESABILITADOS
+   ========================================================= */
+
+button:disabled,
+.btn:disabled,
+.btn-main:disabled,
+.btn-filter:disabled,
+.modal__btn:disabled {
+    opacity: 0.55;
+
+    cursor: not-allowed;
+
+    transform: none;
+
+    box-shadow: none;
+}
+
+
+/* =========================================================
+   6.1 ÍCONES DE INTERFACE
+   ========================================================= */
+
+.icone {
+    width: 1em;
+    height: 1em;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 auto;
+
+    line-height: 1;
+
+    color: currentColor;
+}
+
+.icone svg {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.icone--xs {
+    width: 14px;
+    height: 14px;
+}
+
+.icone--sm {
+    width: 16px;
+    height: 16px;
+}
+
+.icone--md {
+    width: 18px;
+    height: 18px;
+}
+
+.icone--lg {
+    width: 22px;
+    height: 22px;
+}
+
+.icone--primaria {
+    color: var(--blue-600);
+}
+
+.icone--perigo {
+    color: var(--danger-600);
+}
+
+.icone--suave {
+    color: var(--gray-500);
+}
+
+.titulo-com-icone {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-width: 0;
+}
+
+.titulo-com-icone > .icone {
+    flex: 0 0 auto;
+}
+
+.icone[data-icone="spinner"] {
+    animation: caige-spin 0.8s linear infinite;
+}
+
+
+/* =========================================================
+   7. CAMPOS DE FORMULÁRIO
+   ========================================================= */
+
+input,
+select,
+textarea,
+.field__input,
+.search-box__input,
+.filter-select,
+.order-input {
+    width: 100%;
+
+    min-width: 0;
+
+    min-height: 40px;
+
+    padding: 9px 12px;
+
+    font-family: inherit;
+    font-size: var(--fonte-campo);
+    line-height: 1.35;
+
+    color: var(--text-primary);
+
+    background: var(--white);
+
+    border: 1px solid var(--border-default);
+
+    border-radius: var(--radius-md);
+
+    box-shadow: var(--shadow-xs);
+
+    outline: none;
+
+    transition:
+        border-color var(--transition-default),
+        box-shadow var(--transition-default),
+        background-color var(--transition-default);
+}
+
+textarea {
+    min-height: 100px;
+}
+
+
+/* =========================================================
+   8. CAMPOS - FOCO
+   ========================================================= */
+
+input:focus,
+select:focus,
+textarea:focus,
+.field__input:focus,
+.search-box__input:focus,
+.filter-select:focus,
+.order-input:focus {
+    border-color: var(--blue-500);
+
+    box-shadow:
+        0 0 0 3px rgba(43, 124, 255, 0.12);
+}
+
+input:not([type="checkbox"]):not([type="radio"]):focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: none;
+}
+
+
+/* =========================================================
+   9. CAMPOS DESABILITADOS
+   ========================================================= */
+
+input:disabled,
+select:disabled,
+textarea:disabled {
+    color: var(--gray-500);
+
+    background: var(--gray-100);
+
+    cursor: not-allowed;
+
+    opacity: 1;
+}
+
+
+/* =========================================================
+   10. PLACEHOLDERS
+   ========================================================= */
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--gray-400);
+
+    opacity: 1;
+}
+
+
+/* =========================================================
+   11. LABELS
+   ========================================================= */
+
+.form-group,
+.modal__form-group,
+.filter-group,
+.field {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+}
+
+.form-group label,
+.modal__form-group label,
+.filter-group label,
+.field label {
+    font-size: var(--fonte-label);
+    line-height: 1.25;
+    font-weight: 700;
+
+    color: var(--gray-700);
+}
+
+
+/* =========================================================
+   11.1 TEXTO AUXILIAR DE FORMUL\u00c1RIO
+   ========================================================= */
+
+.form-hint {
+    margin: -4px 0 0;
+
+    font-size: var(--fonte-label);
+    line-height: 1.3;
+
+    color: var(--gray-500);
+}
+
+
+/* =========================================================
+   11.2 MENSAGEM DE ERRO E ESTADO INVÁLIDO DE FORMULÁRIO
+   ========================================================= */
+
+.form-error {
+    margin: -2px 0 0;
+
+    font-size: var(--fonte-label);
+    line-height: 1.3;
+    font-weight: 500;
+
+    color: var(--danger-600);
+}
+
+input.is-invalid,
+select.is-invalid,
+textarea.is-invalid,
+.editor-lista-clinica.is-invalid .editor-lista-clinica__entrada input,
+[aria-invalid="true"] {
+    border-color: var(--danger-500);
+}
+
+input.is-invalid:focus,
+select.is-invalid:focus,
+textarea.is-invalid:focus,
+.editor-lista-clinica.is-invalid .editor-lista-clinica__entrada input:focus,
+[aria-invalid="true"]:focus {
+    border-color: var(--danger-600);
+    box-shadow: 0 0 0 3px var(--danger-100);
+}
+
+
+/* =========================================================
+   12. AÇÕES DE FORMULÁRIO
+   ========================================================= */
+
+.form-actions,
+.modal__form-actions,
+.profile-actions,
+.questionnaire-actions,
+.actions {
+    display: flex;
+
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    margin-top: 16px;
+}
+
+
+/* =========================================================
+   13. CARD GENÉRICO
+   ========================================================= */
+
+.card {
+    padding: 16px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+
+    transition:
+        transform var(--transition-default),
+        box-shadow var(--transition-default);
+}
+
+.card:hover {
+    transform: translateY(-1px);
+
+    box-shadow: var(--shadow-lg);
+}
+
+.card__top {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+}
+
+.card__icon {
+    width: 38px;
+    height: 38px;
+
+    flex: 0 0 auto;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: var(--radius-md);
+
+    background: var(--blue-100);
+
+    font-size: 17px;
+}
+
+.card__value {
+    font-size: var(--fonte-indicador);
+    line-height: 1.05;
+    font-weight: 700;
+
+    color: var(--text-primary);
+}
+
+.card__title {
+    font-size: var(--fonte-subtitulo-secao);
+    line-height: 1.25;
+    font-weight: 700;
+
+    color: var(--text-primary);
+}
+
+.card__note {
+    font-size: var(--fonte-texto-auxiliar);
+    line-height: 1.4;
+
+    color: var(--text-muted);
+}
+
+
+/* =========================================================
+   13.1 CARD DE INDICADOR (KPI)
+   Padrão global compartilhado para cartões de métricas/resumo
+   ========================================================= */
+
+.card--kpi {
+    min-height: 86px;
+
+    padding: 12px 14px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: space-between;
+
+    gap: 4px;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border-default);
+
+    border-radius: var(--radius-md);
+
+    box-shadow: var(--shadow-xs);
+
+    transition:
+        transform var(--transition-default),
+        box-shadow var(--transition-default);
+}
+
+.card--kpi:hover {
+    transform: translateY(-1px);
+
+    box-shadow: var(--shadow-sm);
+}
+
+.card--kpi .card__icon {
+    color: var(--blue-600);
+}
+
+.card--kpi .card__icon.icone svg {
+    width: 20px;
+    height: 20px;
+}
+
+.card--kpi .card__value {
+    font-size: var(--fonte-indicador);
+    font-weight: 700;
+    line-height: 1.1;
+
+    color: var(--text-primary);
+}
+
+.card--kpi .card__title {
+    font-size: var(--fonte-label);
+    line-height: 1.25;
+    font-weight: 700;
+
+    color: var(--gray-600);
+}
+
+@media (max-width: 767px) {
+
+    .card--kpi {
+        min-height: 64px;
+
+        padding: 8px 10px;
+
+        gap: 2px;
+
+        border-radius: var(--radius-sm);
+    }
+
+    .card--kpi .card__top {
+        gap: 6px;
+
+        margin-bottom: 2px;
+    }
+
+    .card--kpi .card__icon {
+        width: 28px;
+        height: 28px;
+
+        border-radius: var(--radius-xs);
+    }
+
+    .card--kpi .card__icon.icone svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .card--kpi .card__value {
+        font-size: var(--fonte-indicador);
+    }
+
+    .card--kpi .card__title {
+        font-size: var(--fonte-label);
+        line-height: 1.2;
+    }
+}
+
+
+/* =========================================================
+   13.1 BOTÃO COMPACTO GLOBAL
+   ========================================================= */
+
+.btn-small,
+.audit-page-btn {
+    min-height: 30px;
+    padding: 5px 10px;
+    color: var(--blue-800);
+    background: var(--white);
+    border: 1px solid var(--blue-300);
+    border-radius: var(--radius-xs);
+    font-family: inherit;
+    font-size: 11px;
+    line-height: 1.1;
+    font-weight: 700;
+    cursor: pointer;
+    transition:
+        color var(--transition-default),
+        background-color var(--transition-default),
+        border-color var(--transition-default);
+}
+
+.btn-small:hover,
+.audit-page-btn:hover:not(:disabled) {
+    color: var(--white);
+    background: var(--blue-700);
+    border-color: var(--blue-700);
+}
+
+.btn-small-danger {
+    color: var(--danger-700);
+    border-color: var(--danger-500);
+}
+
+.btn-small-danger:hover {
+    color: var(--white);
+    background: var(--danger-600);
+    border-color: var(--danger-600);
+}
+
+
+/* =========================================================
+   14. BADGES / PILLS
+   ========================================================= */
+
+.card__delta,
+.status-pill,
+.table-tag,
+.tag,
+.type-pill {
+    width: fit-content;
+
+    min-width: 0;
+
+    padding: 4px 9px;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: var(--radius-sm);
+
+    font-size: var(--fonte-badge);
+    line-height: 1.15;
+    font-weight: 700;
+
+    text-align: center;
+
+    white-space: nowrap;
+}
+
+.status-pill--success,
+.card__delta--positive {
+    color: var(--success-800);
+
+    background: var(--success-100);
+}
+
+.status-pill--warning {
+    color: var(--warning-700);
+
+    background: var(--warning-100);
+}
+
+.status-pill--danger,
+.card__delta--negative {
+    color: var(--danger-800);
+
+    background: var(--danger-100);
+}
+
+.status-pill--info {
+    color: var(--blue-700);
+
+    background: var(--blue-100);
+}
+
+
+/* =========================================================
+   15. PAINEL
+   ========================================================= */
+
+.panel {
+    padding: 16px;
+}
+
+.panel__header,
+.section__header {
+    display: flex;
+
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    margin-bottom: 12px;
+}
+
+.panel__header h3,
+.section__header h3 {
+    font-size: var(--fonte-titulo-secao);
+    line-height: 1.25;
+    font-weight: var(--peso-titulo-secao);
+}
+
+.panel__header p,
+.section__header p {
+    margin-top: 3px;
+
+    font-size: var(--fonte-subtitulo-secao);
+    line-height: 1.4;
+
+    color: var(--text-muted);
+}
+
+.panel__link {
+    flex: 0 0 auto;
+
+    font-size: var(--fonte-texto-auxiliar);
+    font-weight: 700;
+
+    color: var(--blue-600);
+}
+
+
+/* =========================================================
+   15.1 CABEÇALHO DESTACADO COMPACTO
+   ========================================================= */
+
+.cabecalho-destaque {
+    min-height: var(--altura-cabecalho-destaque);
+    padding: var(--padding-cabecalho-destaque-y) var(--padding-cabecalho-destaque-x);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+
+    color: var(--texto-cabecalho-destaque);
+    background: var(--fundo-cabecalho-destaque);
+    box-shadow: var(--sombra-cabecalho-destaque);
+}
+
+.cabecalho-destaque h3 {
+    margin: 0;
+
+    color: var(--texto-cabecalho-destaque);
+
+    font-size: 14px;
+    line-height: 1.2;
+    font-weight: var(--peso-titulo-secao);
+}
+
+.cabecalho-destaque p {
+    margin-top: 2px;
+
+    color: var(--texto-cabecalho-destaque-suave);
+
+    font-size: 11px;
+    line-height: 1.25;
+}
+
+.cabecalho-destaque__toggle {
+    width: 28px;
+    min-width: 28px;
+    height: 28px;
+    min-height: 28px;
+    padding: 0;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 28px;
+
+    color: var(--white);
+    background: var(--fundo-controle-cabecalho-destaque);
+    border: none;
+    border-radius: var(--radius-full);
+    box-shadow: none;
+
+    cursor: pointer;
+
+    transition: background-color var(--transition-default);
+}
+
+.cabecalho-destaque__toggle:hover {
+    background: var(--fundo-controle-cabecalho-destaque-hover);
+    transform: none;
+}
+
+.cabecalho-destaque__toggle-icon {
+    width: 8px;
+    height: 8px;
+
+    display: block;
+
+    border-right: 2px solid var(--white);
+    border-bottom: 2px solid var(--white);
+
+    transform: rotate(45deg);
+
+    transition: transform var(--transition-default);
+}
+
+.cabecalho-destaque__toggle[aria-expanded="true"] .cabecalho-destaque__toggle-icon {
+    transform: rotate(225deg);
+}
+
+
+/* =========================================================
+   15.2 PAINEL RETRÁTIL E CABEÇALHO ENCAIXADO
+   ========================================================= */
+
+.painel-stack {
+    display: grid;
+    gap: var(--space-5);
+}
+
+.painel-stack > .panel {
+    min-width: 0;
+}
+
+.cabecalho-destaque--encaixado {
+    margin: calc(var(--space-4) * -1) calc(var(--space-4) * -1) var(--space-4);
+
+    border-bottom: 1px solid var(--borda-cabecalho-destaque);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.painel-retratil {
+    overflow: hidden;
+}
+
+.painel-retratil__header {
+    cursor: pointer;
+
+    transition:
+        margin-bottom var(--transition-default),
+        border-radius var(--transition-default);
+}
+
+.painel-retratil__conteudo {
+    display: grid;
+    grid-template-rows: 1fr;
+
+    opacity: 1;
+
+    transition:
+        grid-template-rows var(--transition-default),
+        opacity var(--transition-default);
+}
+
+.painel-retratil__conteudo-inner {
+    min-height: 0;
+    overflow: hidden;
+}
+
+.painel-retratil.is-collapsed .painel-retratil__header {
+    margin-bottom: calc(var(--space-4) * -1);
+    border-radius: var(--radius-lg);
+}
+
+.painel-retratil.is-collapsed .painel-retratil__header p {
+    display: none;
+}
+
+.painel-retratil.is-collapsed .painel-retratil__conteudo {
+    grid-template-rows: 0fr;
+    opacity: 0;
+}
+
+.menu-acoes-trigger {
+    width: 36px;
+    min-width: 36px;
+    min-height: 36px;
+    padding: 0;
+
+    font-size: var(--fonte-titulo-secao);
+}
+
+.lista-entidades__acoes > .menu-acoes-trigger {
+    width: 36px;
+    justify-self: end;
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+    .painel-retratil__header,
+    .painel-retratil__conteudo {
+        transition: none;
+    }
+}
+
+@media (max-width: 430px) {
+    .cabecalho-destaque--encaixado {
+        margin: calc(var(--space-3) * -1) calc(var(--space-3) * -1) var(--space-3);
+        border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    }
+
+    .painel-retratil.is-collapsed .painel-retratil__header {
+        margin-bottom: calc(var(--space-3) * -1);
+        border-radius: var(--radius-sm);
+    }
+}
+
+
+/* =========================================================
+   16. MENU DO USUÁRIO
+   ========================================================= */
+
+.user-menu {
+    position: relative;
+
+    margin-left: auto;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: flex-end;
+
+    flex: 0 0 auto;
+}
+
+.user-avatar-btn {
+    width: 42px;
+    height: 42px;
+
+    padding: 2px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(255, 255, 255, 0.14);
+
+    border: 1px solid rgba(255, 255, 255, 0.48);
+
+    border-radius: 50%;
+
+    cursor: pointer;
+
+    transition:
+        background-color var(--transition-fast),
+        border-color var(--transition-fast),
+        box-shadow var(--transition-fast),
+        transform var(--transition-fast);
+}
+
+.content__user-avatar,
+.user-dropdown__avatar {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 auto;
+
+    font-weight: 700;
+
+    border-radius: 50%;
+}
+
+.content__user-avatar {
+    width: 36px;
+    height: 36px;
+
+    color: var(--blue-600);
+
+    background: var(--white);
+
+    border: 1px solid var(--blue-200);
+
+    font-size: var(--fonte-texto-auxiliar);
+
+    box-shadow:
+        0 4px 12px rgba(15, 23, 42, 0.16);
+
+    transition:
+        transform var(--transition-fast),
+        box-shadow var(--transition-fast);
+}
+
+.user-dropdown__avatar {
+    color: var(--white);
+
+    background:
+        linear-gradient(135deg,
+            var(--blue-600),
+            var(--blue-500));
+}
+
+.user-avatar-btn:hover {
+    background: rgba(255, 255, 255, 0.22);
+
+    border-color: rgba(255, 255, 255, 0.72);
+
+    box-shadow:
+        0 4px 14px rgba(15, 23, 42, 0.16);
+}
+
+.user-avatar-btn:hover .content__user-avatar {
+    transform: scale(1.03);
+
+    box-shadow:
+        0 6px 16px rgba(15, 23, 42, 0.20);
+}
+
+.user-avatar-btn:active {
+    transform: scale(0.97);
+}
+
+.user-avatar-btn:focus-visible {
+    outline: 2px solid var(--white);
+    outline-offset: 2px;
+}
+
+
+/* =========================================================
+   ANIMAÇÃO COMPARTILHADA DE MENUS FLUTUANTES
+   Usada pelo menu do usuário e pelo menu de ações "⋮".
+   ========================================================= */
+
+@keyframes caige-dropdown-entrar {
+    from {
+        opacity: 0;
+        transform:
+            translateY(-8px)
+            scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform:
+            translateY(0)
+            scale(1);
+    }
+}
+
+@keyframes caige-dropdown-sair {
+    from {
+        opacity: 1;
+        transform:
+            translateY(0)
+            scale(1);
+    }
+
+    to {
+        opacity: 0;
+        transform:
+            translateY(-6px)
+            scale(0.98);
+    }
+}
+
+/* =========================================================
+   17. DROPDOWN DO USUÁRIO
+   ========================================================= */
+
+.user-dropdown {
+    position: absolute;
+
+    top: calc(100% + 10px);
+    right: 0;
+
+    z-index: var(--z-dropdown);
+
+    width: 270px;
+
+    display: none;
+
+    background: var(--white);
+
+    border: 1px solid var(--border-default);
+
+    border-radius: var(--radius-md);
+
+    box-shadow: var(--shadow-lg);
+
+    overflow: hidden;
+}
+
+.user-dropdown.active,
+.user-dropdown.open,
+.user-dropdown.show,
+.user-dropdown--open,
+.user-menu.active .user-dropdown,
+.user-menu.open .user-dropdown {
+    display: block;
+
+    transform-origin: top right;
+
+    animation:
+        caige-dropdown-entrar var(--transition-default) both;
+}
+
+.user-dropdown__header {
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    padding: 14px;
+
+    color: var(--white);
+
+    background:
+        linear-gradient(135deg,
+            var(--blue-600),
+            var(--blue-700));
+}
+
+.user-dropdown__avatar {
+    width: 38px;
+    height: 38px;
+
+    font-size: var(--fonte-label);
+
+    background:
+        rgba(255, 255, 255, 0.18);
+
+    border:
+        1px solid rgba(255, 255, 255, 0.22);
+}
+
+.user-dropdown__identity {
+    min-width: 0;
+
+    flex: 1;
+}
+
+.user-dropdown__name {
+    font-size: var(--fonte-navegacao);
+    line-height: 1.25;
+    font-weight: 700;
+
+    color: var(--white);
+}
+
+.user-dropdown__email {
+    margin-top: 2px;
+
+    font-size: var(--fonte-texto-auxiliar);
+    line-height: 1.25;
+
+    color:
+        rgba(255, 255, 255, 0.84);
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+.user-dropdown__body {
+    padding: 7px;
+}
+
+.user-dropdown__item {
+    width: 100%;
+
+    min-height: 38px;
+
+    padding: 8px 10px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    color: var(--gray-700);
+
+    background: transparent;
+
+    border: none;
+
+    border-radius: var(--radius-sm);
+
+    font-family: inherit;
+    font-size: var(--fonte-navegacao);
+    line-height: 1.25;
+    font-weight: 600;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition:
+        background-color var(--transition-default),
+        color var(--transition-default);
+}
+
+.user-dropdown__item:hover {
+    color: var(--blue-700);
+
+    background: var(--blue-50);
+}
+
+.user-dropdown__item-icon {
+    width: 20px;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+}
+
+.user-dropdown__item--danger {
+    color: var(--danger-600);
+}
+
+.user-dropdown__item--danger:hover {
+    color: var(--danger-700);
+
+    background: var(--danger-50);
+}
+
+.user-dropdown__divider {
+    height: 1px;
+
+    margin: 5px 3px;
+
+    background: var(--gray-200);
+}
+
+
+/* =========================================================
+   18. MODAL - OVERLAY
+   ========================================================= */
+
+.modal,
+.modal-overlay {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: var(--z-modal);
+
+    display: none;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background:
+        rgba(15, 23, 42, 0.48);
+
+    backdrop-filter: blur(4px);
+
+    -webkit-backdrop-filter: blur(4px);
+}
+
+
+/* Compatibilidade com diferentes scripts atuais */
+.modal.active,
+.modal.open,
+.modal.show,
+.modal.modal--open,
+.modal[aria-hidden="false"],
+.modal-overlay.active,
+.modal-overlay.open,
+.modal-overlay.show {
+    display: flex;
+}
+
+
+/* =========================================================
+   19. CONTEÚDO DO MODAL
+   ========================================================= */
+
+.modal__content,
+.questionnaire-modal {
+    width: min(520px, 100%);
+
+    max-height:
+        calc(100vh - 40px);
+
+    max-height:
+        calc(100svh - 40px);
+
+    display: flex;
+
+    flex-direction: column;
+
+    background: var(--white);
+
+    border: 1px solid var(--border-default);
+
+    border-radius: var(--radius-xl);
+
+    box-shadow: var(--shadow-xl);
+
+    overflow: hidden;
+
+    animation:
+        caige-modal-enter 0.18s ease;
+}
+
+@keyframes caige-modal-enter {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(8px) scale(0.985);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0) scale(1);
+    }
+}
+
+
+/* =========================================================
+   20. CABEÇALHO DO MODAL
+   ========================================================= */
+
+.modal__header {
+    min-height: 58px;
+
+    padding: 14px 18px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    border-bottom:
+        1px solid var(--gray-200);
+}
+
+.modal__title {
+    margin: 0;
+
+    font-size: 17px;
+    line-height: 1.2;
+    font-weight: 700;
+
+    color: var(--text-primary);
+}
+
+.modal__header>.modal__close {
+    width: 34px;
+    height: 34px;
+
+    flex: 0 0 auto;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    color: var(--gray-500);
+
+    background: var(--gray-100);
+
+    border: none;
+
+    border-radius: var(--radius-xs);
+
+    font-size: 21px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition:
+        background-color var(--transition-default),
+        color var(--transition-default);
+}
+
+.modal__header>.modal__close:hover {
+    color: var(--gray-900);
+
+    background: var(--gray-200);
+}
+
+/* Variação global para modais que exigem cabeçalho destacado CAIGE. */
+.modal__header--destaque {
+    color: var(--texto-cabecalho-destaque);
+    background: var(--fundo-cabecalho-destaque);
+    border-bottom-color: var(--borda-cabecalho-destaque);
+}
+
+.modal__header--destaque .modal__title {
+    color: var(--texto-cabecalho-destaque);
+}
+
+.modal__header--destaque p {
+    color: var(--texto-cabecalho-destaque-suave);
+}
+
+.modal__header--destaque > .modal__close {
+    color: var(--texto-cabecalho-destaque);
+    background: var(--fundo-controle-cabecalho-destaque);
+}
+
+.modal__header--destaque > .modal__close:hover {
+    color: var(--texto-cabecalho-destaque);
+    background: var(--fundo-controle-cabecalho-destaque-hover);
+}
+
+
+
+/* Botões de ação que também fecham o modal não devem herdar
+   a aparência circular do botão X do cabeçalho. */
+.modal__form-actions .modal__close {
+    width: auto;
+    height: auto;
+
+    flex: initial;
+
+    padding: 9px 14px;
+
+    display: inline-flex;
+
+    border-radius: var(--radius-md);
+
+    font-size: 13px;
+    line-height: 1.2;
+}
+
+
+/* =========================================================
+   21. CORPO DO MODAL
+   ========================================================= */
+
+.modal__body {
+    padding: 18px;
+
+    overflow-y: auto;
+
+    overscroll-behavior: contain;
+}
+
+
+/* =========================================================
+   22. FORMULÁRIO DO MODAL
+   ========================================================= */
+
+.modal__form {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 14px;
+}
+
+.modal__form-group {
+    margin: 0;
+}
+
+.modal__form-actions {
+    padding-top: 4px;
+}
+
+
+/* =========================================================
+   23. ABAS
+   ========================================================= */
+
+.account-tabs__navigation,
+.admin-tabs,
+.questionnaire-tabs {
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    padding: 4px;
+
+    background: var(--gray-100);
+
+    border-radius: var(--radius-md);
+}
+
+.account-tab-btn,
+.admin-tab,
+.questionnaire-tab-btn,
+.tab-btn {
+    min-height: 36px;
+
+    padding: 8px 12px;
+
+    flex: 1;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    color: var(--gray-500);
+
+    background: transparent;
+
+    border: none;
+
+    border-radius: var(--radius-md);
+
+    font-family: inherit;
+    font-size: var(--fonte-tab);
+    line-height: 1.2;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        color var(--transition-default),
+        background-color var(--transition-default),
+        box-shadow var(--transition-default);
+}
+
+.account-tab-btn:hover,
+.admin-tab:hover,
+.questionnaire-tab-btn:hover,
+.tab-btn:hover {
+    color: var(--blue-700);
+}
+
+.account-tab-btn--active,
+.account-tab-btn.active,
+.admin-tab--active,
+.admin-tab.active,
+.questionnaire-tab-btn--active,
+.questionnaire-tab-btn.active,
+.tab-btn--active,
+.tab-btn.active {
+    color: var(--blue-700);
+
+    background: var(--white);
+
+    box-shadow: var(--shadow-xs);
+}
+
+.account__tab--hidden {
+    display: none;
+}
+
+
+
+/* =========================================================
+   23.1 GUIAS DE TRABALHO
+   ========================================================= */
+
+.workspace-tabs {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: var(--space-3);
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    scrollbar-width: thin;
+}
+
+.workspace-tab {
+    position: relative;
+
+    min-height: 34px;
+
+    display: inline-flex;
+    align-items: center;
+
+    flex: 0 0 auto;
+
+    color: var(--gray-500);
+    background: transparent;
+
+    border: 0;
+
+    white-space: nowrap;
+}
+
+.workspace-tab::after {
+    content: "";
+
+    position: absolute;
+
+    left: 50%;
+    bottom: 0;
+
+    width: 0;
+    height: 2px;
+
+    background: var(--blue-600);
+
+    border-radius: var(--radius-full);
+
+    transform: translateX(-50%);
+
+    transition:
+        width var(--transition-default),
+        left var(--transition-default),
+        transform var(--transition-default);
+}
+
+.workspace-tab:hover::after,
+.workspace-tab--active::after {
+    left: 0;
+
+    width: 100%;
+
+    transform: translateX(0);
+}
+
+.workspace-tab__link {
+    min-height: 34px;
+
+    padding: 6px 3px;
+
+    display: inline-flex;
+    align-items: center;
+
+    color: inherit;
+
+    font-size: 11px;
+    line-height: 1.2;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.workspace-tab:hover,
+.workspace-tab--active {
+    color: var(--blue-700);
+}
+
+.workspace-tab--active .workspace-tab__link {
+    font-weight: 700;
+}
+
+.workspace-tab__close {
+    width: 0;
+    height: 22px;
+
+    margin-left: 0;
+    padding: 0;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    color: var(--gray-400);
+    background: transparent;
+
+    border: none;
+    border-radius: var(--radius-xs);
+
+    font-size: 15px;
+    line-height: 1;
+    font-weight: 700;
+
+    opacity: 0;
+    overflow: hidden;
+
+    cursor: pointer;
+
+    transform: translateX(-4px);
+
+    transition:
+        width var(--transition-default),
+        margin-left var(--transition-default),
+        opacity var(--transition-default),
+        transform var(--transition-default),
+        color var(--transition-default),
+        background-color var(--transition-default);
+}
+
+.workspace-tab:hover .workspace-tab__close,
+.workspace-tab:focus-within .workspace-tab__close {
+    width: 22px;
+
+    margin-left: 3px;
+
+    opacity: 1;
+
+    transform: translateX(0);
+}
+
+.workspace-tab__close:hover,
+.workspace-tab__close:focus-visible {
+    color: var(--danger-600);
+
+    background: rgba(220, 38, 38, 0.06);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .workspace-tab::after,
+    .workspace-tab__close {
+        transition: none;
+    }
+}
+
+/* =========================================================
+   24. TABELA BASE
+   ========================================================= */
+
+.panel__table,
+.table-wrap {
+    width: 100%;
+
+    background: var(--white);
+
+    border: 1px solid var(--border-default);
+
+    border-radius: var(--radius-md);
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   25. ESTADO VAZIO
+   ========================================================= */
+
+.empty-state,
+.table-empty {
+    width: 100%;
+
+    padding: 36px 20px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    color: var(--text-muted);
+}
+
+.empty-state p,
+.table-empty p {
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+
+/* =========================================================
+   25.1 INDICADOR DE CARREGAMENTO
+   ========================================================= */
+
+.loading-spinner {
+    width: 22px;
+    height: 22px;
+
+    display: inline-block;
+
+    border: 3px solid var(--gray-200);
+    border-top-color: var(--blue-500);
+    border-radius: 50%;
+
+    animation: caige-spin 0.8s linear infinite;
+}
+
+@keyframes caige-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* =========================================================
+   26. CAIXAS DE BUSCA
+   ========================================================= */
+
+.search-box {
+    position: relative;
+
+    width: 100%;
+}
+
+.search-box__input {
+    padding-left: 38px;
+}
+
+.search-box__icon {
+    position: absolute;
+
+    top: 50%;
+    left: 13px;
+
+    transform: translateY(-50%);
+
+    pointer-events: none;
+
+    color: var(--gray-400);
+}
+
+
+/* =========================================================
+   27. AVATARES GENÉRICOS
+   ========================================================= */
+
+.person-avatar,
+.profile-avatar,
+.patient-card__avatar {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 auto;
+
+    color: var(--blue-700);
+
+    background: var(--blue-100);
+
+    font-weight: 700;
+
+    border-radius: 50%;
+}
+
+
+/* =========================================================
+   28. TEXTO DE PESSOA
+   ========================================================= */
+
+.person-name,
+.patient-card__name {
+    font-weight: 700;
+
+    color: var(--text-primary);
+}
+
+.person-sub,
+.patient-card__info {
+    color: var(--text-muted);
+}
+
+
+/* =========================================================
+   29. PAGINAÇÃO
+   Estrutura pronta para uso posterior.
+   ========================================================= */
+
+.pagination {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+}
+
+.page-btn {
+    min-width: 36px;
+
+    padding-left: 10px;
+    padding-right: 10px;
+
+    color: var(--gray-700);
+
+    background: var(--white);
+
+    border: 1px solid var(--gray-200);
+
+    box-shadow: none;
+}
+
+.page-btn:hover {
+    color: var(--blue-700);
+
+    border-color: var(--blue-300);
+
+    background: var(--blue-50);
+}
+
+.page-btn.active,
+.page-btn--active {
+    color: var(--white);
+
+    background: var(--blue-600);
+
+    border-color: var(--blue-600);
+}
+
+
+/* =========================================================
+   30. MENSAGENS DE SUPORTE
+   ========================================================= */
+
+.hint,
+.list-meta,
+.page-indicator {
+    font-size: var(--fonte-texto-auxiliar);
+    line-height: 1.4;
+
+    color: var(--text-muted);
+}
+
+
+/* =========================================================
+   31. NOTIFICAÇÕES / TOAST
+   Feedback compacto com fundo semântico suave.
+   ========================================================= */
+
+.notification-container,
+.notifications-container,
+.toast-container {
+    position: fixed;
+
+    top: 14px;
+    right: 14px;
+
+    z-index: var(--z-toast);
+
+    width: min(280px, calc(100vw - 28px));
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    pointer-events: none;
+}
+
+.notification,
+.toast {
+    position: relative;
+    overflow: hidden;
+
+    width: 100%;
+    min-height: 46px;
+
+    padding: 9px 9px 11px 10px;
+
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    color: var(--text-primary);
+    background: var(--surface);
+
+    border: 1px solid var(--border-strong);
+    border-left: 4px solid var(--blue-600);
+    border-radius: var(--radius-md);
+
+    box-shadow: var(--shadow-md);
+
+    pointer-events: auto;
+}
+
+.notification--success,
+.toast--success {
+    border-left-color: var(--success-600);
+}
+
+.notification--error,
+.notification--danger,
+.toast--error,
+.toast--danger {
+    border-left-color: var(--danger-600);
+}
+
+.notification--warning,
+.toast--warning {
+    border-left-color: var(--warning-500);
+}
+
+.notification--info,
+.toast--info {
+    border-left-color: var(--blue-600);
+}
+
+.toast__icon,
+.notification__icon {
+    width: 26px;
+    height: 26px;
+
+    flex: 0 0 26px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 4px;
+
+    border: 1px solid currentColor;
+    border-radius: var(--radius-sm);
+
+    background: var(--surface-soft);
+}
+
+.toast__icon svg,
+.notification__icon svg {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.35;
+}
+
+.toast__close svg,
+.notification__close svg {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.15;
+}
+
+.toast--success .toast__icon,
+.notification--success .notification__icon {
+    color: var(--success-600);
+}
+
+.toast--warning .toast__icon,
+.notification--warning .notification__icon {
+    color: var(--warning-700);
+}
+
+.toast--error .toast__icon,
+.toast--danger .toast__icon,
+.notification--error .notification__icon,
+.notification--danger .notification__icon {
+    color: var(--danger-600);
+}
+
+.toast--info .toast__icon,
+.notification--info .notification__icon {
+    color: var(--blue-600);
+}
+
+.toast__content,
+.notification__content {
+    flex: 1;
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.toast__message,
+.notification__message {
+    color: var(--text-primary);
+
+    font-size: 12px;
+    line-height: 1.35;
+    font-weight: 700;
+
+    word-break: break-word;
+}
+
+.toast__close,
+.notification__close {
+    width: 20px;
+    height: 20px;
+
+    flex: 0 0 20px;
+
+    padding: 3px;
+    margin: 0 0 0 2px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    color: var(--gray-500);
+    background: transparent;
+
+    border: 1px solid transparent;
+    border-radius: var(--radius-xs);
+
+    cursor: pointer;
+
+    transition:
+        color var(--transition-fast),
+        background-color var(--transition-fast),
+        border-color var(--transition-fast);
+}
+
+.toast__close:hover,
+.notification__close:hover {
+    color: var(--gray-800);
+    background: var(--gray-100);
+    border-color: var(--gray-200);
+}
+
+/* Barra de progresso do Toast */
+.toast__progress,
+.notification__progress {
+    position: absolute;
+
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    height: 3px;
+
+    background: rgba(255, 255, 255, 0.38);
+    overflow: hidden;
+}
+
+.toast__progress-bar,
+.notification__progress-bar {
+    height: 100%;
+    width: 100%;
+
+    transform-origin: left center;
+    animation: caige-toast-progress linear forwards;
+}
+
+.toast--success .toast__progress-bar,
+.notification--success .notification__progress-bar {
+    background: #16a34a;
+}
+
+.toast--warning .toast__progress-bar,
+.notification--warning .notification__progress-bar {
+    background: #d97706;
+}
+
+.toast--error .toast__progress-bar,
+.toast--danger .toast__progress-bar,
+.notification--error .notification__progress-bar,
+.notification--danger .notification__progress-bar {
+    background: #ef4444;
+}
+
+.toast--info .toast__progress-bar,
+.notification--info .notification__progress-bar {
+    background: #3b82f6;
+}
+
+.toast.is-paused .toast__progress-bar,
+.notification.is-paused .notification__progress-bar {
+    animation-play-state: paused;
+}
+
+@keyframes caige-toast-progress {
+    from {
+        transform: scaleX(1);
+    }
+    to {
+        transform: scaleX(0);
+    }
+}
+
+@keyframes caige-toast-enter {
+    from {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes caige-toast-exit {
+    from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-6px) scale(0.98);
+    }
+}
+
+.toast.is-entering,
+.notification.is-entering {
+    animation: caige-toast-enter 0.25s ease-out forwards;
+}
+
+.toast.is-exiting,
+.notification.is-exiting {
+    animation: caige-toast-exit 0.2s ease-in forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .toast.is-entering,
+    .notification.is-entering,
+    .toast.is-exiting,
+    .notification.is-exiting {
+        animation: none;
+        transition: none;
+    }
+
+    .toast__progress,
+    .notification__progress {
+        display: none;
+    }
+}
+
+
+/* =========================================================
+   31.1 MODAL DE CONFIRMAÇÃO GLOBAL
+   ========================================================= */
+
+.modal-confirmacao-overlay {
+    position: fixed;
+    inset: 0;
+
+    z-index: var(--z-modal);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 16px;
+
+    background: rgba(15, 23, 42, 0.54);
+
+    backdrop-filter: blur(1.5px);
+
+    opacity: 0;
+    pointer-events: none;
+
+    transition: opacity 0.18s ease-out;
+}
+
+.modal-confirmacao-overlay.active,
+.modal-confirmacao-overlay.modal--open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-confirmacao-overlay.is-exiting {
+    opacity: 0;
+}
+
+.modal-confirmacao__card {
+    width: min(500px, 100%);
+    max-width: 500px;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border-strong);
+    border-left: 4px solid var(--blue-600);
+    border-radius: var(--radius-lg);
+
+    box-shadow: var(--shadow-xl);
+
+    transform: translateY(8px) scale(0.985);
+
+    transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-confirmacao--primaria {
+    border-left-color: var(--blue-600);
+}
+
+.modal-confirmacao--aviso {
+    border-left-color: var(--warning-500);
+}
+
+.modal-confirmacao--sucesso {
+    border-left-color: var(--success-600);
+}
+
+.modal-confirmacao--perigo {
+    border-left-color: var(--danger-600);
+}
+
+.modal-confirmacao-overlay.active .modal-confirmacao__card,
+.modal-confirmacao-overlay.modal--open .modal-confirmacao__card {
+    transform: translateY(0) scale(1);
+}
+
+.modal-confirmacao-overlay.is-exiting .modal-confirmacao__card {
+    transform: translateY(8px) scale(0.985);
+}
+
+.modal-confirmacao__header {
+    display: grid;
+    grid-template-columns: 36px minmax(0, 1fr) 28px;
+    align-items: center;
+    gap: 12px;
+
+    padding: 18px 20px 10px;
+}
+
+.modal-confirmacao__icone-wrap {
+    width: 34px;
+    height: 34px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 7px;
+
+    flex-shrink: 0;
+
+    border: 1px solid currentColor;
+    border-radius: var(--radius-sm);
+
+    background: var(--surface-soft);
+}
+
+.modal-confirmacao__icone-wrap svg {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.25;
+}
+
+.modal-confirmacao__icone--primaria {
+    color: var(--blue-600);
+}
+
+.modal-confirmacao__icone--aviso {
+    color: var(--warning-700);
+}
+
+.modal-confirmacao__icone--sucesso {
+    color: var(--success-600);
+}
+
+.modal-confirmacao__icone--perigo {
+    color: var(--danger-600);
+}
+
+.modal-confirmacao__titulo {
+    margin: 0;
+
+    color: var(--text-primary);
+
+    font-size: 18px;
+    line-height: 1.25;
+    font-weight: 700;
+}
+
+.modal-confirmacao__fechar {
+    width: 28px;
+    height: 28px;
+
+    padding: 5px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    color: var(--gray-500);
+    background: transparent;
+
+    border: 1px solid transparent;
+    border-radius: var(--radius-xs);
+
+    cursor: pointer;
+
+    transition:
+        background-color var(--transition-fast),
+        border-color var(--transition-fast),
+        color var(--transition-fast);
+}
+
+.modal-confirmacao__fechar svg {
+    width: 100%;
+    height: 100%;
+
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.15;
+}
+
+.modal-confirmacao__fechar:hover {
+    color: var(--gray-900);
+    background: var(--gray-100);
+    border-color: var(--gray-200);
+}
+
+.modal-confirmacao__body {
+    padding: 4px 20px 18px 68px;
+}
+
+.modal-confirmacao__mensagem {
+    margin: 0;
+
+    color: var(--text-secondary);
+
+    font-size: var(--fonte-corpo, 14px);
+    line-height: 1.5;
+
+    word-break: break-word;
+}
+
+.modal-confirmacao__acoes {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+
+    padding: 12px 20px;
+
+    background: var(--surface-soft);
+
+    border-top: 1px solid var(--border-default);
+}
+
+.modal-confirmacao__acoes .modal__btn {
+    min-height: 36px;
+
+    padding: 8px 14px;
+
+    border-radius: var(--radius-sm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .modal-confirmacao-overlay,
+    .modal-confirmacao__card {
+        transition: none;
+        transform: none;
+    }
+}
+
+
+/* =========================================================
+   32. UTILITÁRIOS DE COMPONENTES
+   ========================================================= */
+
+.surface {
+    background: var(--surface);
+
+    border: 1px solid var(--border-default);
+
+    border-radius: var(--radius-lg);
+
+    box-shadow: var(--shadow-md);
+}
+
+.text-muted {
+    color: var(--text-muted);
+}
+
+.text-danger {
+    color: var(--danger-600);
+}
+
+.text-success {
+    color: var(--success-600);
+}
+
+.text-center {
+    text-align: center;
+}
+
+.w-full {
+    width: 100%;
+}
+
+/* =========================================================
+   30. SISTEMA GLOBAL DE FORMULÁRIOS / MODAIS / PAGINAÇÃO
+   ========================================================= */
+
+/* ---------- Campos reutilizáveis ---------- */
+
+.form-control,
+.modal__form input:not([type="checkbox"]):not([type="radio"]),
+.modal__form select,
+.modal__form textarea {
+    width: 100%;
+    min-width: 0;
+
+    color: var(--text-primary);
+    background: var(--white);
+
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+
+    font-family: inherit;
+
+    outline: none;
+
+    transition:
+        border-color var(--transition-default),
+        box-shadow var(--transition-default),
+        background-color var(--transition-default);
+}
+
+.form-control:focus,
+.modal__form input:not([type="checkbox"]):not([type="radio"]):focus,
+.modal__form select:focus,
+.modal__form textarea:focus {
+    border-color: var(--blue-400);
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.10);
+}
+
+.modal__form input:not([type="checkbox"]):not([type="radio"]),
+.modal__form select {
+    min-height: 38px;
+
+    padding:
+        8px 10px;
+
+    font-size: var(--fonte-corpo);
+    line-height: 1.2;
+}
+
+.modal__form textarea {
+    min-height: 92px;
+
+    padding:
+        9px 10px;
+
+    resize: vertical;
+
+    font-size: var(--fonte-corpo);
+    line-height: 1.4;
+}
+
+.modal__form-group>label,
+.modal__form-group>span,
+.form-label {
+    margin-bottom: 5px;
+
+    display: block;
+
+    color: var(--gray-700);
+
+    font-size: var(--fonte-label);
+    line-height: 1.2;
+    font-weight: 700;
+}
+
+
+/* ---------- Checkbox reutilizável ---------- */
+
+.checkbox-field {
+    width: fit-content;
+
+    min-height: 26px;
+
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+
+    gap: 7px;
+
+    margin: 0;
+
+    color: var(--gray-700);
+
+    font-size: var(--fonte-label);
+    line-height: 1.2;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.checkbox-field input[type="checkbox"] {
+    appearance: auto;
+
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    min-height: 16px;
+
+    flex: 0 0 16px;
+
+    margin: 0;
+    padding: 0;
+
+    box-shadow: none;
+}
+
+/* ---------- Radio reutilizável ---------- */
+
+.radio-field {
+    width: fit-content;
+    min-height: 26px;
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 7px;
+    margin: 0;
+    color: var(--gray-700);
+    font-size: var(--fonte-label);
+    line-height: 1.2;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.radio-field input[type="radio"] {
+    appearance: auto;
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    min-height: 16px;
+    flex: 0 0 16px;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+    cursor: pointer;
+}
+
+.seletor-escopo-radio {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-2) 0;
+}
+
+
+
+/* ---------- Seletor múltiplo reutilizável ---------- */
+
+.seletor-multiplo {
+    position: relative;
+    width: 100%;
+}
+
+.seletor-multiplo__controle {
+    width: 100%;
+    min-height: 40px;
+    padding: 9px 38px 9px 12px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    color: var(--text-primary);
+    background: var(--white);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-xs);
+    list-style: none;
+    cursor: pointer;
+}
+
+.seletor-multiplo__controle::-webkit-details-marker {
+    display: none;
+}
+
+.seletor-multiplo__controle::after {
+    content: "";
+    width: 7px;
+    height: 7px;
+    position: absolute;
+    right: 14px;
+    border-right: 2px solid var(--gray-600);
+    border-bottom: 2px solid var(--gray-600);
+    transform: rotate(45deg) translateY(-2px);
+    transition: transform var(--transition-default);
+}
+
+.seletor-multiplo[open] .seletor-multiplo__controle {
+    border-color: var(--blue-500);
+    box-shadow: 0 0 0 3px rgba(43, 124, 255, 0.12);
+}
+
+.seletor-multiplo[open] .seletor-multiplo__controle::after {
+    transform: rotate(225deg) translate(-2px, -2px);
+}
+
+.seletor-multiplo__menu {
+    width: 100%;
+    max-height: 240px;
+    padding: var(--space-2);
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    z-index: var(--z-dropdown);
+    overflow-y: auto;
+    background: var(--white);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+}
+
+.seletor-multiplo__opcoes {
+    display: grid;
+    gap: 2px;
+}
+
+.seletor-multiplo .checkbox-field {
+    width: 100%;
+    min-height: 34px;
+    padding: 7px 9px;
+    border-radius: var(--radius-sm);
+}
+
+.seletor-multiplo .checkbox-field:hover {
+    background: var(--blue-50);
+}
+
+.seletor-multiplo__todos {
+    margin-bottom: var(--space-1);
+    border-bottom: 1px solid var(--border-default);
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+}
+
+/* ---------- Modal reutilizável ---------- */
+
+.modal__content {
+    width: min(480px, 100%);
+
+    max-height:
+        calc(100svh - 40px);
+
+    border-radius: var(--radius-lg);
+}
+
+.modal__content--small {
+    width: min(400px, 100%);
+}
+
+.modal__content--medium {
+    width: min(480px, 100%);
+}
+
+.modal__content--large {
+    width: min(620px, 100%);
+}
+
+.modal__header {
+    min-height: 52px;
+
+    padding:
+        11px 14px;
+}
+
+.modal__title {
+    font-size: var(--fonte-titulo-secao);
+}
+
+.modal__header>.modal__close {
+    width: 31px;
+    height: 31px;
+
+    font-size: 18px;
+}
+
+.modal__body {
+    padding: 14px;
+}
+
+.modal__form {
+    gap: 11px;
+}
+
+.modal__form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 7px;
+
+    padding-top: 5px;
+}
+
+.modal__form-actions .modal__btn {
+    min-height: 36px;
+
+    padding:
+        8px 13px;
+
+    font-size: var(--fonte-botao);
+
+    border-radius: var(--radius-md);
+}
+
+
+/* ---------- Seções e listas dentro de modal ---------- */
+
+.modal-section {
+    width: 100%;
+}
+
+.modal-section+.modal-section {
+    margin-top: 13px;
+
+    padding-top: 13px;
+
+    border-top:
+        1px solid var(--gray-100);
+}
+
+.modal-section__title {
+    margin:
+        0 0 9px;
+
+    color: var(--text-primary);
+
+    font-size: var(--fonte-subtitulo-secao);
+    line-height: 1.2;
+    font-weight: 700;
+}
+
+.modal-list {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 6px;
+}
+
+.modal-list-item {
+    width: 100%;
+
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    padding:
+        9px 10px;
+
+    background: var(--surface-soft);
+
+    border:
+        1px solid var(--gray-200);
+
+    border-radius: var(--radius-sm);
+}
+
+.modal-list-item__content {
+    min-width: 0;
+
+    flex: 1;
+}
+
+.modal-list-item__title {
+    color: var(--gray-900);
+
+    font-size: var(--fonte-texto-auxiliar);
+    line-height: 1.25;
+    font-weight: 700;
+}
+
+.modal-list-item__meta {
+    margin-top: 2px;
+
+    color: var(--gray-500);
+
+    font-size: var(--fonte-texto-auxiliar);
+    line-height: 1.3;
+
+    overflow-wrap: anywhere;
+}
+
+
+/* ---------- Controle reutilizável "registros por página" ---------- */
+
+.page-size-control {
+    width: fit-content;
+
+    display: inline-flex;
+    align-items: center;
+
+    gap: 7px;
+
+    color: var(--gray-600);
+
+    font-size: var(--fonte-texto-auxiliar);
+    line-height: 1;
+    font-weight: 600;
+}
+
+.page-size-control select {
+    width: 76px;
+    min-width: 76px;
+    min-height: 32px;
+
+    padding:
+        5px 28px 5px 10px;
+
+    color: var(--gray-800);
+    background-color: var(--white);
+
+    border:
+        1px solid var(--gray-200);
+
+    border-radius: var(--radius-sm);
+
+    font-family: inherit;
+    font-size: var(--fonte-texto-auxiliar);
+    font-weight: 600;
+    line-height: 1.2;
+
+    cursor: pointer;
+}
+
+
+/* ---------- Paginação reutilizável ---------- */
+
+.pagination-bar {
+    width: 100%;
+
+    margin-top: 9px;
+
+    padding-top: 9px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    border-top:
+        1px solid var(--gray-100);
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+
+    gap: 6px;
+}
+
+.pagination-button {
+    min-height: 32px;
+
+    padding:
+        6px 10px;
+
+    color: var(--gray-700);
+    background: var(--white);
+
+    border:
+        1px solid var(--gray-200);
+
+    border-radius: var(--radius-sm);
+
+    font-family: inherit;
+    font-size: var(--fonte-texto-auxiliar);
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.pagination-button:hover:not(:disabled) {
+    color: var(--blue-700);
+    background: var(--blue-50);
+
+    border-color: var(--blue-200);
+}
+
+.pagination-button:disabled {
+    opacity: 0.48;
+
+    cursor: not-allowed;
+}
+
+.pagination-indicator,
+.pagination-summary {
+    color: var(--gray-500);
+
+    font-size: var(--fonte-texto-auxiliar);
+    line-height: 1.2;
+    font-weight: 600;
+}
+
+/* =========================================================
+   31. BUSCA / TOOLBAR DE LISTAGENS
+   Padrão reutilizável para Pacientes, Frequência, Prontuários,
+   Auditoria e demais telas com filtros.
+   ========================================================= */
+
+.list-toolbar {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+}
+
+.list-toolbar__main {
+    min-width: 0;
+
+    flex: 1;
+
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+}
+
+.list-toolbar__actions {
+    flex: 0 0 auto;
+
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+}
+
+.search-box {
+    position: relative;
+
+    width: 100%;
+    min-width: 0;
+}
+
+.search-box__icon {
+    width: 18px;
+    height: 18px;
+
+    position: absolute;
+
+    top: 50%;
+    left: 12px;
+
+    display: grid;
+    place-items: center;
+
+    transform: translateY(-50%);
+
+    color: var(--gray-400);
+
+    pointer-events: none;
+}
+
+.search-box__icon svg {
+    width: 18px;
+    height: 18px;
+
+    display: block;
+}
+
+.search-box__input {
+    width: 100%;
+
+    padding-left: 40px;
+
+    font-size: var(--fonte-corpo);
+}
+
+.filter-select {
+    font-size: var(--fonte-corpo);
+}
+
+@media (max-width: 767px) {
+    .list-toolbar {
+        align-items: stretch;
+        flex-direction: column;
+
+        gap: 7px;
+    }
+
+    .list-toolbar__main {
+        width: 100%;
+
+        display: grid;
+        grid-template-columns: 1fr;
+
+        gap: 6px;
+    }
+
+    .list-toolbar__actions {
+        width: 100%;
+
+        justify-content: space-between;
+
+        gap: 6px;
+    }
+
+    .search-box {
+        grid-column: 1 / -1;
+    }
+
+    .search-box__input,
+    .filter-select {
+        min-height: 36px !important;
+
+        font-size: var(--fonte-corpo) !important;
+    }
+
+    .search-box__input {
+        padding-left: 38px !important;
+    }
+
+    .search-box__icon {
+        width: 16px;
+        height: 16px;
+
+        left: 11px;
+    }
+
+    .search-box__icon svg {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+/* =========================================================
+   32. MENU FLUTUANTE DE AÇÕES
+   ========================================================= */
+
+.floating-actions-menu {
+    min-width: 142px;
+
+    position: fixed;
+    z-index: 10000;
+
+    padding: 5px;
+
+    background: var(--white);
+
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-md);
+
+    box-shadow:
+        0 14px 34px rgba(15, 23, 42, 0.16);
+
+    overflow: hidden;
+
+    transform-origin: top right;
+}
+
+.floating-actions-menu:not([hidden]) {
+    animation:
+        caige-dropdown-entrar var(--transition-default) both;
+}
+
+
+/* Fechamento vem depois das regras de abertura para não ser sobrescrito. */
+.user-dropdown.active.caige-dropdown-closing,
+.user-dropdown.open.caige-dropdown-closing,
+.user-dropdown.show.caige-dropdown-closing,
+.user-dropdown--open.caige-dropdown-closing,
+.user-menu.active .user-dropdown.caige-dropdown-closing,
+.user-menu.open .user-dropdown.caige-dropdown-closing,
+.floating-actions-menu.caige-dropdown-closing:not([hidden]) {
+    pointer-events: none;
+
+    animation:
+        caige-dropdown-sair var(--transition-default) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .user-dropdown.active,
+    .user-dropdown.open,
+    .user-dropdown.show,
+    .user-dropdown--open,
+    .user-menu.active .user-dropdown,
+    .user-menu.open .user-dropdown,
+    .user-dropdown.caige-dropdown-closing,
+    .floating-actions-menu:not([hidden]),
+    .floating-actions-menu.caige-dropdown-closing:not([hidden]) {
+        animation: none;
+    }
+}
+
+.floating-actions-menu__item {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    min-height: 32px;
+
+    padding: 7px 9px;
+
+    color: var(--gray-700);
+    background: transparent;
+
+    border: 0;
+    border-radius: var(--radius-md);
+
+    font-family: inherit;
+    font-size: var(--fonte-texto-auxiliar);
+    line-height: 1.2;
+    font-weight: 600;
+
+    text-align: left;
+
+    cursor: pointer;
+}
+
+.floating-actions-menu__item:hover {
+    color: var(--blue-700);
+    background: var(--blue-50);
+}
+
+.floating-actions-menu__item--danger {
+    color: var(--red-600, #dc2626);
+}
+
+.floating-actions-menu__item--danger:hover {
+    color: var(--red-700, #b91c1c);
+    background: var(--danger-50);
+}
+
+
+/* =========================================================
+   32.1 BOTÃO CONTEXTUAL DE AÇÕES (⋮)
+   Padrão global compartilhado para acionamento de menu de ações
+   ========================================================= */
+
+.actions-toggle,
+.admin-row-actions-toggle,
+.menu-acoes-trigger,
+.paciente-actions-toggle {
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    min-height: 34px;
+
+    box-sizing: border-box;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
+
+    border-radius: var(--radius-xs);
+
+    border: 1px solid var(--blue-200);
+
+    background: var(--blue-50);
+
+    color: var(--blue-600);
+
+    cursor: pointer;
+
+    position: relative;
+
+    box-shadow: none;
+
+    transition:
+        background-color var(--transition-fast),
+        border-color var(--transition-fast),
+        color var(--transition-fast);
+}
+
+.actions-toggle::after,
+.admin-row-actions-toggle::after,
+.menu-acoes-trigger::after,
+.paciente-actions-toggle::after {
+    content: '';
+
+    position: absolute;
+    top: -5px;
+    bottom: -5px;
+    left: -5px;
+    right: -5px;
+}
+
+.actions-toggle:hover,
+.actions-toggle:focus-visible,
+.admin-row-actions-toggle:hover,
+.admin-row-actions-toggle:focus-visible,
+.menu-acoes-trigger:hover,
+.menu-acoes-trigger:focus-visible,
+.paciente-actions-toggle:hover,
+.paciente-actions-toggle:focus-visible {
+    background: var(--blue-100);
+
+    border-color: var(--blue-400);
+
+    color: var(--blue-700);
+}
+
+.actions-toggle:focus-visible,
+.admin-row-actions-toggle:focus-visible,
+.menu-acoes-trigger:focus-visible,
+.paciente-actions-toggle:focus-visible {
+    outline: 2px solid var(--blue-600);
+    outline-offset: 2px;
+}
+
+.actions-toggle:active,
+.admin-row-actions-toggle:active,
+.menu-acoes-trigger:active,
+.paciente-actions-toggle:active {
+    background: var(--blue-600);
+
+    border-color: var(--blue-600);
+
+    color: var(--white);
+}
+
+/* =========================================================
+   34. GRID / TABELA DE DADOS - PADRÃO GLOBAL DO SISTEMA
+   ========================================================= */
+
+/*
+   Duas estruturas podem consumir o mesmo padrão:
+   - <table class="data-table">
+   - <div class="data-grid"> com cabeçalho/linha/célula
+
+   Cores, tipografia, zebra, divisórias e hover pertencem
+   exclusivamente a este componente global.
+*/
+
+.data-table,
+.data-grid {
+    width: 100%;
+
+    background: var(--cor-grid-linha);
+
+    border: 1px solid var(--cor-grid-divisoria);
+    border-radius: var(--radius-md);
+
+    overflow: hidden;
+}
+
+
+/* ---------- TABELA ---------- */
+
+.data-table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.data-table th,
+.data-table td {
+    vertical-align: middle;
+}
+
+.data-table th {
+    padding: 9px 12px;
+
+    color: var(--cor-grid-cabecalho-texto);
+    background: linear-gradient(180deg, var(--blue-800) 0%, var(--blue-700) 100%);
+
+    border-bottom: 1px solid var(--blue-900);
+
+    font-size: var(--fonte-grid-cabecalho);
+    line-height: 1.2;
+    font-weight: var(--peso-grid-cabecalho);
+
+    text-transform: uppercase;
+}
+
+.data-table td {
+    padding: 8px 12px;
+
+    color: var(--gray-700);
+
+    font-size: var(--fonte-grid-corpo);
+    line-height: 1.4;
+}
+
+.data-table th + th {
+    border-left: 1px solid rgba(255, 255, 255, 0.32);
+}
+
+.data-table td + td {
+    border-left: 1px solid var(--cor-grid-divisoria);
+}
+
+.data-table tbody tr + tr td {
+    border-top: 1px solid var(--cor-grid-divisoria);
+}
+
+.data-table tbody tr:nth-child(odd) {
+    background: var(--cor-grid-linha);
+}
+
+.data-table tbody tr:nth-child(even) {
+    background: var(--cor-grid-zebra);
+}
+
+.data-table tbody tr:hover {
+    background: var(--cor-grid-hover);
+}
+
+
+/* ---------- GRADE CSS ---------- */
+
+/*
+   Variante para padrão rótulo/valor (perfil, cartões de informação).
+   Remove propriedades visuais de tabela; apenas layout.
+*/
+.data-grid--profile,
+.data-grid--form {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    overflow: visible;
+}
+
+.data-grid--embedded {
+    border: none;
+    border-radius: 0;
+}
+
+.data-grid__header,
+.data-grid__row {
+    width: 100%;
+    min-width: 0;
+
+    display: grid;
+
+    align-items: stretch;
+
+    gap: 0;
+}
+
+.data-grid__header {
+    color: var(--cor-grid-cabecalho-texto);
+    background: transparent;
+
+    border-bottom: 1px solid var(--blue-900);
+
+    font-size: var(--fonte-grid-cabecalho);
+    line-height: 1.2;
+    font-weight: var(--peso-grid-cabecalho);
+
+    text-transform: uppercase;
+}
+
+.data-grid__header > .data-grid__cell {
+    background: linear-gradient(180deg, var(--blue-800) 0%, var(--blue-700) 100%);
+}
+
+.data-grid__header > .data-grid__cell + .data-grid__cell {
+    border-left-color: rgba(255, 255, 255, 0.32);
+}
+
+.data-grid__row {
+    color: var(--gray-700);
+    background: var(--cor-grid-linha);
+
+    border-bottom: 1px solid var(--cor-grid-divisoria);
+
+    font-size: var(--fonte-grid-corpo);
+    line-height: 1.4;
+
+    transition: background-color var(--transition-default);
+}
+
+.data-grid__row:last-child {
+    border-bottom: none;
+}
+
+/* Corpo separado, como em Movimentações */
+.data-grid__body > .data-grid__row:nth-child(even) {
+    background: var(--cor-grid-zebra);
+}
+
+/* Cabeçalho + linhas como irmãos, como no Painel */
+.data-grid > .data-grid__row:not(.data-grid__header):nth-child(odd) {
+    background: var(--cor-grid-zebra);
+}
+
+.data-grid__row:hover {
+    background: var(--cor-grid-hover);
+}
+
+.data-grid__cell {
+    min-width: 0;
+
+    padding: 8px 12px;
+
+    display: flex;
+    align-items: center;
+
+    overflow-wrap: anywhere;
+}
+
+.data-grid__cell + .data-grid__cell {
+    border-left: 1px solid var(--cor-grid-divisoria);
+}
+
+.data-grid__cell--right {
+    justify-content: flex-end;
+    text-align: right;
+}
+
+.data-grid__cell--center {
+    justify-content: center;
+    text-align: center;
+}
+
+
+/* ---------- PADRÃO RÓTULO/VALOR (.data-field) ---------- */
+
+/*
+   Padrão de apresentação rótulo → valor para campos informativos.
+   Usado em perfis, cartões de detalhes e exibição de dados cadastrais.
+   
+   Estrutura HTML:
+   <div class="data-field">
+       <span class="data-label">Label</span>
+       <span class="data-value">Valor</span>
+   </div>
+*/
+
+.data-field {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.data-field--full {
+    grid-column: 1 / -1;
+}
+
+.data-label {
+    display: block;
+    font-size: var(--fonte-label);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    line-height: 1.2;
+}
+
+.data-value {
+    display: block;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--text-primary);
+    line-height: 1.4;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+/*
+   Layout em grade para padrão rótulo/valor.
+   Usado em perfis, seções de detalhes.
+*/
+.data-grid--2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+}
+
+.data-grid--3 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+}
+
+@media (max-width: 767px) {
+    .data-grid--2,
+    .data-grid--3 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 540px) {
+    .data-grid--2,
+    .data-grid--3 {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* ---------- ALINHAMENTO DESKTOP ---------- */
+
+@media (min-width: 768px) {
+    .data-table th,
+    .data-table td {
+        text-align: center;
+    }
+
+    .data-grid__cell,
+    .data-grid__cell--right,
+    .data-grid__cell--center {
+        justify-content: center;
+        text-align: center;
+    }
+
+    .data-grid__cell > * {
+        text-align: inherit;
+    }
+}
+
+
+/* ---------- REDIMENSIONAMENTO DE COLUNAS ---------- */
+
+@media (min-width: 768px) {
+    .data-table[data-grid-redimensionavel="true"] th,
+    .data-grid[data-grid-redimensionavel="true"] .data-grid__header > .data-grid__cell {
+        position: relative;
+    }
+
+    .data-grid-resize-handle {
+        position: absolute;
+
+        top: 0;
+        right: -4px;
+        z-index: 6;
+
+        width: 8px;
+        height: 100%;
+
+        cursor: col-resize;
+        touch-action: none;
+        user-select: none;
+    }
+
+    .data-grid-resize-handle::after {
+        content: "";
+
+        position: absolute;
+
+        top: 20%;
+        bottom: 20%;
+        left: 50%;
+
+        width: 2px;
+
+        background: transparent;
+
+        border-radius: 999px;
+
+        transform: translateX(-50%);
+
+        transition:
+            background-color var(--transition-default),
+            top var(--transition-default),
+            bottom var(--transition-default);
+    }
+
+    .data-grid-resize-handle:hover::after,
+    body.data-grid--resizing .data-grid-resize-handle--active::after {
+        top: 8%;
+        bottom: 8%;
+
+        background: var(--blue-500);
+    }
+
+    body.data-grid--resizing {
+        cursor: col-resize;
+        user-select: none;
+    }
+}
+
+
+/* =========================================================
+   34.2 REGISTRO ADMINISTRATIVO MOBILE (.admin-record)
+   Padrão global compartilhado para itens e linhas de tabelas/listas no mobile.
+   Fornece superfície clara com zebra visual suave, borda neutra definida,
+   cantos suavizados sem sombra agressiva.
+   ========================================================= */
+
+@media (max-width: 767px) {
+    .admin-record,
+    .data-table tbody tr.admin-record {
+        background: var(--surface);
+        border: 1px solid var(--border-strong);
+        border-left: 3px solid var(--blue-600);
+        border-radius: var(--radius-sm);
+        box-shadow: none;
+        transition:
+            background-color var(--transition-fast),
+            border-color var(--transition-fast);
+    }
+
+    .admin-record:nth-child(odd),
+    .data-table tbody tr.admin-record:nth-child(odd) {
+        background: var(--surface);
+    }
+
+    .admin-record:nth-child(even),
+    .data-table tbody tr.admin-record:nth-child(even) {
+        background: var(--surface-soft);
+    }
+
+    .admin-record:hover,
+    .data-table tbody tr.admin-record:hover {
+        background: var(--blue-50);
+    }
+}
+
+
+/* =========================================================
+   34.2.1 VARIANTE GLOBAL DE ACENTO LATERAL DE REGISTRO (.record-accent)
+   Acento institucional azul à esquerda (3px solid var(--blue-600))
+   para registros administrativos listáveis em telas mobile (<=767px).
+   Gera ritmo visual sem interferir na semântica interna de cada domínio.
+   Consumido por .admin-record, .activities-row, registros do Dashboard
+   e equivalentes.
+   ========================================================= */
+
+@media (max-width: 767px) {
+    .record-accent,
+    .admin-record,
+    .data-table tbody tr.record-accent,
+    .data-table tbody tr.admin-record {
+        border-left: 3px solid var(--blue-600);
+    }
+}
+
+
+/* =========================================================
+   34.3 CONTAINER GLOBAL DE LISTAGEM (.admin-list / .list-shell)
+   Padrão compartilhado para listagens administrativas no mobile (<=767px):
+   - Moldura administrativa com contorno delicado institucional (1px solid var(--blue-200));
+   - Área de registros com scroll interno e altura adaptativa (dvh/clamp);
+   - Rodapé de paginação integrado à base do container;
+   - Sem dependência de domínio; reutilizável por qualquer tela.
+   ========================================================= */
+
+@media (max-width: 767px) {
+    .admin-list,
+    .list-shell {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        min-height: 0;
+        background: var(--surface);
+        border: 1px solid var(--blue-200);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-xs);
+        padding: 8px 8px 0 8px;
+        overflow: hidden;
+        box-sizing: border-box;
+    }
+
+    .admin-list__body,
+    .list-shell__body,
+    .admin-list > .table-wrap,
+    .list-shell > .table-wrap,
+    .admin-list > .data-grid,
+    .list-shell > .data-grid {
+        flex: 1 1 auto;
+        min-height: 0;
+        max-height: clamp(260px, 46dvh, 440px);
+        overflow-y: auto;
+        overflow-x: hidden;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+        padding: 0 2px 4px 0;
+        background: transparent;
+        border: none;
+    }
+
+    .admin-list__footer,
+    .list-shell__footer,
+    .admin-list > .pagination-bar--integrated,
+    .list-shell > .pagination-bar--integrated {
+        flex: 0 0 auto;
+        margin-top: 0;
+        padding: 8px 4px;
+        border-top: 1px solid var(--border-default);
+        background: var(--surface);
+    }
+}
+
+
+/* ---------- BADGE DE EVENTO ---------- */
+
+.event-badge {
+    width: fit-content;
+
+    min-width: 82px;
+    max-width: 150px;
+
+    padding: 4px 9px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: var(--radius-sm);
+
+    font-size: var(--fonte-grid-badge);
+    line-height: 1.15;
+    font-weight: var(--peso-grid-badge);
+
+    text-align: center;
+    white-space: normal;
+}
+
+.event-badge.cadastro {
+    color: #075985;
+    background: #e0f2fe;
+}
+
+.event-badge.edicao,
+.event-badge.reativacao {
+    color: #166534;
+    background: #dcfce7;
+}
+
+.event-badge.delecao {
+    color: #991b1b;
+    background: #fee2e2;
+}
+
+.event-badge.frequencia {
+    color: #1d4ed8;
+    background: #dbeafe;
+}
+
+.event-badge.prontuario {
+    color: #5b21b6;
+    background: #ede9fe;
+}
+
+.event-badge.avaliacao {
+    color: #6b21a8;
+    background: #f3e8ff;
+}
+
+.event-badge.inativacao {
+    color: #9f1239;
+    background: #ffe4e6;
+}
+
+.event-badge.sistema,
+.event-badge.anexo {
+    color: #374151;
+    background: #e5e7eb;
+}
+
+.data-table__center {
+    text-align: center;
+}
+
+.data-table__right {
+    text-align: right;
+}
+
+
+/* =========================================================
+   35. LISTA DE ENTIDADES
+   ========================================================= */
+
+.lista-entidades {
+    max-height: 500px;
+
+    padding-right: 3px;
+
+    overflow-y: auto;
+
+    overscroll-behavior: contain;
+}
+
+.lista-entidades__item {
+    width: 100%;
+
+    margin-bottom: 8px;
+    padding: 10px;
+
+    background: var(--white);
+
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-sm);
+}
+
+.lista-entidades__item--horizontal {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+}
+
+.lista-entidades__item--interativo {
+    transition:
+        border-color var(--transition-default),
+        background-color var(--transition-default),
+        box-shadow var(--transition-default);
+}
+
+.lista-entidades__item--interativo:hover {
+    background: var(--surface-soft);
+
+    border-color: rgba(31, 96, 232, 0.18);
+
+    box-shadow:
+        0 3px 10px rgba(15, 23, 42, 0.04);
+}
+
+.lista-entidades__item--inativo {
+    opacity: 0.62;
+
+    background: var(--gray-50);
+}
+
+.lista-entidades__item--suave {
+    background: var(--gray-50);
+
+    border-color: var(--gray-200);
+}
+
+.lista-entidades__conteudo {
+    min-width: 0;
+
+    flex: 1;
+}
+
+.lista-entidades__titulo {
+    color: var(--gray-900);
+
+    font-size: 11.5px;
+    line-height: 1.25;
+    font-weight: 700;
+
+    overflow-wrap: anywhere;
+}
+
+.lista-entidades__meta {
+    margin-top: 4px;
+
+    color: var(--gray-500);
+
+    font-size: var(--fonte-meta);
+    line-height: 1.3;
+
+    overflow-wrap: anywhere;
+}
+
+.lista-entidades__acoes {
+    flex: 0 0 auto;
+
+    display: flex;
+    align-items: center;
+
+    gap: 5px;
+}
+
+.lista-entidades__vazio {
+    margin: 0;
+
+    padding: 20px;
+
+    color: var(--gray-400);
+
+    font-size: var(--fonte-meta);
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   35. PAGINAÇÃO - PADRÃO GLOBAL DO SISTEMA
+   ========================================================= */
+
+.pagination-bar--integrated {
+    width: 100%;
+
+    margin-top: 12px;
+    padding-top: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 16px;
+
+    border-top: 1px solid var(--gray-200);
+}
+
+.pagination-bar--integrated > .pagination-page-size {
+    margin-right: auto;
+}
+
+/* ---------- Quantidade por página ---------- */
+
+.pagination-page-size {
+    position: relative;
+
+    flex: 0 0 auto;
+
+    display: inline-flex;
+    align-items: center;
+
+    gap: 0;
+}
+
+.pagination-page-size > span {
+    display: none;
+}
+
+.pagination-page-size__native {
+    width: 72px;
+    min-width: 72px;
+    min-height: 32px;
+
+    padding: 5px 26px 5px 8px;
+
+    color: var(--gray-800);
+    background: transparent;
+
+    border: 0;
+    border-bottom: 1px solid var(--gray-400);
+    border-radius: 0;
+
+    box-shadow: none;
+
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+
+/* ---------- Seletor pesquisável desktop ---------- */
+
+.pagination-page-size-picker {
+    position: relative;
+
+    width: 190px;
+
+    flex: 0 0 auto;
+}
+
+.pagination-page-size-picker__button {
+    width: 100%;
+    min-height: 34px;
+
+    padding: 7px 32px 7px 10px;
+
+    display: flex;
+    align-items: center;
+
+    color: var(--gray-800);
+    background: var(--white);
+
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius-md);
+
+    box-shadow: none;
+
+    font-family: inherit;
+    font-size: var(--fonte-texto-auxiliar);
+    line-height: 1.25;
+    font-weight: 600;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition:
+        border-color var(--transition-default),
+        box-shadow var(--transition-default),
+        background-color var(--transition-default);
+}
+
+.pagination-page-size-picker__button:hover,
+.pagination-page-size-picker__button[aria-expanded="true"] {
+    border-color: var(--blue-400);
+    background: var(--blue-50);
+}
+
+.pagination-page-size-picker__button:focus-visible {
+    outline: none;
+
+    border-color: var(--blue-500);
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.pagination-page-size-picker__chevron {
+    position: absolute;
+
+    top: 50%;
+    right: 11px;
+
+    width: 7px;
+    height: 7px;
+
+    border-right: 2px solid var(--gray-500);
+    border-bottom: 2px solid var(--gray-500);
+
+    transform:
+        translateY(-65%)
+        rotate(45deg);
+
+    pointer-events: none;
+
+    transition:
+        transform var(--transition-default);
+}
+
+.pagination-page-size-picker--open
+.pagination-page-size-picker__chevron {
+    transform:
+        translateY(-35%)
+        rotate(225deg);
+}
+
+.pagination-page-size-picker__panel {
+    position: absolute;
+
+    left: 0;
+    top: calc(100% + 6px);
+    bottom: auto;
+    z-index: 80;
+
+    width: 230px;
+    max-height: 270px;
+
+    padding: 8px;
+
+    background: var(--white);
+
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius-md);
+
+    box-shadow:
+        0 12px 30px rgba(15, 23, 42, 0.14);
+
+    overflow: hidden;
+}
+
+.pagination-page-size-picker__search {
+    width: 100%;
+    min-height: 34px;
+
+    margin: 0 0 7px;
+    padding: 7px 10px;
+
+    color: var(--gray-800);
+    background: var(--white);
+
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius-md);
+
+    font-family: inherit;
+    font-size: var(--fonte-texto-auxiliar);
+    line-height: 1.2;
+
+    outline: none;
+}
+
+.pagination-page-size-picker__search:focus {
+    border-color: var(--blue-500);
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.10);
+}
+
+.pagination-page-size-picker__options {
+    max-height: 205px;
+
+    display: grid;
+
+    gap: 3px;
+
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.pagination-page-size-picker__option {
+    width: 100%;
+
+    padding: 8px 9px;
+
+    display: flex;
+    align-items: center;
+
+    color: var(--gray-700);
+    background: transparent;
+
+    border: 0;
+    border-radius: var(--radius-md);
+
+    font-family: inherit;
+    font-size: var(--fonte-texto-auxiliar);
+    line-height: 1.25;
+    font-weight: 500;
+
+    text-align: left;
+
+    cursor: pointer;
+}
+
+.pagination-page-size-picker__option:hover,
+.pagination-page-size-picker__option:focus-visible {
+    color: var(--blue-700);
+    background: var(--blue-50);
+
+    outline: none;
+}
+
+.pagination-page-size-picker__option[aria-selected="true"] {
+    color: var(--white);
+    background: var(--blue-500);
+
+    font-weight: 700;
+}
+
+.pagination-page-size-picker__empty {
+    padding: 10px 8px;
+
+    color: var(--gray-500);
+
+    font-size: var(--fonte-texto-auxiliar);
+    line-height: 1.3;
+
+    text-align: center;
+}
+
+
+/* ---------- Navegação ---------- */
+
+.pagination-navigation {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 4px;
+}
+
+.pagination-nav-button {
+    width: 32px;
+    height: 32px;
+
+    flex: 0 0 32px;
+
+    display: grid;
+    place-items: center;
+
+    padding: 0;
+
+    color: var(--blue-600);
+    background: transparent;
+
+    border: 0;
+    border-radius: var(--radius-md);
+
+    font-family: inherit;
+    font-size: 20px;
+    line-height: 1;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.pagination-nav-button:hover:not(:disabled) {
+    color: var(--blue-700);
+    background: var(--blue-50);
+}
+
+.pagination-nav-button:disabled {
+    color: var(--gray-400);
+
+    opacity: 0.9;
+
+    cursor: not-allowed;
+}
+
+.pagination-page-info {
+    min-width: 0;
+
+    margin: 0 6px;
+
+    color: var(--gray-600);
+
+    font-size: var(--fonte-texto-auxiliar);
+    line-height: 1.2;
+    font-weight: 500;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   26. FLATPICKR
+   ========================================================= */
+
+.flatpickr-calendar {
+    --caige-calendar-width: 276px;
+
+    width: var(--caige-calendar-width);
+    min-width: var(--caige-calendar-width);
+    max-width: var(--caige-calendar-width);
+
+    padding: 6px;
+
+    font-family: var(--font-family);
+    font-size: 12px;
+
+    background: var(--white);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 16px 38px rgba(15, 23, 42, 0.16);
+
+    overflow: hidden;
+}
+
+.flatpickr-calendar .flatpickr-months {
+    position: relative;
+
+    width: 100%;
+    height: 38px;
+    min-height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.flatpickr-calendar .flatpickr-prev-month,
+.flatpickr-calendar .flatpickr-next-month {
+    position: absolute;
+    top: 0;
+
+    width: 34px;
+    height: 34px;
+    padding: 9px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: var(--gray-600);
+}
+
+.flatpickr-calendar .flatpickr-prev-month {
+    left: 0;
+}
+
+.flatpickr-calendar .flatpickr-next-month {
+    right: 0;
+}
+
+.flatpickr-calendar .flatpickr-prev-month:hover svg,
+.flatpickr-calendar .flatpickr-next-month:hover svg {
+    fill: var(--blue-600);
+}
+
+.flatpickr-calendar .flatpickr-current-month {
+    position: absolute;
+    top: 0;
+    left: 34px;
+    right: 34px;
+
+    width: auto;
+    height: 34px;
+    padding: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 5px;
+
+    transform: none;
+
+    font-size: 14px;
+    line-height: 34px;
+    text-align: center;
+}
+
+.flatpickr-calendar .flatpickr-current-month .flatpickr-monthDropdown-months {
+    width: auto;
+    min-width: 78px;
+    max-width: 110px;
+    height: 30px;
+    margin: 0;
+    padding: 0 20px 0 5px;
+
+    color: var(--gray-700);
+    background-color: transparent;
+    border: none;
+    border-radius: var(--radius-md);
+    box-shadow: none;
+
+    font-family: var(--font-family);
+    font-size: 13px;
+    line-height: 30px;
+    font-weight: 500;
+    text-align: center;
+
+    cursor: pointer;
+}
+
+.flatpickr-calendar .flatpickr-current-month .flatpickr-monthDropdown-months:hover {
+    background: var(--gray-100);
+}
+
+.flatpickr-calendar .flatpickr-current-month .numInputWrapper {
+    width: 62px;
+    height: 30px;
+    margin: 0;
+
+    display: flex;
+    align-items: center;
+}
+
+.flatpickr-calendar .flatpickr-current-month .numInputWrapper input.cur-year {
+    width: 100%;
+    height: 30px;
+    min-height: 30px;
+    margin: 0;
+    padding: 0 16px 0 4px;
+
+    color: var(--gray-700);
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-md);
+    box-shadow: none;
+
+    font-family: var(--font-family);
+    font-size: 13px;
+    line-height: 30px;
+    font-weight: 500;
+    text-align: center;
+}
+
+.flatpickr-calendar .flatpickr-current-month .numInputWrapper:hover input.cur-year {
+    background: var(--gray-100);
+}
+
+.flatpickr-calendar .flatpickr-current-month .numInputWrapper span {
+    width: 14px;
+    height: 15px;
+    padding: 0;
+    border: none;
+}
+
+.flatpickr-calendar .flatpickr-weekdays {
+    width: 100%;
+    height: 28px;
+}
+
+.flatpickr-calendar .flatpickr-weekdaycontainer {
+    width: 100%;
+}
+
+.flatpickr-calendar span.flatpickr-weekday {
+    height: 28px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: var(--gray-500);
+
+    font-size: var(--fonte-badge);
+    line-height: 1;
+    font-weight: 700;
+}
+
+.flatpickr-calendar .flatpickr-innerContainer,
+.flatpickr-calendar .flatpickr-rContainer,
+.flatpickr-calendar .flatpickr-days,
+.flatpickr-calendar .dayContainer {
+    width: 100%;
+}
+
+.flatpickr-calendar .dayContainer {
+    min-width: 100%;
+    max-width: 100%;
+    padding: 2px 0 3px;
+}
+
+.flatpickr-calendar .flatpickr-day {
+    width: calc(100% / 7);
+    max-width: calc(100% / 7);
+    height: 34px;
+    line-height: 34px;
+    flex-basis: calc(100% / 7);
+    margin: 0;
+
+    color: var(--gray-700);
+    border-radius: 50%;
+
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.flatpickr-calendar .flatpickr-day:hover {
+    background: var(--blue-50);
+    border-color: var(--blue-100);
+}
+
+.flatpickr-calendar .flatpickr-day.today {
+    color: var(--blue-600);
+    border-color: var(--blue-400);
+}
+
+.flatpickr-calendar .flatpickr-day.selected,
+.flatpickr-calendar .flatpickr-day.startRange,
+.flatpickr-calendar .flatpickr-day.endRange {
+    color: var(--white);
+    background: var(--blue-500);
+    border-color: var(--blue-500);
+    box-shadow: none;
+}
+
+.flatpickr-calendar .flatpickr-day.prevMonthDay,
+.flatpickr-calendar .flatpickr-day.nextMonthDay {
+    color: var(--gray-300);
+}
+
+
+/* ---------- Desktop / mobile ---------- */
+
+@media (min-width: 768px) {
+    .pagination-page-size__native {
+        display: none;
+    }
+}
+
+@media (max-width: 767px) {
+    .pagination-bar--integrated {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+    }
+
+    .pagination-page-size {
+        flex: 0 0 auto;
+        width: auto;
+        display: inline-flex;
+        align-items: center;
+        justify-content: flex-start;
+    }
+
+    .pagination-page-size-picker {
+        display: none;
+    }
+
+    .pagination-page-size__native {
+        width: auto;
+        min-width: 106px;
+        height: 32px;
+        min-height: 32px;
+        padding: 4px 22px 4px 8px;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--gray-700);
+        background-color: var(--white);
+        border: 1px solid var(--border-strong);
+        border-radius: var(--radius-xs);
+        box-shadow: none;
+        cursor: pointer;
+    }
+
+    .pagination-navigation {
+        flex: 0 0 auto;
+        display: inline-flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 3px;
+    }
+
+    .pagination-nav-button {
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        min-height: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        font-size: 18px;
+        line-height: 1;
+        font-weight: 700;
+        border-radius: var(--radius-xs);
+    }
+
+    .pagination-page-info {
+        margin: 0 6px;
+        text-align: center;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--text-secondary);
+        white-space: nowrap;
+    }
+
+    @media (max-width: 359px) {
+        .pagination-navigation {
+            width: 100%;
+            justify-content: space-between;
+        }
+    }
+}
+
+/* =========================================================
+   31.2 TOAST - AJUSTE FINAL MOBILE
+   Mantém o feedback compacto, mas com leitura confortável
+   e proporção semelhante às referências aprovadas.
+   ========================================================= */
+@media (max-width: 767px) {
+    .notification-container,
+    .notifications-container,
+    .toast-container {
+        top: 8px;
+        right: 8px;
+        left: auto;
+        width: min(285px, calc(100vw - 16px));
+        gap: 6px;
+    }
+
+    .notification,
+    .toast {
+        min-height: 44px;
+        padding: 9px 8px 11px 10px;
+        gap: 8px;
+        border-radius: var(--radius-sm);
+    }
+
+    .toast__icon,
+    .notification__icon {
+        width: 16px;
+        height: 16px;
+    }
+
+    .toast__message,
+    .notification__message {
+        font-size: 11.75px;
+        line-height: 1.28;
+    }
+
+    .toast__close,
+    .notification__close {
+        width: 16px;
+        height: 16px;
+        padding: 2px;
+        margin-left: 2px;
+    }
+
+    .toast__progress,
+    .notification__progress {
+        height: 3px;
+    }
+}
+
+/* Componentes compartilhados com acabamento administrativo no desktop. */
+@media (min-width: 1025px) {
+    body.caige-ui-escalada .modal__content,
+    body.caige-ui-escalada .questionnaire-modal {
+        max-height: calc(var(--altura-ui-desktop, 100vh) - 40px);
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus,
+    .field__input:focus,
+    .search-box__input:focus,
+    .filter-select:focus,
+    .order-input:focus {
+        border-color: var(--blue-600);
+        box-shadow: none;
+    }
+
+    .btn--primary,
+    .btn-main,
+    .btn-filter:not(.btn-filter-clear),
+    .btn-create,
+    .modal__btn--primary,
+    .questionnaire-btn--submit {
+        background: linear-gradient(90deg, var(--blue-700) 0%, var(--blue-600) 100%);
+        box-shadow: none;
+    }
+
+    .btn--primary:hover,
+    .btn-main:hover,
+    .btn-filter:not(.btn-filter-clear):hover,
+    .btn-create:hover,
+    .modal__btn--primary:hover,
+    .questionnaire-btn--submit:hover {
+        background: linear-gradient(90deg, var(--blue-800) 0%, var(--blue-700) 100%);
+        box-shadow: none;
+    }
+
+    .btn:hover,
+    .btn-main:hover,
+    .btn-alt:hover,
+    .btn-filter:hover,
+    .btn-create:hover,
+    .modal__btn:hover,
+    .questionnaire-btn:hover,
+    .patient-card__button:hover,
+    .table-action-btn:hover,
+    .page-btn:hover,
+    .card:hover,
+    .card--kpi:hover {
+        transform: none;
+    }
+
+    .user-dropdown__header {
+        background: linear-gradient(90deg, var(--blue-800) 0%, var(--blue-700) 100%);
+    }
+
+    .card__value,
+    .card--kpi .card__value {
+        font-weight: 700;
+        letter-spacing: -0.02em;
+    }
+
+    .card__title,
+    .panel__header h3,
+    .section__header h3,
+    .workspace-tab__link {
+        letter-spacing: -0.01em;
+    }
+
+    .card__delta,
+    .status-pill,
+    .table-tag,
+    .tag,
+    .type-pill {
+        border-radius: var(--radius-sm);
+    }
+
+    .modal,
+    .modal-overlay {
+        background: rgba(15, 23, 42, 0.46);
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+
+    .modal__header > .modal__close {
+        background: transparent;
+        border-radius: var(--radius-xs);
+    }
+
+    .account-tabs__navigation {
+        gap: 18px;
+        padding: 0;
+        background: transparent;
+        border-bottom: 1px solid var(--border-default);
+        border-radius: 0;
+    }
+
+    .account-tab-btn {
+        flex: 0 0 auto;
+        padding: 8px 2px;
+        border-bottom: 2px solid transparent;
+        border-radius: 0;
+    }
+
+    .account-tab-btn--active,
+    .account-tab-btn.active {
+        background: transparent;
+        border-bottom-color: var(--blue-700);
+        box-shadow: none;
+    }
+}
+
+
+/* =========================================================
+   HOTFIX MOBILE V1 - PAGINAÇÃO CANÔNICA
+   No celular a quantidade por página fica fixa pelo componente.
+   Mantém apenas anterior/próxima e o resumo, em barra própria.
+   ========================================================= */
+@media (max-width: 767px) {
+    .pagination-bar--integrated {
+        width: 100%;
+        min-height: 48px;
+        margin-top: 10px;
+        padding: 7px 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--surface);
+        border: 1px solid var(--border-default);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-xs);
+    }
+
+    .pagination-bar--integrated > .pagination-page-size {
+        display: none !important;
+    }
+
+    .pagination-bar--integrated .pagination-navigation {
+        width: 100%;
+        flex: 1 1 auto;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .pagination-bar--integrated .pagination-nav-button {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        min-height: 36px;
+    }
+
+    .pagination-bar--integrated .pagination-nav-button:first-child,
+    .pagination-bar--integrated .pagination-nav-button:last-child {
+        display: none;
+    }
+
+    .pagination-bar--integrated .pagination-page-info {
+        min-width: 118px;
+        margin: 0 4px;
+        font-size: 12px;
+        text-align: center;
+    }
+}
+
+
+/* =========================================================
+   HOTFIX MOBILE V2 - PAGINAÇÃO COMPACTA
+   Recupera a escolha de registros por página no celular,
+   mantendo seletor compacto à esquerda e navegação à direita.
+   ========================================================= */
+@media (max-width: 767px) {
+    .pagination-bar--integrated {
+        min-height: 50px;
+        padding: 7px 9px;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        gap: 8px;
+    }
+
+    .pagination-bar--integrated > .pagination-page-size {
+        display: inline-flex !important;
+        flex: 0 0 auto;
+        margin-right: 0;
+    }
+
+    .pagination-bar--integrated .pagination-page-size-picker {
+        display: none !important;
+    }
+
+    .pagination-bar--integrated .pagination-page-size__native {
+        display: block !important;
+        width: 86px;
+        min-width: 86px;
+        height: 34px;
+        min-height: 34px;
+        padding: 4px 20px 4px 7px;
+        font-size: 11px;
+        font-weight: 600;
+        background: var(--surface);
+        border: 1px solid var(--border-default);
+        border-radius: var(--radius-xs);
+    }
+
+    .pagination-bar--integrated .pagination-navigation {
+        width: auto;
+        flex: 0 1 auto;
+        margin-left: auto;
+        justify-content: flex-end;
+        gap: 3px;
+    }
+
+    .pagination-bar--integrated .pagination-nav-button {
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        min-height: 32px;
+    }
+
+    /* Primeiro/último continuam ocultos pela regra canônica logo acima. */
+    .pagination-bar--integrated .pagination-page-info {
+        min-width: 92px;
+        margin: 0 2px;
+        font-size: 11px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 370px) {
+    .pagination-bar--integrated .pagination-page-size__native {
+        width: 78px;
+        min-width: 78px;
+        font-size: 10px;
+    }
+
+    .pagination-bar--integrated .pagination-page-info {
+        min-width: 82px;
+        font-size: 10px;
+    }
+}
+
+
+/* =========================================================
+   REFINAMENTO DESKTOP - AÇÕES CONTEXTUAIS
+   Estado aberto do botão e identificação discreta do registro.
+   ========================================================= */
+@media (min-width: 768px) {
+    .actions-toggle[aria-expanded="true"],
+    .admin-row-actions-toggle[aria-expanded="true"],
+    .menu-acoes-trigger[aria-expanded="true"],
+    .paciente-actions-toggle[aria-expanded="true"] {
+        color: var(--white);
+        background: var(--blue-600);
+        border-color: var(--blue-600);
+        box-shadow: 0 3px 9px rgba(37, 99, 235, 0.18);
+    }
+
+    .data-table tbody tr.caige-actions-row-active,
+    .data-grid__row.caige-actions-row-active,
+    .admin-record.caige-actions-row-active,
+    .lista-entidades__item.caige-actions-row-active {
+        background-color: var(--blue-50) !important;
+    }
+
+    .data-table tbody tr.caige-actions-row-active > td {
+        background-color: transparent !important;
+    }
+}
+
+
+/* =========================================================
+   PADRÃO DESKTOP V2 - GRIDS COMPACTAS E AÇÕES CONTEXTUAIS
+   Aplicado aos componentes globais .data-table e .data-grid.
+   Mobile permanece com suas regras específicas.
+   ========================================================= */
+@media (min-width: 768px) {
+    /* Densidade profissional: reduz espaço, não a legibilidade. */
+    .data-table th {
+        padding-top: 7px;
+        padding-bottom: 7px;
+    }
+
+    .data-table td {
+        padding-top: 5px;
+        padding-bottom: 5px;
+        line-height: 1.25;
+    }
+
+    .data-grid__header > .data-grid__cell {
+        padding-top: 7px;
+        padding-bottom: 7px;
+    }
+
+    .data-grid__row > .data-grid__cell {
+        padding-top: 5px;
+        padding-bottom: 5px;
+        line-height: 1.25;
+    }
+
+    /* Botão de ações proporcional à nova densidade. */
+    .actions-toggle,
+    .admin-row-actions-toggle,
+    .menu-acoes-trigger,
+    .paciente-actions-toggle {
+        width: 28px !important;
+        height: 28px !important;
+        min-width: 28px !important;
+        min-height: 28px !important;
+        padding: 0 !important;
+        font-size: 16px;
+        border-radius: var(--radius-xs);
+    }
+
+    /* Estado aberto precisa vencer regras locais das páginas. */
+    .actions-toggle[aria-expanded="true"],
+    .admin-row-actions-toggle[aria-expanded="true"],
+    .menu-acoes-trigger[aria-expanded="true"],
+    .paciente-actions-toggle[aria-expanded="true"] {
+        color: var(--white) !important;
+        background: var(--blue-600) !important;
+        border-color: var(--blue-600) !important;
+        box-shadow: 0 2px 7px rgba(37, 99, 235, 0.20) !important;
+    }
+
+    .data-table tbody tr.caige-actions-row-active,
+    .data-grid__row.caige-actions-row-active,
+    .admin-record.caige-actions-row-active,
+    .lista-entidades__item.caige-actions-row-active {
+        background: var(--blue-50) !important;
+    }
+
+    .data-table tbody tr.caige-actions-row-active > td,
+    .data-grid__row.caige-actions-row-active > .data-grid__cell {
+        background: transparent !important;
+    }
+
+    /* Menu: feedback azul em ações comuns; perigo continua vermelho. */
+    .floating-actions-menu__item:hover:not(.floating-actions-menu__item--danger),
+    .floating-actions-menu__item:focus-visible:not(.floating-actions-menu__item--danger) {
+        color: var(--blue-700);
+        background: var(--blue-50);
+    }
+
+    /* Paginação numérica profissional no desktop. */
+    .pagination-numbered-pages {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+    }
+
+    .pagination-page-number {
+        width: 30px;
+        height: 30px;
+        min-width: 30px;
+        padding: 0;
+        display: inline-grid;
+        place-items: center;
+        color: var(--gray-600);
+        background: transparent;
+        border: 1px solid transparent;
+        border-radius: var(--radius-xs);
+        font-family: inherit;
+        font-size: var(--fonte-texto-auxiliar);
+        line-height: 1;
+        font-weight: 600;
+        cursor: pointer;
+        transition:
+            color var(--transition-fast),
+            background-color var(--transition-fast),
+            border-color var(--transition-fast);
+    }
+
+    .pagination-page-number:hover:not(.is-active) {
+        color: var(--blue-700);
+        background: var(--blue-50);
+        border-color: var(--blue-100);
+    }
+
+    .pagination-page-number.is-active {
+        color: var(--white);
+        background: var(--blue-600);
+        border-color: var(--blue-600);
+        box-shadow: 0 2px 6px rgba(37, 99, 235, 0.18);
+        cursor: default;
+    }
+
+    .pagination-page-ellipsis {
+        min-width: 20px;
+        color: var(--gray-400);
+        text-align: center;
+        font-size: var(--fonte-texto-auxiliar);
+        line-height: 30px;
+    }
+
+    /* No desktop, o resumo textual é substituído pelas páginas. */
+    .pagination-navigation > .pagination-page-info {
+        display: none;
+    }
+
+    .pagination-navigation {
+        gap: 3px;
+    }
+
+    .pagination-nav-button {
+        width: 30px;
+        height: 30px;
+        flex-basis: 30px;
+        border: 1px solid var(--border-default);
+        background: var(--white);
+        font-size: 17px;
+    }
+
+    .pagination-nav-button:hover:not(:disabled) {
+        border-color: var(--blue-200);
+        background: var(--blue-50);
+    }
+
+    .pagination-nav-button:disabled {
+        background: var(--gray-50);
+        border-color: var(--border-light);
+    }
+}
+
+/* Mobile continua usando o resumo compacto e não páginas numeradas. */
+@media (max-width: 767px) {
+    .pagination-numbered-pages {
+        display: none !important;
+    }
+}
+
+
+/* =========================================================
+   ALINHAMENTO SEMÂNTICO - LISTAS TABULARES
+   Somente estruturas de grid/tabela; cards permanecem intactos.
+   ========================================================= */
+@media (min-width: 768px) {
+    .data-table td,
+    .data-grid__cell {
+        vertical-align: middle;
+    }
+
+    .data-table .text-cell,
+    .data-grid__cell.text-cell,
+    .data-table .description-cell,
+    .data-grid__cell.description-cell,
+    .data-table .details-cell,
+    .data-grid__cell.details-cell {
+        text-align: left !important;
+    }
+
+    .data-table .numeric-cell,
+    .data-grid__cell.numeric-cell,
+    .data-table .status-cell,
+    .data-grid__cell.status-cell,
+    .data-table .actions-cell,
+    .data-grid__cell.actions-cell {
+        text-align: center !important;
+    }
+
+    /* Geometria comum dos botões administrativos. */
+    .btn {
+        border-radius: var(--radius-xs);
+    }
+
+    .btn--primary,
+    .btn-primary {
+        color: var(--white);
+        background: var(--blue-600);
+        border-color: var(--blue-600);
+    }
+
+    .btn--primary:hover,
+    .btn-primary:hover {
+        background: var(--blue-700);
+        border-color: var(--blue-700);
+    }
+}
+
+
+/* =========================================================
+   POSICIONAMENTO GLOBAL DE MENUS FLUTUANTES - 15/09/2026
+   ========================================================= */
+.floating-actions-menu[data-placement="down"] {
+    transform-origin: top right;
+}
+
+.floating-actions-menu[data-placement="up"] {
+    transform-origin: bottom right;
+}
+
+/* CAIGE - padrão global dos filtros de data */
+.caige-date-filter{position:relative;width:100%;min-width:128px}
+.caige-date-filter>input{width:100%;min-width:128px;padding-right:38px!important}
+.caige-date-filter__calendar{position:absolute;top:50%;right:8px;z-index:4;width:24px;height:24px;padding:0;transform:translateY(-50%);display:inline-flex;align-items:center;justify-content:center;color:var(--primary-600,#1f60e8);background:transparent;border:0;border-radius:4px;cursor:pointer}
+.caige-date-filter__calendar:hover,.caige-date-filter__calendar:focus-visible{background:rgba(31,96,232,.08);outline:none}
+.caige-date-filter__calendar .icone{pointer-events:none}
+.caige-date-filter>input[type="date"]::-webkit-calendar-picker-indicator{opacity:0;width:24px;cursor:pointer}
+
+/* PAGINAÇÃO GLOBAL MOBILE V3 — padrão compacto único do CAIGE */
+@media (max-width: 767px) {
+  .pagination-bar--integrated { min-height:44px; margin-top:8px; padding:5px 7px; gap:4px; flex-wrap:nowrap; align-items:center; justify-content:space-between; }
+  .pagination-bar--integrated > .pagination-page-size { display:inline-flex !important; flex:0 0 auto; margin:0; }
+  .pagination-bar--integrated .pagination-page-size-picker { display:none !important; }
+  .pagination-bar--integrated .pagination-page-size__native { display:block !important; width:72px; min-width:72px; height:30px; min-height:30px; padding:3px 18px 3px 6px; border:1px solid var(--border-default); border-radius:var(--radius-xs); background:var(--surface); font-size:10px; font-weight:600; line-height:1; }
+  .pagination-bar--integrated .pagination-navigation { width:auto; min-width:0; flex:1 1 auto; margin-left:auto; gap:1px; justify-content:flex-end; }
+  .pagination-bar--integrated .pagination-nav-button { width:28px; height:28px; min-width:28px; min-height:28px; flex:0 0 28px; padding:0; }
+  .pagination-bar--integrated .pagination-nav-button:first-child, .pagination-bar--integrated .pagination-nav-button:last-child, .pagination-bar--integrated .pagination-numbered-pages { display:none !important; }
+  .pagination-bar--integrated .pagination-page-info { min-width:72px; max-width:92px; margin:0 1px; font-size:10px; line-height:1.15; font-weight:600; text-align:center; white-space:nowrap; }
+}
+@media (max-width:370px) {
+  .pagination-bar--integrated .pagination-page-size__native { width:66px; min-width:66px; font-size:9px; }
+  .pagination-bar--integrated .pagination-page-info { min-width:66px; max-width:76px; font-size:9px; }
+  .pagination-bar--integrated .pagination-nav-button { width:26px; height:26px; min-width:26px; min-height:26px; flex-basis:26px; }
+}
+
+
+/* Paginação global: fallback automático para abertura acima. */
+.pagination-page-size-picker--above .pagination-page-size-picker__panel {
+    top: auto;
+    bottom: calc(100% + 6px);
+}
+
+
+/* Calendário CAIGE — ancoragem compatível com o scale do desktop. */
+.flatpickr-calendar.open {
+    z-index: 9000 !important;
+    overflow: visible !important;
+}
+
+.flatpickr-calendar .flatpickr-current-month {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.flatpickr-calendar .caige-month-native-hidden {
+    display: none !important;
+}
+
+.flatpickr-calendar .caige-month-trigger {
+    width: 96px;
+    height: 28px;
+    flex: 0 0 96px;
+    border: 0;
+    background: transparent;
+    color: var(--gray-700);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    position: relative;
+    padding: 0 20px 0 7px;
+}
+
+.flatpickr-calendar .caige-month-trigger::after {
+    content: '';
+    position: absolute;
+    right: 7px;
+    top: 9px;
+    width: 6px;
+    height: 6px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg);
+}
+
+.flatpickr-calendar .caige-month-trigger:hover,
+.flatpickr-calendar .caige-month-trigger[aria-expanded='true'] {
+    background: var(--gray-100);
+}
+
+/* O painel ocupa a largura útil do calendário: sem corte nem sobras laterais. */
+.flatpickr-calendar .caige-month-panel {
+    position: absolute;
+    top: 40px;
+    left: 8px;
+    right: 8px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 3px;
+    padding: 6px;
+    background: var(--white);
+    border: 1px solid var(--border-default);
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.16);
+    z-index: 20;
+}
+
+.flatpickr-calendar .caige-month-panel[hidden] {
+    display: none !important;
+}
+
+.flatpickr-calendar .caige-month-option {
+    min-width: 0;
+    min-height: 29px;
+    padding: 4px 3px;
+    border: 0;
+    background: transparent;
+    color: var(--gray-700);
+    font: inherit;
+    font-size: 11px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.flatpickr-calendar .caige-month-option:hover {
+    background: var(--gray-100);
+}
+
+.flatpickr-calendar .caige-month-option.is-active {
+    background: var(--blue-600);
+    color: var(--white);
+    font-weight: 700;
+}
+
+.flatpickr-calendar .flatpickr-current-month .numInputWrapper {
+    width: 56px !important;
+    flex: 0 0 56px;
+}
+
+.flatpickr-calendar .flatpickr-current-month .numInputWrapper input.cur-year {
+    width: 56px !important;
+    max-width: 56px !important;
+    padding-left: 3px !important;
+    font-size: 12px !important;
+}
+
+/* CAIGE: listas comuns participam do scroll principal da página. */
+.lista-entidades {
+  max-height: none !important;
+  overflow-y: visible !important;
+  overscroll-behavior: auto !important;
+  padding-right: 0;
+}
+/* Modais continuam podendo rolar internamente quando necessário. */
+.modal .lista-entidades,
+[role="dialog"] .lista-entidades {
+  max-height: min(60vh, 520px) !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain !important;
+}
+
+
+/* =========================================================
+   ATIVIDADES — PADRÃO GLOBAL COMPARTILHADO
+   O mesmo componente é consumido por Supervisor e Professor.
+   ========================================================= */
+#modal-activities .modal__body {
+    background: var(--gray-50);
+}
+
+#activities-list {
+    padding: 0;
+}
+
+#activities-list .modal-list-item__title {
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+#activities-list .modal-list-item__meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.activity-status-badge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 20px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.activity-status-badge--active {
+    background: var(--success-100);
+    color: var(--success-800);
+}
+
+.activity-status-badge--inactive {
+    background: var(--gray-200);
+    color: var(--gray-600);
+}
+
+#modal-activities .activity-form-section {
+    margin-top: 14px;
+    padding: 14px;
+    background: var(--blue-50);
+    border: 1px solid var(--blue-100);
+    border-radius: var(--radius-xs);
+}
+
+.activity-form-heading {
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--blue-100);
+}
+
+.activity-form-heading__eyebrow {
+    display: block;
+    margin-bottom: 2px;
+    color: var(--blue-600);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+
+.activity-form-heading .modal-section__title {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 15px;
+}
+
+.activity-form-heading__description {
+    margin: 3px 0 0;
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+@media (min-width: 768px) {
+    .data-grid--activities .data-grid__header,
+    .data-grid--activities .data-grid__row {
+        grid-template-columns: minmax(0, 1fr) 120px 64px;
+    }
+
+    /*
+       Atividades usa o mesmo grid no Supervisor e no Professor.
+       A classe .modal-list-item possui padding/radius próprios para listas
+       genéricas; no desktop isso deslocava as divisórias do corpo em relação
+       ao cabeçalho quando a tela não carregava os estilos de Gerenciamento.
+       Normaliza a linha aqui, no componente compartilhado, sem afetar mobile.
+    */
+    .data-grid--activities .data-grid__body {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .data-grid--activities .data-grid__row {
+        gap: 0;
+        padding: 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .data-grid--activities .modal-list-item__title,
+    .data-grid--activities .modal-list-item__meta,
+    .data-grid--activities .activity-row-actions {
+        margin: 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    #modal-activities .modal__form {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        column-gap: 12px;
+        align-items: end;
+    }
+
+    #modal-activities .modal__form > .modal__form-group:first-of-type {
+        grid-column: 1 / -1;
+    }
+
+    #modal-activities .modal__form-actions {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+    }
+
+    #modal-activities .modal__form-actions .modal__btn {
+        width: auto;
+    }
+}
+
+@media (max-width: 767px) {
+    #modal-activities .activity-form-section {
+        padding: 11px;
+    }
+
+    .data-grid--activities {
+        background: transparent;
+        border: 0;
+        border-radius: 0;
+        overflow: visible;
+    }
+
+    .data-grid--activities > .data-grid__header {
+        display: none;
+    }
+
+    .data-grid--activities .data-grid__body {
+        display: grid;
+        gap: 8px;
+    }
+
+    .data-grid--activities .data-grid__row {
+        position: relative;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 5px 10px;
+        padding: 10px 44px 10px 10px;
+        background: var(--white);
+        border: 1px solid var(--blue-100);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .data-grid--activities .data-grid__cell,
+    .data-grid--activities .data-grid__cell + .data-grid__cell {
+        min-width: 0;
+        padding: 0;
+        justify-content: flex-start;
+        text-align: left;
+        border-left: 0;
+    }
+
+    .data-grid--activities .modal-list-item__title {
+        grid-column: 1 / -1;
+    }
+
+    .data-grid--activities .activity-row-actions {
+        position: absolute;
+        top: 50%;
+        right: 9px;
+        transform: translateY(-50%);
+    }
+}

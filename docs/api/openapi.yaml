@@ -1,0 +1,2929 @@
+openapi: 3.0.3
+info:
+  title: API CAIGE
+  description: >
+    API do sistema CAIGE. Esta especificacao documenta os endpoints atualmente
+    montados no backend Express. A documentacao descreve o contrato observavel
+    da API e nao substitui as validacoes, autenticacao e autorizacao reais do
+    backend.
+  version: api-2
+servers:
+  - url: http://localhost:3000
+    description: Servidor local de desenvolvimento. A porta padrao vem de PORT ou 3000.
+tags:
+  - name: Autenticacao
+    description: Login, senha e perfil do usuario autenticado.
+  - name: Usuarios
+    description: Administracao de usuarios e consulta de permissoes.
+  - name: Pacientes
+    description: Cadastro, consulta, atualizacao e arquivamento de pacientes.
+  - name: Dados do Painel
+    description: Indicadores e eventos usados no dashboard.
+  - name: Frequencia
+    description: Registro, contexto, historico e relatorios de frequencia.
+  - name: Periodos Letivos
+    description: Configuracao administrativa do calendario semestral de frequencia.
+  - name: Arquivo
+    description: Listagens administrativas de usuarios e pacientes arquivados.
+  - name: Perguntas
+    description: Perguntas utilizadas em questionarios.
+  - name: Questionarios
+    description: Questionarios, publicacao e vinculo com perguntas.
+  - name: Respostas
+    description: Registro e consulta de respostas de questionarios.
+  - name: Cursos
+    description: Cursos e escopo por curso.
+  - name: Atividades de Atendimento
+    description: Atividades vinculadas a cursos para frequencia/atendimento.
+  - name: Movimentacoes
+    description: Movimentacoes/auditoria operacional do sistema.
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Identificador numerico positivo.
+    IdCurso:
+      name: idCurso
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Identificador numerico positivo do curso.
+    IdPaciente:
+      name: idPaciente
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Identificador numerico positivo do paciente.
+    IdQuestionario:
+      name: idQuestionario
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Identificador numerico positivo do questionario.
+    Offset:
+      name: offset
+      in: query
+      schema:
+        type: integer
+        minimum: 0
+      description: Offset de paginacao.
+  responses:
+    NaoAutenticado:
+      description: Token ausente, invalido ou usuario nao encontrado.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErroMessage"
+    AcessoNegado:
+      description: Usuario sem permissao, papel ou escopo necessario.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErroMessage"
+    ErroInternoMessage:
+      description: Erro interno do servidor.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErroMessage"
+  schemas:
+    ErroMessage:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Erro interno no servidor.
+    Mensagem:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Operacao realizada com sucesso.
+    Pagination:
+      type: object
+      properties:
+        total:
+          type: integer
+          example: 42
+        limit:
+          type: integer
+          example: 20
+        offset:
+          type: integer
+          example: 0
+        hasMore:
+          type: boolean
+          example: true
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: professor@univale.br
+        password:
+          type: string
+          format: password
+          example: senha-ficticia
+    LoginResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Login autorizado.
+        accessToken:
+          type: string
+          example: jwt.ficticio.assinatura
+        tokenType:
+          type: string
+          example: Bearer
+        expiresIn:
+          type: string
+          example: 8h
+        user:
+          $ref: "#/components/schemas/UsuarioAutenticado"
+        nome:
+          type: string
+          example: Professor Exemplo
+        ultimoLogin:
+          type: string
+          nullable: true
+          example: "2026-08-31T12:00:00.000Z"
+    UsuarioAutenticado:
+      type: object
+      properties:
+        idUsuario:
+          type: integer
+          example: 7
+        email:
+          type: string
+          format: email
+          example: professor@univale.br
+        nome:
+          type: string
+          example: Professor Exemplo
+        papel:
+          type: string
+          enum:
+            - SUPERVISOR
+            - PROFESSOR
+          example: PROFESSOR
+        idCurso:
+          type: integer
+          nullable: true
+          example: 1
+    PerfilAutenticacao:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 7
+        email:
+          type: string
+          format: email
+          example: professor@univale.br
+        name:
+          type: string
+          example: Professor Exemplo
+        role:
+          type: string
+          enum:
+            - SUPERVISOR
+            - PROFESSOR
+          example: PROFESSOR
+        idCurso:
+          type: integer
+          nullable: true
+          example: 1
+        lastLogin:
+          type: string
+          nullable: true
+          example: "2026-08-31T12:00:00.000Z"
+    Usuario:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 7
+        email:
+          type: string
+          format: email
+          example: professor@univale.br
+        nome:
+          type: string
+          example: Professor Exemplo
+        papel:
+          type: string
+          enum:
+            - SUPERVISOR
+            - PROFESSOR
+          example: PROFESSOR
+        idCurso:
+          type: integer
+          nullable: true
+          example: 1
+        criadoPor:
+          type: integer
+          nullable: true
+          example: 1
+        ativo:
+          type: boolean
+          example: true
+        criadoEm:
+          type: string
+          nullable: true
+          example: "2026-08-31T12:00:00.000Z"
+    UsuarioCriacao:
+      type: object
+      required:
+        - email
+        - password
+        - nome
+      properties:
+        email:
+          type: string
+          format: email
+          description: E-mail institucional; o backend normaliza para minusculas e exige dominio @univale.br.
+          example: professor@univale.br
+        password:
+          type: string
+          format: password
+          minLength: 6
+          example: senha-ficticia
+        nome:
+          type: string
+          minLength: 1
+          description: Nome com letras, permitindo espacos, apostrofos e hifens entre palavras.
+          example: Professor Exemplo
+        papel:
+          type: string
+          enum:
+            - SUPERVISOR
+            - PROFESSOR
+          default: PROFESSOR
+        idCurso:
+          type: integer
+          nullable: true
+          description: Obrigatorio quando papel for PROFESSOR.
+          example: 1
+    UsuarioAtualizacao:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          description: Quando informado, deve pertencer ao dominio institucional @univale.br.
+          example: professor@univale.br
+        nome:
+          type: string
+          minLength: 1
+          description: Quando informado, aceita letras, espacos, apostrofos e hifens entre palavras.
+          example: Professor Atualizado
+        papel:
+          type: string
+          enum:
+            - SUPERVISOR
+            - PROFESSOR
+        idCurso:
+          type: integer
+          nullable: true
+        ativo:
+          type: boolean
+        novaSenha:
+          type: string
+          format: password
+          minLength: 6
+          description: Nova senha opcional do usuario. Quando informada, exige senhaSupervisor.
+        senhaSupervisor:
+          type: string
+          format: password
+          description: Senha atual do SUPERVISOR autenticado, exigida para alterar nome ou redefinir senha.
+    Permissoes:
+      type: object
+      additionalProperties: true
+      example:
+        papel: PROFESSOR
+        pode_visualizar_paciente: 1
+        pode_gerenciar_atividades: 1
+    Curso:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        nome:
+          type: string
+          example: Fisioterapia
+        ativo:
+          type: boolean
+          example: true
+        criadoEm:
+          type: string
+          nullable: true
+          example: "2026-08-31T12:00:00.000Z"
+    CursoRequest:
+      type: object
+      required:
+        - nome
+      properties:
+        nome:
+          type: string
+          example: Fisioterapia
+        name:
+          type: string
+          description: Alias aceito pelo backend para nome.
+          example: Fisioterapia
+        ativo:
+          type: boolean
+          description: Aceito na atualizacao; tambem pode ser enviado como is_active.
+          example: true
+        is_active:
+          type: boolean
+          description: Alias aceito pelo backend para ativo.
+          example: true
+    PacienteListaItem:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 12
+        name:
+          type: string
+          example: Paciente Exemplo
+        age:
+          type: integer
+          example: 8
+        cpf:
+          type: string
+          example: "000.000.000-00"
+        phone:
+          type: string
+          example: "(33) 3333-3333"
+        phone2:
+          type: string
+          example: "(33) 99999-9999"
+        street:
+          type: string
+          example: Rua Exemplo
+        neighborhood:
+          type: string
+          example: Centro
+        city:
+          type: string
+          example: Governador Valadares
+        state:
+          type: string
+          example: MG
+        address:
+          type: string
+          example: Centro, Governador Valadares, MG
+        location:
+          type: string
+          example: Centro, Governador Valadares, MG
+        initials:
+          type: string
+          example: PE
+        status:
+          type: string
+          enum:
+            - ativo
+            - inativo
+            - arquivado
+          example: ativo
+    Paciente:
+      allOf:
+        - $ref: "#/components/schemas/PacienteListaItem"
+        - type: object
+          properties:
+            birth_date:
+              type: string
+              format: date
+              nullable: true
+            gender:
+              type: string
+              nullable: true
+            cep:
+              type: string
+              nullable: true
+            number:
+              type: string
+              nullable: true
+            responsible:
+              type: string
+              nullable: true
+            responsible_relationship:
+              type: string
+              nullable: true
+            responsible_phone:
+              type: string
+              nullable: true
+            observations:
+              type: string
+              nullable: true
+            health_conditions:
+              type: string
+              nullable: true
+              description: Condições de saúde conhecidas do paciente
+            health_conditions_evaluated:
+              type: boolean
+              description: Indica se as condições de saúde foram avaliadas pelo profissional
+              example: true
+            allergies:
+              type: string
+              nullable: true
+              description: Alergias conhecidas do paciente
+            allergies_evaluated:
+              type: boolean
+              description: Indica se as alergias foram avaliadas pelo profissional
+              example: true
+            medications_in_use:
+              type: string
+              nullable: true
+              description: Medicamentos atualmente em uso
+            medications_in_use_evaluated:
+              type: boolean
+              description: Indica se os medicamentos em uso foram avaliados pelo profissional
+              example: true
+            clinical_observations:
+              type: string
+              nullable: true
+              description: Observações clínicas relevantes (opcional)
+            weight_kg:
+              type: number
+              format: double
+              nullable: true
+              description: Peso atual do paciente em quilogramas
+              example: 72.4
+            height_cm:
+              type: integer
+              nullable: true
+              description: Altura atual do paciente em centímetros
+              example: 165
+            created_at:
+              type: string
+              nullable: true
+    PacienteRequest:
+      type: object
+      required:
+        - name
+        - birth_date
+        - gender
+        - cpf
+        - cep
+        - street
+        - number
+        - neighborhood
+        - city
+        - state
+        - responsible
+        - responsible_relationship
+        - responsible_phone
+        - weight_kg
+        - height_cm
+        - status
+      properties:
+        name:
+          type: string
+          example: Paciente Exemplo
+        birth_date:
+          type: string
+          format: date
+          example: "2018-04-10"
+        gender:
+          type: string
+          description: Campo obrigatorio no cadastro e na edicao do paciente.
+          example: feminino
+        cpf:
+          type: string
+          example: "000.000.000-00"
+        phone:
+          type: string
+          nullable: true
+          description: Telefone residencial no padrao (00) 0000-0000. Ao menos phone ou phone2 deve ser informado.
+          example: "(33) 3333-3333"
+        phone2:
+          type: string
+          nullable: true
+          description: Celular no padrao (00) 00000-0000. Ao menos phone ou phone2 deve ser informado.
+          example: "(33) 99999-9999"
+        cep:
+          type: string
+          example: "35000-000"
+        street:
+          type: string
+          example: Rua Exemplo
+        number:
+          type: string
+          example: "100"
+        neighborhood:
+          type: string
+          example: Centro
+        city:
+          type: string
+          example: Governador Valadares
+        state:
+          type: string
+          example: MG
+        responsible:
+          type: string
+          example: Responsavel Exemplo
+        responsible_relationship:
+          type: string
+          description: Parentesco do responsavel; obrigatorio no cadastro e na edicao.
+          example: Mae
+        responsible_phone:
+          type: string
+          description: Telefone obrigatorio do responsavel no padrao residencial ou celular.
+          example: "(33) 99999-0000"
+        observations:
+          type: string
+          nullable: true
+          example: Observacao ficticia.
+        health_conditions:
+          type: string
+          nullable: true
+          description: Condições de saúde conhecidas do paciente (null quando avaliado e sem ocorrências)
+          example: Hipertensão, Diabetes
+        health_conditions_evaluated:
+          type: boolean
+          description: Confirmação de que as condições de saúde foram avaliadas
+          example: true
+        has_no_health_conditions:
+          type: boolean
+          description: Confirmação explícita de ausência de condições de saúde
+          example: false
+        allergies:
+          type: string
+          nullable: true
+          description: Alergias conhecidas do paciente (null quando avaliado e sem ocorrências)
+          example: Penicilina, Latex
+        allergies_evaluated:
+          type: boolean
+          description: Confirmação de que as alergias foram avaliadas
+          example: true
+        has_no_allergies:
+          type: boolean
+          description: Confirmação explícita de ausência de alergias conhecidas
+          example: false
+        medications_in_use:
+          type: string
+          nullable: true
+          description: Medicamentos atualmente em uso (null quando avaliado e sem ocorrências)
+          example: Losartana 50mg, Metformina 500mg
+        medications_in_use_evaluated:
+          type: boolean
+          description: Confirmação de que os medicamentos em uso foram avaliados
+          example: true
+        has_no_medications:
+          type: boolean
+          description: Confirmação explícita de ausência de medicamentos em uso
+          example: false
+        clinical_observations:
+          type: string
+          nullable: true
+          description: Observações clínicas relevantes (opcional)
+          example: Paciente com histórico de cirurgia cardíaca
+        weight_kg:
+          type: number
+          format: double
+          minimum: 1
+          maximum: 500
+          description: Peso obrigatorio do paciente em quilogramas.
+          example: 72.4
+        height_cm:
+          type: integer
+          minimum: 30
+          maximum: 250
+          description: Altura obrigatoria do paciente em centimetros.
+          example: 165
+        status:
+          type: string
+          enum: [ativo, inativo, arquivado]
+          example: ativo
+    DashboardData:
+      type: object
+      properties:
+        stats:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        importantEvents:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        movements:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        message:
+          type: string
+    AtividadeFeed:
+      type: object
+      properties:
+        date:
+          type: string
+          example: "31/08/2026 10:30"
+        type:
+          type: string
+          example: Frequencia registrada
+        description:
+          type: string
+          example: Evento ficticio registrado no sistema.
+        responsible:
+          type: string
+          example: Sistema
+    AtividadesFeedResponse:
+      type: object
+      properties:
+        activities:
+          type: array
+          items:
+            $ref: "#/components/schemas/AtividadeFeed"
+        total:
+          type: integer
+          example: 42
+        limit:
+          type: integer
+          example: 100
+        offset:
+          type: integer
+          example: 0
+        hasMore:
+          type: boolean
+          example: false
+    AtividadeAtendimento:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 10
+        idCurso:
+          type: integer
+          example: 1
+        curso:
+          type: string
+          example: Fisioterapia
+        nome:
+          type: string
+          example: Alongamento
+        descricao:
+          type: string
+          nullable: true
+          example: Sessao leve de alongamento
+        ativo:
+          type: boolean
+          example: true
+        criadoEm:
+          type: string
+          nullable: true
+        atualizadoEm:
+          type: string
+          nullable: true
+    AtividadeAtendimentoRequest:
+      type: object
+      required:
+        - idCurso
+        - nome
+      properties:
+        idCurso:
+          type: integer
+          description: Para PROFESSOR, o backend usa req.user.idCurso e bloqueia tentativa de outro curso.
+          example: 1
+        nome:
+          type: string
+          example: Alongamento
+        descricao:
+          type: string
+          nullable: true
+          example: Sessao leve de alongamento
+        ativo:
+          type: boolean
+          description: Aceito na atualizacao.
+          example: true
+    Frequencia:
+      type: object
+      additionalProperties: true
+    FrequenciaCriacao:
+      type: object
+      required:
+        - idAtividade
+        - idProfissional
+      properties:
+        idsPacientes:
+          type: array
+          description: Lista de identificadores numericos dos pacientes (1 a 50). IDs duplicados sao automaticamente deduplicados pelo backend. Mutuamente exclusivo com idPaciente.
+          items:
+            type: integer
+          minItems: 1
+          maxItems: 50
+          example: [12, 14, 18]
+        idPaciente:
+          type: integer
+          description: Contrato legado para registro de paciente individual. Mutuamente exclusivo com idsPacientes (enviar ambos simultaneamente resulta em HTTP 400).
+          example: 12
+        idAtividade:
+          type: integer
+          description: A frequencia e registrada por atividade; a atividade define o curso.
+          example: 10
+        idProfissional:
+          type: integer
+          description: Identificador numerico do professor ativo, nao oculto e pertencente ao mesmo curso da atividade. Obrigatorio tanto para SUPERVISOR quanto para PROFESSOR.
+          example: 7
+        observacao:
+          type: string
+          nullable: true
+          example: Observacao ficticia compartilhada pelo lote.
+        observacoes:
+          type: string
+          nullable: true
+          description: Alias aceito pelo backend para observacao.
+    Pergunta:
+      type: object
+      additionalProperties: true
+    PerguntaRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          example: Como foi a evolucao?
+        titulo:
+          type: string
+          description: Alias aceito pelo backend para title.
+        description:
+          type: string
+          nullable: true
+        descricao:
+          type: string
+          nullable: true
+          description: Alias aceito pelo backend para description.
+        question_type:
+          type: string
+          enum:
+            - texto_livre
+            - multipla_escolha
+            - sim_nao
+            - escala
+        tipo_pergunta:
+          type: string
+          description: Alias aceito pelo backend para question_type.
+        options:
+          type: array
+          nullable: true
+          items:
+            type: string
+        opcoes:
+          type: array
+          nullable: true
+          items:
+            type: string
+        idsCursos:
+          type: array
+          items:
+            type: integer
+        ids_cursos:
+          type: array
+          items:
+            type: integer
+        idCurso:
+          type: integer
+          description: Alternativa aceita quando idsCursos nao for enviado.
+        todosCursos:
+          type: boolean
+          description: >
+            Define se a pergunta possui utilizacao global (disponivel para todos os cursos ativos).
+            Quando enviado como true por PROFESSOR, o curso de origem e preservado em perguntas.id_curso
+            e o backend associa a pergunta a todos os cursos ativos em perguntas_cursos internamente,
+            sem expor nomes ou IDs de outros cursos ao usuario.
+        todos_cursos:
+          type: boolean
+          description: Alias aceito pelo backend para todosCursos.
+    Questionario:
+      type: object
+      additionalProperties: true
+    QuestionarioRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          example: Avaliacao inicial
+        titulo:
+          type: string
+          description: Alias aceito pelo backend.
+        description:
+          type: string
+          nullable: true
+        descricao:
+          type: string
+          nullable: true
+        idCurso:
+          type: integer
+          example: 1
+        course_id:
+          type: integer
+          description: Alias aceito pelo backend.
+        courseId:
+          type: integer
+          description: Alias aceito pelo backend.
+        questions:
+          type: array
+          items:
+            type: integer
+        perguntas:
+          type: array
+          items:
+            type: integer
+    RespostaQuestionarioRequest:
+      type: object
+      required:
+        - idPaciente
+        - idQuestionario
+        - respostas
+      properties:
+        idPaciente:
+          type: integer
+          example: 12
+        patientId:
+          type: integer
+          description: Alias aceito pelo backend.
+        idQuestionario:
+          type: integer
+          example: 3
+        questionnaireId:
+          type: integer
+          description: Alias aceito pelo backend.
+        respostas:
+          type: object
+          additionalProperties: true
+          example:
+            "5": "Resposta ficticia"
+        responses:
+          type: object
+          additionalProperties: true
+          description: Alias aceito pelo backend.
+    SnapshotPerguntaProntuario:
+      type: object
+      properties:
+        id:
+          type: integer
+        titulo:
+          type: string
+        descricao:
+          type: string
+          nullable: true
+        tipo_pergunta:
+          type: string
+          enum: [texto_livre, multipla_escolha, sim_nao, escala]
+        opcoes_snapshot:
+          nullable: true
+          description: Opcoes exatamente como estavam no momento do lancamento.
+        ordem_pergunta:
+          type: integer
+    EstruturaSnapshotProntuario:
+      type: object
+      nullable: true
+      description: >
+        Copia imutavel da estrutura usada no lancamento. Registros antigos podem
+        retornar null quando foram criados antes da adoção do snapshot.
+      properties:
+        versao:
+          type: integer
+          example: 1
+        questionario:
+          type: object
+          properties:
+            id:
+              type: integer
+            titulo:
+              type: string
+            descricao:
+              type: string
+              nullable: true
+            id_curso:
+              type: integer
+            curso_nome:
+              type: string
+              nullable: true
+        perguntas:
+          type: array
+          items:
+            $ref: "#/components/schemas/SnapshotPerguntaProntuario"
+        registro:
+          type: object
+          properties:
+            id_profissional:
+              type: integer
+              nullable: true
+            profissional_nome:
+              type: string
+              nullable: true
+    RespostaQuestionario:
+      type: object
+      properties:
+        id:
+          type: integer
+        questionnaire_id:
+          type: integer
+        response_data:
+          type: object
+          additionalProperties: true
+        structure_snapshot:
+          $ref: "#/components/schemas/EstruturaSnapshotProntuario"
+        created_at:
+          type: string
+          format: date-time
+        professional_id:
+          type: integer
+          nullable: true
+        professional_name:
+          type: string
+          nullable: true
+        questionnaire_title:
+          type: string
+        questionnaire_description:
+          type: string
+          nullable: true
+        idCurso:
+          type: integer
+        course_name:
+          type: string
+      additionalProperties: true
+    Movimentacao:
+      type: object
+      additionalProperties: true
+    ArquivoUsuario:
+      type: object
+      additionalProperties: true
+    ArquivoPaciente:
+      type: object
+      additionalProperties: true
+
+    PeriodoLetivo:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 3
+        ano:
+          type: integer
+          example: 2026
+        semestre:
+          type: integer
+          enum: [1, 2]
+          example: 2
+        dataInicio:
+          type: string
+          format: date
+          example: "2026-08-01"
+        dataFim:
+          type: string
+          format: date
+          example: "2026-12-20"
+        status:
+          type: string
+          enum: [PLANEJADO, ATIVO, ENCERRADO]
+          example: ATIVO
+        emHistorico:
+          type: boolean
+          description: Indica se o periodo encerrado ja foi enviado para o historico.
+          example: false
+        criadoEm:
+          type: string
+          nullable: true
+        atualizadoEm:
+          type: string
+          nullable: true
+    PeriodoLetivoRequest:
+      type: object
+      required: [ano, semestre, dataInicio, dataFim]
+      properties:
+        ano:
+          type: integer
+          minimum: 2000
+          maximum: 2100
+          example: 2026
+        semestre:
+          type: integer
+          enum: [1, 2]
+          example: 2
+        dataInicio:
+          type: string
+          format: date
+          example: "2026-08-01"
+        dataFim:
+          type: string
+          format: date
+          example: "2026-12-20"
+        status:
+          type: string
+          enum: [PLANEJADO, ATIVO, ENCERRADO]
+          default: PLANEJADO
+    PeriodoLetivoCopiaRequest:
+      type: object
+      required: [ano, semestre, dataInicio, dataFim]
+      properties:
+        ano:
+          type: integer
+          minimum: 2000
+          maximum: 2100
+          example: 2027
+        semestre:
+          type: integer
+          enum: [1, 2]
+          example: 1
+        dataInicio:
+          type: string
+          format: date
+          example: "2027-02-01"
+        dataFim:
+          type: string
+          format: date
+          example: "2027-06-30"
+    GradePeriodoItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        idPeriodo:
+          type: integer
+        idCurso:
+          type: integer
+        curso:
+          type: string
+        idAtividade:
+          type: integer
+          nullable: true
+        atividade:
+          type: string
+          nullable: true
+        diaSemana:
+          type: integer
+          minimum: 1
+          maximum: 7
+          description: Dia da semana no padrao ISO, de 1 (segunda) a 7 (domingo).
+    GradePeriodoRequest:
+      type: object
+      required: [idCurso, diasSemana]
+      properties:
+        idCurso:
+          type: integer
+          example: 1
+        idAtividade:
+          type: integer
+          nullable: true
+          example: 4
+        diasSemana:
+          type: array
+          uniqueItems: true
+          items:
+            type: integer
+            minimum: 1
+            maximum: 7
+          example: [2, 4]
+    GradePeriodoResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Dias de atendimento atualizados
+        diasSemana:
+          type: array
+          items:
+            type: integer
+          example: [2, 4]
+    ExcecaoPeriodo:
+      type: object
+      properties:
+        id:
+          type: integer
+        idPeriodo:
+          type: integer
+        idGrade:
+          type: integer
+          nullable: true
+        data:
+          type: string
+          format: date
+        motivo:
+          type: string
+          nullable: true
+        idCurso:
+          type: integer
+          nullable: true
+        curso:
+          type: string
+          nullable: true
+        idAtividade:
+          type: integer
+          nullable: true
+        atividade:
+          type: string
+          nullable: true
+        diaSemana:
+          type: integer
+          nullable: true
+    ExcecaoPeriodoRequest:
+      type: object
+      required: [data, escopo]
+      properties:
+        data:
+          type: string
+          format: date
+          example: "2026-10-12"
+        escopo:
+          type: string
+          enum: [GERAL, ATENDIMENTO]
+          example: GERAL
+        motivo:
+          type: string
+          maxLength: 255
+          example: Feriado
+        idCurso:
+          type: integer
+          nullable: true
+          description: Obrigatorio quando escopo for ATENDIMENTO.
+        idAtividade:
+          type: integer
+          nullable: true
+          description: Opcional para representar atendimento geral do curso.
+
+security: []
+paths:
+  /api/autenticacao/entrar:
+    post:
+      tags: [Autenticacao]
+      summary: Efetua login no sistema
+      description: Endpoint publico. Aceita apenas e-mail institucional @univale.br.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Login autorizado.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "400":
+          description: Email e senha ausentes.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErroMessage"
+        "401":
+          description: Credenciais invalidas ou usuario inativo.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErroMessage"
+        "403":
+          description: E-mail fora do dominio institucional.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErroMessage"
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/autenticacao/alterar-senha:
+    post:
+      tags: [Autenticacao]
+      summary: Altera a senha do usuario autenticado
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [currentPassword, newPassword]
+              properties:
+                currentPassword:
+                  type: string
+                  format: password
+                newPassword:
+                  type: string
+                  format: password
+                  minLength: 6
+      responses:
+        "200":
+          description: Senha alterada com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Mensagem"
+        "400":
+          description: Dados obrigatorios ausentes ou nova senha com menos de 6 caracteres.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErroMessage"
+        "401":
+          description: Usuario nao encontrado ou senha atual incorreta.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErroMessage"
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/autenticacao/confirmar-senha:
+    post:
+      tags: [Autenticacao]
+      summary: Confirma senha do supervisor
+      description: Exige Bearer JWT e papel SUPERVISOR.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [senha]
+              properties:
+                senha:
+                  type: string
+                  format: password
+      responses:
+        "200":
+          description: Senha confirmada.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  confirmado:
+                    type: boolean
+                    example: true
+        "400":
+          description: Senha ausente.
+        "401":
+          description: Senha invalida.
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/autenticacao/perfil:
+    get:
+      tags: [Autenticacao]
+      summary: Obtem perfil simples do usuario autenticado
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Perfil retornado.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PerfilAutenticacao"
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "404":
+          description: Usuario nao encontrado.
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+    put:
+      tags: [Autenticacao]
+      summary: Atualiza o nome do perfil autenticado
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                  description: Nome com letras, permitindo espacos, apostrofos e hifens entre palavras.
+      responses:
+        "200":
+          description: Perfil atualizado.
+        "400":
+          description: Nome vazio ou com caracteres nao permitidos.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "404":
+          description: Usuario nao encontrado.
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/usuarios:
+    get:
+      tags: [Usuarios]
+      summary: Lista usuarios administrativos
+      description: Exige Bearer JWT e papel SUPERVISOR.
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Lista de usuarios nao ocultos.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+    post:
+      tags: [Usuarios]
+      summary: Cria usuario
+      description: Exige Bearer JWT e papel SUPERVISOR.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UsuarioCriacao"
+      responses:
+        "201":
+          description: Usuario criado.
+        "400":
+          description: Dados invalidos, senha menor que 6 caracteres, e-mail fora de @univale.br/duplicado, curso inexistente ou campo obrigatorio ausente.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/usuarios/{id}:
+    put:
+      tags: [Usuarios]
+      summary: Atualiza usuario
+      description: Exige Bearer JWT e papel SUPERVISOR. Alteracao de nome ou redefinicao de senha exige a senha atual do SUPERVISOR autenticado em senhaSupervisor.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UsuarioAtualizacao"
+      responses:
+        "200":
+          description: Usuario atualizado.
+        "400":
+          description: Campo invalido, e-mail fora de @univale.br, curso/papel invalido, nenhum campo para atualizar ou nova senha com menos de 6 caracteres.
+        "401":
+          description: JWT invalido/ausente ou senha do supervisor invalida.
+        "403":
+          description: Acesso negado ou confirmacao da senha do supervisor ausente em alteracao sensivel.
+        "404":
+          description: Usuario nao encontrado.
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+    delete:
+      tags: [Usuarios]
+      summary: Arquiva usuario inativo
+      description: >
+        Exige Bearer JWT e papel SUPERVISOR. O usuario precisa estar desativado antes do arquivamento.
+        A operacao e logica: mantem o registro no banco, define ativo=false e oculto=true, e permite
+        recuperacao posterior pela area de Arquivados. A conta Suporte CAIGE e protegida.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Usuario arquivado com sucesso.
+        "400":
+          description: ID invalido ou usuario ja arquivado.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "404":
+          description: Usuario nao encontrado.
+        "409":
+          description: Usuario ainda ativo ou conta protegida do sistema.
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/pacientes:
+    get:
+      tags: [Pacientes]
+      summary: Lista pacientes ativos/nao arquivados
+      description: Exige permissao pode_visualizar_paciente.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: q
+          in: query
+          schema:
+            type: string
+          description: Busca textual por termos.
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [ativo, inativo]
+          description: Filtro por status do paciente.
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+          description: Número da página para paginação progressiva (iniciando em 1).
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+          description: Deslocamento numérico de registros (calculado automaticamente a partir de page se omitido).
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          description: Padrao 50, maximo 100.
+      responses:
+        "200":
+          description: Pacientes retornados.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+    post:
+      tags: [Pacientes]
+      summary: Cria paciente
+      description: Exige permissao pode_criar_paciente.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PacienteRequest"
+      responses:
+        "201":
+          description: Paciente criado.
+        "400":
+          description: Campos obrigatorios/clinicos invalidos, documento/CEP invalido, telefone invalido ou peso/altura fora da faixa aceita.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/pacientes/{id}:
+    get:
+      tags: [Pacientes]
+      summary: Obtem paciente por ID
+      description: Exige permissao pode_visualizar_paciente.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Paciente retornado.
+        "400":
+          description: ID invalido.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "404":
+          description: Paciente nao encontrado.
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+    put:
+      tags: [Pacientes]
+      summary: Atualiza paciente
+      description: Exige permissao pode_editar_paciente.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PacienteRequest"
+      responses:
+        "200":
+          description: Paciente atualizado.
+        "400":
+          description: ID invalido, campos obrigatorios/clinicos invalidos, documento/CEP invalido, telefone invalido ou peso/altura fora da faixa aceita.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "404":
+          description: Paciente nao encontrado.
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+    delete:
+      tags: [Pacientes]
+      summary: Arquiva paciente
+      description: >
+        Exige permissao pode_editar_paciente. Operacao de arquivamento logico:
+        somente pacientes com status inativo podem ser arquivados. Tentativa de
+        arquivar paciente ativo ou ja arquivado e rejeitada com HTTP 400. Nao realiza DELETE fisico.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Paciente arquivado com sucesso.
+        "400":
+          description: ID invalido ou paciente nao inativo ("Apenas pacientes inativos podem ser arquivados.").
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "404":
+          description: Paciente nao encontrado.
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/pacientes/{id}/foto:
+    post:
+      tags: [Pacientes]
+      summary: Salva ou substitui a foto do paciente
+      description: Exige permissao pode_editar_paciente. Recebe imagem WebP otimizada em Data URL e aceita no maximo 300 KB apos decodificacao.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [image]
+              properties:
+                image:
+                  type: string
+                  description: Data URL no formato data:image/webp;base64,...
+                  example: data:image/webp;base64,UklGRgAAAABXRUJQVlA4...
+      responses:
+        "200":
+          description: Foto salva com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  path:
+                    type: string
+                    example: /recursos/uploads/pacientes/58.webp
+                  photo:
+                    type: string
+                    example: /recursos/uploads/pacientes/58.webp
+                  bytes:
+                    type: integer
+        "400":
+          description: Paciente invalido, formato de imagem invalido ou arquivo acima do limite.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+    delete:
+      tags: [Pacientes]
+      summary: Remove a foto do paciente
+      description: Exige permissao pode_editar_paciente. A operacao e idempotente quando o arquivo ainda nao existe.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Foto removida com sucesso.
+        "400":
+          description: Paciente invalido.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/pacientes/{id}/status:
+    patch:
+      tags: [Pacientes]
+      summary: Altera status operacional do paciente (ativo / inativo)
+      description: Exige permissao pode_editar_paciente. Permite alternar o status operacional entre 'ativo' e 'inativo'.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status:
+                  type: string
+                  enum: [ativo, inativo]
+                  example: inativo
+      responses:
+        "200":
+          description: Status do paciente atualizado com sucesso.
+        "400":
+          description: Status invalido, paciente ocultado ou paciente arquivado.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "404":
+          description: Paciente nao encontrado.
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/dados-painel:
+    get:
+      tags: [Dados do Painel]
+      summary: Retorna indicadores e eventos do dashboard
+      description: Para PROFESSOR, os eventos recentes são limitados ao curso de `req.user.idCurso`; os indicadores mantêm a semântica vigente. SUPERVISOR recebe visão global.
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Dados do painel retornados.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          description: PROFESSOR sem curso vinculado.
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+
+  /api/frequencia/historico:
+    get:
+      tags: [Frequencia]
+      summary: Lista historico de frequencias
+      description: Autenticado. PROFESSOR tem escopo limitado a req.user.idCurso.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id_paciente
+          in: query
+          schema:
+            type: integer
+        - name: data_inicio
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: start_date
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Alias aceito para data_inicio.
+        - name: data_fim
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: end_date
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Alias aceito para data_fim.
+        - name: id_curso
+          in: query
+          schema:
+            type: integer
+        - name: id_atividade
+          in: query
+          schema:
+            type: integer
+        - name: id_profissional
+          in: query
+          schema:
+            type: integer
+          description: Aplicado apenas para SUPERVISOR.
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          description: Padrao 50, maximo 200.
+        - $ref: "#/components/parameters/Offset"
+      responses:
+        "200":
+          description: Historico retornado.
+        "400":
+          description: ID do paciente invalido.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/frequencia/relatorio:
+    get:
+      tags: [Frequencia]
+      summary: Gera relatorio de frequencia
+      description: Exige permissao pode_visualizar_relatorios. PROFESSOR fica limitado a req.user.idCurso.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: data_inicio
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: start_date
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Alias aceito para data_inicio.
+        - name: data_fim
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: end_date
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Alias aceito para data_fim.
+        - name: id_paciente
+          in: query
+          schema:
+            type: integer
+        - name: patient_id
+          in: query
+          schema:
+            type: integer
+          description: Alias aceito para id_paciente.
+        - name: nome_paciente
+          in: query
+          schema:
+            type: string
+        - name: patient_name
+          in: query
+          schema:
+            type: string
+          description: Alias aceito para nome_paciente.
+        - name: id_curso
+          in: query
+          schema:
+            type: integer
+        - name: id_atividade
+          in: query
+          schema:
+            type: integer
+        - name: id_profissional
+          in: query
+          schema:
+            type: integer
+          description: Aplicado apenas para SUPERVISOR.
+      responses:
+        "200":
+          description: Relatorio retornado.
+        "400":
+          description: Data inicial e final obrigatorias.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/frequencia/contexto:
+    get:
+      tags: [Frequencia]
+      summary: Retorna contexto para tela de frequencia
+      description: Retorna cursos, atividades e professores para selecao. Supervisor recebe cursos e professores de todos os cursos; professor recebe apenas dados do proprio curso. Cada professor retornado inclui id, nome e idCurso.
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Contexto retornado.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/frequencia:
+    post:
+      tags: [Frequencia]
+      summary: Registra frequencia em atividade
+      description: >
+        Exige permissao pode_registrar_frequencia. Suporta registro individual (idPaciente)
+        ou em lote (idsPacientes, de 1 a 50 pacientes), com persistencia transacional atomica (tudo ou nada)
+        e bulk insert. Enviar idPaciente e idsPacientes simultaneamente resulta em HTTP 400.
+        IDs duplicados no mesmo payload sao automaticamente deduplicados.
+        Cada paciente deve estar ativo e nao oculto (caso contrario, a operacao inteira sofre rollback).
+        O profissional deve ser um professor ativo, nao oculto e pertencer ao mesmo curso da atividade.
+        Para usuarios com papel PROFESSOR, tanto a atividade quanto o profissional devem pertencer ao proprio curso do usuario logado (anti-IDOR).
+        Cada paciente do lote recebe uma movimentacao individual correspondente.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FrequenciaCriacao"
+      responses:
+        "201":
+          description: Frequencia(s) registrada(s) com sucesso. Retorna totalRegistrados, ids, registradoEm e idPaciente quando formato legado.
+        "400":
+          description: Parametros ausentes/invalidos, ambiguidade de formato (idPaciente + idsPacientes), lote vazio ou superior a 50 pacientes, paciente inativo/oculto/inexistente, atividade inexistente/inativa ou incompatibilidade de curso.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/arquivo/usuarios:
+    get:
+      tags: [Arquivo]
+      summary: Lista usuarios arquivados
+      description: Exige Bearer JWT e papel SUPERVISOR.
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Usuarios arquivados retornados.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/arquivo/usuarios/{id}/recuperar:
+    post:
+      tags: [Arquivo]
+      summary: Recupera usuario arquivado como inativo
+      description: Exige Bearer JWT e papel SUPERVISOR. Remove o usuario dos Arquivados, mantendo ativo=false. A conta Suporte CAIGE permanece protegida.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Usuario recuperado com sucesso como inativo.
+        "400":
+          description: ID invalido ou usuario nao arquivado.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "404":
+          description: Usuario nao encontrado.
+        "409":
+          description: Conta protegida do sistema.
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/arquivo/pacientes:
+    get:
+      tags: [Arquivo]
+      summary: Lista pacientes arquivados
+      description: Exige Bearer JWT e papel SUPERVISOR. Retorna apenas pacientes com status 'arquivado' e oculto = false.
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Pacientes arquivados retornados.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/arquivo/pacientes/{id}/recuperar:
+    post:
+      tags: [Arquivo]
+      summary: Recupera paciente arquivado para o status inativo
+      description: >
+        Exige Bearer JWT e papel SUPERVISOR. Restaura paciente arquivado (oculto=false)
+        para status 'inativo'. Nao reativa automaticamente para 'ativo'.
+        Pacientes ocultados definitivamente nao podem ser recuperados.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Paciente recuperado com sucesso para o status inativo.
+        "400":
+          description: ID invalido, paciente nao arquivado ou paciente ocultado.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "404":
+          description: Paciente nao encontrado.
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/arquivo/pacientes/{id}:
+    delete:
+      tags: [Arquivo]
+      summary: Exclui permanentemente o paciente da interface (soft delete definitivo)
+      description: >
+        Exige Bearer JWT e papel SUPERVISOR. Marca oculto=true em paciente arquivado.
+        NUNCA realiza DELETE fisico no banco de dados, preservando historicos e chaves estrangeiras.
+        Apos a operacao, o registro deixa de constar na listagem normal e na area de arquivados.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Paciente excluido permanentemente da interface com sucesso.
+        "400":
+          description: ID invalido, paciente nao arquivado ou ja ocultado.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "404":
+          description: Paciente nao encontrado.
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/questionarios/perguntas/curso/{idCurso}:
+    get:
+      tags: [Perguntas]
+      summary: Lista perguntas de um curso
+      description: >
+        Exige permissao pode_visualizar_questionarios. PROFESSOR so pode
+        consultar o proprio curso. Retorna perguntas vinculadas ao curso,
+        incluindo perguntas globais (todosCursos: true). Para PROFESSOR,
+        nomes e IDs de outros cursos associados a perguntas globais nao sao expostos.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IdCurso"
+      responses:
+        "200":
+          description: Perguntas retornadas.
+        "400":
+          description: ID de curso invalido.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/questionarios/perguntas:
+    get:
+      tags: [Perguntas]
+      summary: Lista perguntas
+      description: >
+        Exige permissao pode_visualizar_questionarios. PROFESSOR e limitado ao proprio curso.
+        Perguntas globais (todosCursos: true) sao retornadas para montagem de questionarios,
+        com campo cursos formatado como 'Todos os cursos' para PROFESSOR para nao expor cursos alheios.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: idCurso
+          in: query
+          schema:
+            type: integer
+          description: Filtro opcional. Para PROFESSOR, deve corresponder ao curso autenticado; outro curso retorna 403.
+      responses:
+        "200":
+          description: Perguntas retornadas.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+    post:
+      tags: [Perguntas]
+      summary: Cria pergunta
+      description: >
+        Exige permissao pode_gerenciar_atividades. A identidade do autor vem de req.user.
+        PROFESSOR pode criar pergunta para seu curso especifico ou com escopo global (todosCursos: true).
+        Em ambos os casos, perguntas.id_curso recebe o curso de origem do professor e criado_por recebe seu ID.
+        Quando todosCursos: true, o backend associa a pergunta internamente a todos os cursos ativos em perguntas_cursos.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PerguntaRequest"
+      responses:
+        "201":
+          description: Pergunta criada.
+        "400":
+          description: Dados invalidos.
+        "401":
+          description: Usuario autenticado nao encontrado ou token invalido.
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/questionarios/perguntas/{id}:
+    put:
+      tags: [Perguntas]
+      summary: Atualiza pergunta
+      description: >
+        Exige permissao pode_gerenciar_atividades. A autorizacao exige que SUPERVISOR ou o autor
+        da pergunta (criado_por == user.id e curso de origem compativel) realizem a edicao.
+        O autor pode alterar titulo, descricao, opcoes e alternar o escopo entre exclusivo do curso
+        e global (todosCursos: true / false). Outros professores nao tem permissao de edicao.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PerguntaRequest"
+      responses:
+        "200":
+          description: Pergunta atualizada.
+        "400":
+          description: ID ou cursos invalidos.
+        "401":
+          description: Usuario autenticado nao encontrado ou token invalido.
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "404":
+          description: Pergunta nao encontrada.
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+    delete:
+      tags: [Perguntas]
+      summary: Remove pergunta logicamente
+      description: >
+        Exige permissao pode_gerenciar_atividades. O backend marca a pergunta e seus vinculos como inativos.
+        Autorizacao restrita ao SUPERVISOR ou ao professor autor da pergunta em seu curso de origem.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Pergunta deletada.
+        "400":
+          description: ID invalido.
+        "401":
+          description: Usuario autenticado nao encontrado ou token invalido.
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "404":
+          description: Pergunta nao encontrada.
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/questionarios/questionarios/curso/{idCurso}:
+    get:
+      tags: [Questionarios]
+      summary: Lista questionarios de um curso
+      description: Exige permissao pode_visualizar_questionarios. PROFESSOR so pode visualizar questionarios do proprio curso.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IdCurso"
+      responses:
+        "200":
+          description: Questionarios retornados.
+        "400":
+          description: ID de curso invalido.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/questionarios/questionarios:
+    get:
+      tags: [Questionarios]
+      summary: Lista questionarios para gestao
+      description: >
+        Exige permissao pode_visualizar_questionarios. PROFESSOR recebe somente
+        questionarios do curso vinculado ao usuario. SUPERVISOR pode receber
+        todos os cursos ou filtrar por idCurso.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: idCurso
+          in: query
+          schema:
+            type: integer
+          description: Filtro opcional por curso para SUPERVISOR.
+      responses:
+        "200":
+          description: Questionarios retornados.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+    post:
+      tags: [Questionarios]
+      summary: Cria questionario
+      description: Exige permissao pode_gerenciar_atividades. A identidade do criador vem de req.user. PROFESSOR usa req.user.idCurso e recebe 403 se tentar informar outro curso.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/QuestionarioRequest"
+      responses:
+        "201":
+          description: Questionario criado.
+        "400":
+          description: Dados invalidos.
+        "401":
+          description: Usuario autenticado nao encontrado ou token invalido.
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/questionarios/questionarios/publicados:
+    get:
+      tags: [Questionarios]
+      summary: Lista questionarios publicados para consulta clinica
+      description: >
+        Exige permissao pode_visualizar_questionarios. PROFESSOR recebe somente
+        modelos publicados do curso vinculado ao usuario. SUPERVISOR pode
+        consultar todos os cursos ou filtrar por idCurso.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: idCurso
+          in: query
+          schema:
+            type: integer
+          description: Filtro opcional por curso.
+      responses:
+        "200":
+          description: Questionarios publicados retornados.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+
+  /api/questionarios/questionarios/{id}:
+    put:
+      tags: [Questionarios]
+      summary: Atualiza questionario
+      description: Exige permissao pode_gerenciar_atividades. A identidade vem de req.user; PROFESSOR so pode editar questionarios do proprio curso.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/QuestionarioRequest"
+      responses:
+        "200":
+          description: Questionario atualizado.
+        "400":
+          description: ID invalido.
+        "401":
+          description: Usuario autenticado nao encontrado ou token invalido.
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "404":
+          description: Questionario nao encontrado.
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+    delete:
+      tags: [Questionarios]
+      summary: Remove questionario
+      description: Exige permissao pode_gerenciar_atividades. Remove fisicamente quando nao existem respostas. PROFESSOR so pode remover questionarios do proprio curso.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Questionario deletado.
+        "400":
+          description: ID invalido ou questionario com respostas existentes.
+        "401":
+          description: Usuario autenticado nao encontrado ou token invalido.
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "404":
+          description: Questionario nao encontrado.
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/questionarios/questionarios/{id}/publicar:
+    patch:
+      tags: [Questionarios]
+      summary: Publica questionario
+      description: Exige permissao pode_gerenciar_atividades. A identidade vem de req.user; PROFESSOR so pode publicar questionarios do proprio curso.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Questionario publicado.
+        "400":
+          description: ID invalido ou questionario sem perguntas.
+        "401":
+          description: Usuario autenticado nao encontrado ou token invalido.
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "404":
+          description: Questionario nao encontrado.
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/questionarios/questionarios/{id}/perguntas:
+    get:
+      tags: [Questionarios]
+      summary: Lista perguntas de um questionario
+      description: >
+        Exige permissao pode_visualizar_questionarios. PROFESSOR consulta a
+        definicao somente de questionarios do proprio curso; SUPERVISOR possui
+        leitura administrativa. A consulta interdisciplinar ocorre pelo historico
+        de respostas ja lancadas no prontuario do paciente.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Perguntas do questionario retornadas.
+        "400":
+          description: ID invalido.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "404":
+          description: Questionario nao encontrado.
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/questionarios/respostas:
+    post:
+      tags: [Respostas]
+      summary: Salva respostas de questionario
+      description: >
+        Exige permissao pode_visualizar_questionarios. O registro clinico so
+        pode ser criado quando o curso do questionario corresponde a
+        req.user.idCurso. O backend grava req.user.id como profissional
+        responsavel pelo lancamento e cria automaticamente um snapshot imutavel
+        do titulo, descricao, curso, perguntas, tipos e opcoes do prontuario.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RespostaQuestionarioRequest"
+      responses:
+        "201":
+          description: Respostas salvas.
+        "400":
+          description: Dados invalidos.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "404":
+          description: Questionario nao encontrado.
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/questionarios/respostas/paciente/{idPaciente}:
+    get:
+      tags: [Respostas]
+      summary: Lista historico interdisciplinar de um paciente
+      description: >
+        Exige permissao pode_visualizar_questionarios. Retorna todos os
+        lancamentos do paciente com curso, prontuario, data/hora e profissional
+        responsavel, independentemente do curso do usuario que esta consultando.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IdPaciente"
+      responses:
+        "200":
+          description: Historico interdisciplinar retornado.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RespostaQuestionario"
+        "400":
+          description: ID de paciente invalido.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+
+  /api/questionarios/respostas/{idPaciente}/{idQuestionario}:
+    get:
+      tags: [Respostas]
+      summary: Lista respostas de um paciente para um questionario
+      description: >
+        Exige permissao pode_visualizar_questionarios. A leitura do historico e
+        interdisciplinar e pode incluir lancamentos de outros cursos.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IdPaciente"
+        - $ref: "#/components/parameters/IdQuestionario"
+      responses:
+        "200":
+          description: Respostas retornadas.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RespostaQuestionario"
+        "400":
+          description: IDs invalidos.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "404":
+          description: Questionario nao encontrado.
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/cursos:
+    get:
+      tags: [Cursos]
+      summary: Lista cursos disponiveis
+      description: PROFESSOR recebe somente o proprio curso ativo; SUPERVISOR recebe lista completa.
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Cursos retornados.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+    post:
+      tags: [Cursos]
+      summary: Cria curso
+      description: Exige Bearer JWT e papel SUPERVISOR.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CursoRequest"
+      responses:
+        "201":
+          description: Curso criado.
+        "400":
+          description: Nome ausente ou duplicado.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/cursos/{id}:
+    put:
+      tags: [Cursos]
+      summary: Atualiza curso
+      description: Exige Bearer JWT e papel SUPERVISOR.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CursoRequest"
+      responses:
+        "200":
+          description: Curso atualizado.
+        "400":
+          description: ID invalido, nome ausente ou duplicado.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "404":
+          description: Curso nao encontrado.
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+    delete:
+      tags: [Cursos]
+      summary: Remove curso
+      description: Exige Bearer JWT e papel SUPERVISOR. Bloqueia remocao quando ha usuarios vinculados.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Curso removido.
+        "400":
+          description: ID invalido ou usuarios vinculados.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "404":
+          description: Curso nao encontrado.
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/atividades-atendimento:
+    get:
+      tags: [Atividades de Atendimento]
+      summary: Lista atividades de atendimento
+      description: PROFESSOR fica limitado a req.user.idCurso e nao pode ampliar escopo por query. SUPERVISOR pode filtrar por idCurso.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: idCurso
+          in: query
+          schema:
+            type: integer
+          description: Filtro por curso. Bloqueado para PROFESSOR quando difere de req.user.idCurso.
+      responses:
+        "200":
+          description: Atividades retornadas.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+    post:
+      tags: [Atividades de Atendimento]
+      summary: Cria atividade de atendimento
+      description: Exige permissao pode_gerenciar_atividades. PROFESSOR usa req.user.idCurso e recebe 403 se tentar informar outro curso.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AtividadeAtendimentoRequest"
+      responses:
+        "201":
+          description: Atividade criada.
+        "400":
+          description: Curso/nome ausente, curso inativo/inexistente ou duplicidade.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/atividades-atendimento/curso/{idCurso}:
+    get:
+      tags: [Atividades de Atendimento]
+      summary: Lista atividades de atendimento por curso
+      description: PROFESSOR so pode consultar o proprio curso.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IdCurso"
+      responses:
+        "200":
+          description: Atividades retornadas.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/atividades-atendimento/{id}:
+    get:
+      tags: [Atividades de Atendimento]
+      summary: Obtem atividade de atendimento por ID
+      description: PROFESSOR so pode acessar atividades do proprio curso.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Atividade retornada.
+        "400":
+          description: ID invalido.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "404":
+          description: Atividade nao encontrada.
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+    put:
+      tags: [Atividades de Atendimento]
+      summary: Atualiza atividade de atendimento
+      description: PROFESSOR so pode alterar atividades do proprio curso.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AtividadeAtendimentoRequest"
+      responses:
+        "200":
+          description: Atividade atualizada.
+        "400":
+          description: ID/nome ausente, atividade duplicada.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "404":
+          description: Atividade nao encontrada.
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+
+    delete:
+      tags: [Atividades de Atendimento]
+      summary: Exclui atividade de atendimento ainda sem uso operacional
+      description: Exige permissao pode_gerenciar_atividades. PROFESSOR so pode excluir atividade do proprio curso. Atividades com frequencia ou calendario vinculado retornam conflito e devem ser desativadas para preservar o historico.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Atividade excluida com sucesso.
+        "400":
+          description: ID da atividade invalido.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "404":
+          description: Atividade nao encontrada.
+        "409":
+          description: Atividade possui frequencia ou calendario vinculado e nao pode ser excluida fisicamente.
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+
+  /api/periodos-letivos:
+    get:
+      tags: [Periodos Letivos]
+      summary: Lista periodos letivos
+      description: Operacao administrativa exclusiva de SUPERVISOR.
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Periodos letivos retornados.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PeriodoLetivo"
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+        "503":
+          description: Estrutura do banco desatualizada para o calendario de frequencia.
+    post:
+      tags: [Periodos Letivos]
+      summary: Cria periodo letivo
+      description: Operacao administrativa exclusiva de SUPERVISOR. Periodos nao podem se sobrepor e so pode existir um periodo ATIVO por vez.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PeriodoLetivoRequest"
+      responses:
+        "201":
+          description: Periodo letivo criado.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PeriodoLetivo"
+        "400":
+          description: Ano, semestre, datas ou status invalidos.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "409":
+          description: Conflito por sobreposicao de datas ou outro periodo ativo.
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/periodos-letivos/{id}:
+    put:
+      tags: [Periodos Letivos]
+      summary: Atualiza periodo letivo
+      description: Exclusivo de SUPERVISOR. Periodo ENCERRADO fica bloqueado para alteracoes.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PeriodoLetivoRequest"
+      responses:
+        "200":
+          description: Periodo letivo atualizado.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PeriodoLetivo"
+        "400":
+          description: Identificador, datas, semestre/status invalidos ou periodo encerrado.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "404":
+          description: Periodo letivo nao encontrado.
+        "409":
+          description: Conflito por sobreposicao de datas ou outro periodo ativo.
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/periodos-letivos/{id}/copiar:
+    post:
+      tags: [Periodos Letivos]
+      summary: Copia a grade de um periodo para um novo semestre
+      description: Exclusivo de SUPERVISOR. Cria o periodo de destino como PLANEJADO e copia sua grade semanal. Excecoes de datas nao sao copiadas.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PeriodoLetivoCopiaRequest"
+      responses:
+        "201":
+          description: Periodo copiado com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PeriodoLetivo"
+        "400":
+          description: Semestre de origem, ano, semestre ou datas invalidos; ou periodo de destino duplicado.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "404":
+          description: Semestre de origem nao encontrado.
+        "409":
+          description: Datas do novo periodo se sobrepoem a outro periodo existente.
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/periodos-letivos/{id}/historico:
+    post:
+      tags: [Periodos Letivos]
+      summary: Envia periodo encerrado para o historico
+      description: Exclusivo de SUPERVISOR. Apenas periodos ENCERRADOS podem ser marcados como historicos. A operacao e idempotente para periodo que ja esteja no historico.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Periodo retornado com emHistorico=true.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PeriodoLetivo"
+        "400":
+          description: ID invalido ou periodo ainda nao encerrado.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "404":
+          description: Periodo letivo nao encontrado.
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+        "503":
+          description: Estrutura do banco desatualizada para o historico de semestres.
+  /api/periodos-letivos/{id}/grade:
+    get:
+      tags: [Periodos Letivos]
+      summary: Lista grade semanal do periodo
+      description: Exclusivo de SUPERVISOR.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Grade retornada.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GradePeriodoItem"
+        "400":
+          description: ID do periodo invalido.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+    put:
+      tags: [Periodos Letivos]
+      summary: Salva dias de atendimento do curso ou atividade
+      description: Exclusivo de SUPERVISOR. Dias usam padrao ISO de 1 a 7. Periodo encerrado nao pode ser alterado.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GradePeriodoRequest"
+      responses:
+        "200":
+          description: Dias atualizados.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GradePeriodoResponse"
+        "400":
+          description: Periodo/curso/dias invalidos, atividade incompatível ou periodo encerrado.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "404":
+          description: Periodo letivo nao encontrado.
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/periodos-letivos/{id}/excecoes:
+    get:
+      tags: [Periodos Letivos]
+      summary: Lista datas sem atendimento do periodo
+      description: Exclusivo de SUPERVISOR.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Excecoes retornadas.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ExcecaoPeriodo"
+        "400":
+          description: ID do periodo invalido.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+    post:
+      tags: [Periodos Letivos]
+      summary: Adiciona data sem atendimento
+      description: Exclusivo de SUPERVISOR. A excecao pode ser geral ou de um atendimento especifico previsto na grade.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExcecaoPeriodoRequest"
+      responses:
+        "201":
+          description: Data sem atendimento adicionada.
+        "400":
+          description: Dados invalidos, duplicidade, data fora do periodo ou atendimento nao previsto.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "404":
+          description: Periodo letivo nao encontrado.
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+  /api/periodos-letivos/{id}/excecoes/{idExcecao}:
+    delete:
+      tags: [Periodos Letivos]
+      summary: Remove data sem atendimento
+      description: Exclusivo de SUPERVISOR. Periodo encerrado nao pode ser alterado.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+        - name: idExcecao
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Data sem atendimento removida.
+        "400":
+          description: Identificador invalido ou periodo encerrado.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "404":
+          description: Periodo ou data sem atendimento nao encontrada.
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"
+
+  /api/movimentacoes/recentes:
+    get:
+      tags: [Movimentacoes]
+      summary: Lista movimentacoes recentes
+      description: SUPERVISOR recebe a visão global. Para PROFESSOR, o backend aplica automaticamente `movimentacoes.id_curso = req.user.idCurso`; registros sem curso e de outros cursos não são retornados.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          description: Padrao 20, maximo 100.
+        - $ref: "#/components/parameters/Offset"
+        - name: tipo
+          in: query
+          schema:
+            type: string
+        - name: id_usuario
+          in: query
+          schema:
+            type: integer
+        - name: id_paciente
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Movimentacoes retornadas.
+        "401":
+          $ref: "#/components/responses/NaoAutenticado"
+        "403":
+          description: PROFESSOR sem curso vinculado.
+        "500":
+          $ref: "#/components/responses/ErroInternoMessage"

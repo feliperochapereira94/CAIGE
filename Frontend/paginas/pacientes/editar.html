@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Editar Cadastro</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+  <link rel="stylesheet" href="../../recursos/css/base.css" />
+  <link rel="stylesheet" href="../../recursos/css/componentes.css" />
+  <link rel="stylesheet" href="../../recursos/css/layout.css" />
+  <link rel="stylesheet" href="../../recursos/css/responsive.css" />
+  <link rel="stylesheet" href="../../recursos/css/paginas/pacientes.css" />
+  <script src="../../recursos/js/text-normalizer.js"></script>
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#123a78" />
+    <meta name="application-name" content="CAIGE" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="CAIGE" />
+    <link rel="apple-touch-icon" href="/recursos/images/pwa/apple-touch-icon.png" />
+  </head>
+
+<body data-page-title="Editar Cadastro" data-page-subtitle="Atualize as informações do paciente" data-caige-persist-scroll="false">
+  <script>
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+
+    const caigeEditarCadastroNoTopo = () => {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      document.querySelectorAll('.content, .activities-content, .app-content').forEach((elemento) => {
+        elemento.scrollTop = 0;
+      });
+    };
+
+    caigeEditarCadastroNoTopo();
+    window.addEventListener('pageshow', () => {
+      caigeEditarCadastroNoTopo();
+      requestAnimationFrame(caigeEditarCadastroNoTopo);
+      setTimeout(caigeEditarCadastroNoTopo, 80);
+    });
+    window.addEventListener('load', () => {
+      caigeEditarCadastroNoTopo();
+      requestAnimationFrame(caigeEditarCadastroNoTopo);
+      setTimeout(caigeEditarCadastroNoTopo, 150);
+    }, { once: true });
+  </script>
+  <div class="dashboard">
+    <div id="shell-sidebar"></div>
+
+    <main class="content">
+      <div id="shell-header"></div>
+      <form id="patient-form" class="form-container largura-pagina" novalidate>
+        <!-- 1. Informações Pessoais -->
+        <section class="card form-section">
+          <div class="patient-section-heading"><h3 class="section-title">Informações Pessoais</h3><div class="patient-required-note patient-required-note--inline" role="note">Campos com <strong>*</strong> são obrigatórios.</div></div>
+          <div class="form-grid patient-personal-grid">
+            <div class="patient-personal-top">
+              <div class="patient-photo-area" aria-label="Foto do paciente">
+                <input type="file" id="patient-photo-input" accept="image/jpeg,image/png,image/webp" hidden>
+                <div class="patient-photo-frame" id="patient-photo-frame">
+                  <button type="button" class="patient-photo-preview" id="patient-photo-preview" aria-label="Inserir imagem do paciente">
+                    <span class="patient-photo-initials" id="patient-photo-initials">--</span>
+                    <span class="patient-photo-action" id="patient-photo-action">Inserir imagem</span>
+                  </button>
+                  <div class="patient-photo-menu" id="patient-photo-menu" hidden aria-label="Ações da foto">
+                    <button type="button" class="patient-photo-menu__action" id="patient-photo-view" title="Visualizar foto" aria-label="Visualizar foto"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.8"/></svg></button>
+                    <button type="button" class="patient-photo-menu__action" id="patient-photo-select" title="Alterar foto" aria-label="Alterar foto"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 20h4l11-11-4-4L4 16v4Z"/><path d="m13.5 6.5 4 4"/></svg></button>
+                    <button type="button" class="patient-photo-menu__action patient-photo-menu__action--danger" id="patient-photo-remove" title="Excluir foto" aria-label="Excluir foto"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="m7 7 1 13h8l1-13"/><path d="M10 11v5M14 11v5"/></svg></button>
+                  </div>
+                </div>
+              </div>
+              <div class="patient-personal-primary-fields">
+                <div class="form-group form-group--full">
+                  <label for="full-name">Nome completo *</label>
+                  <input type="text" id="full-name" name="full_name" placeholder="Nome completo do paciente" required />
+                </div>
+                <div class="patient-birth-age-grid">
+                  <div class="form-group">
+                    <label for="birth-date">Data de nascimento *</label>
+                    <input type="text" id="birth-date" name="birth_date" title="Selecione a data de nascimento" autocomplete="off" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="age">Idade</label>
+                    <input type="text" id="age" name="age" placeholder="Calculada automaticamente" disabled />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="gender">Sexo *</label>
+              <select id="gender" name="gender" required>
+                <option value="">Selecione</option>
+                <option value="masculino">Masculino</option>
+                <option value="feminino">Feminino</option>
+                <option value="outro">Outro</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="cpf">CPF ou Documento *</label>
+              <input type="text" id="cpf" name="cpf" placeholder="000.000.000-00" required />
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. Contato e Endereço -->
+        <section class="card form-section">
+          <h3 class="section-title">Contato e Endereço</h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="phone1">Telefone residencial</label>
+              <input type="tel" id="phone1" name="phone1" placeholder="(00) 0000-0000" maxlength="14" />
+            </div>
+
+            <div class="form-group">
+              <label for="phone2">Celular</label>
+              <input type="tel" id="phone2" name="phone2" placeholder="(00) 00000-0000" maxlength="15" />
+            </div>
+
+            <div class="form-group form-group--full">
+              <small class="form-hint">Preencha ao menos Telefone residencial ou Celular.</small>
+            </div>
+
+            <div class="form-group">
+              <label for="cep">CEP *</label>
+              <input type="text" id="cep" name="cep" placeholder="00000-000" required />
+            </div>
+
+            <div class="form-group">
+              <label for="street">Rua *</label>
+              <input type="text" id="street" name="street" placeholder="Rua" required />
+            </div>
+
+            <div class="form-group">
+              <label for="number">Número *</label>
+              <input type="text" id="number" name="number" placeholder="Número" required />
+            </div>
+
+            <div class="form-group">
+              <label for="neighborhood">Bairro *</label>
+              <input type="text" id="neighborhood" name="neighborhood" placeholder="Bairro" required />
+            </div>
+
+            <div class="form-group">
+              <label for="city">Cidade *</label>
+              <input type="text" id="city" name="city" placeholder="Cidade" required />
+            </div>
+
+            <div class="form-group">
+              <label for="state">Estado *</label>
+              <select id="state" name="state" required>
+                <option value="">Selecione</option>
+                <option value="MG">Minas Gerais</option>
+                <option value="SP">São Paulo</option>
+                <option value="RJ">Rio de Janeiro</option>
+                <option value="BA">Bahia</option>
+                <option value="RS">Rio Grande do Sul</option>
+                <option value="PR">Paraná</option>
+                <option value="SC">Santa Catarina</option>
+                <option value="PE">Pernambuco</option>
+                <option value="GO">Goiás</option>
+                <option value="PA">Pará</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. Informações Complementares -->
+        <section class="card form-section">
+          <h3 class="section-title">Informações Complementares</h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="responsible">Responsável (nome) *</label>
+              <input type="text" id="responsible" name="responsible" placeholder="Nome do responsável" required />
+            </div>
+
+            <div class="form-group">
+              <label for="responsible-relationship">Grau de Parentesco *</label>
+              <select id="responsible-relationship" name="responsible_relationship" required>
+                <option value="">Selecione</option>
+                <option value="mae">Mãe</option>
+                <option value="pai">Pai</option>
+                <option value="filho">Filho</option>
+                <option value="filha">Filha</option>
+                <option value="esposo">Esposo</option>
+                <option value="esposa">Esposa</option>
+                <option value="irmao">Irmão</option>
+                <option value="irma">Irmã</option>
+                <option value="avó">Avó</option>
+                <option value="avo">Avô</option>
+                <option value="neto">Neto</option>
+                <option value="neta">Neta</option>
+                <option value="tio">Tio</option>
+                <option value="tia">Tia</option>
+                <option value="sobrinho">Sobrinho</option>
+                <option value="sobrinha">Sobrinha</option>
+                <option value="primo">Primo</option>
+                <option value="prima">Prima</option>
+                <option value="outro">Outro</option>
+              </select>
+            </div>
+
+            <div class="form-group form-group--full">
+              <label for="responsible-phone">Telefone do responsável *</label>
+              <input type="tel" id="responsible-phone" name="responsible_phone" placeholder="(00) 00000-0000"
+                maxlength="15" required />
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. Informações Clínicas -->
+        <section class="card form-section">
+          <h3 class="section-title">Informações Clínicas</h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="peso-kg">Peso atual (kg) *</label>
+              <input type="text" id="peso-kg" name="weight_kg" inputmode="decimal"
+                placeholder="Ex.: 72,5" required />
+            </div>
+
+            <div class="form-group">
+              <label for="altura-cm">Altura (cm) *</label>
+              <input type="text" id="altura-cm" name="height_cm" inputmode="numeric" maxlength="3"
+                placeholder="Ex.: 165" required />
+            </div>
+
+            <div class="form-group form-group--full">
+              <label>Índice de Massa Corporal (IMC)</label>
+              <div class="imc-campo" id="imc-container" aria-live="polite">
+                <span class="imc-campo__valor" id="imc-valor">—</span>
+                <span class="imc-campo__classificacao status-pill" id="imc-badge">Informe peso e altura</span>
+              </div>
+            </div>
+
+            <div class="form-group form-group--full clinical-shortcut-row">
+              <label class="checkbox-field">
+                <input type="checkbox" id="shortcut-no-clinical-records" />
+                <span>Nenhuma condição, alergia ou medicamento em uso</span>
+              </label>
+            </div>
+
+            <div class="form-group">
+              <div class="form-group__label-row">
+                <label for="condicoes-saude-entrada">Condições de Saúde *</label>
+                <label class="checkbox-field checkbox-field--inline">
+                  <input type="checkbox" id="nenhuma-condicao" />
+                  <span>Nenhuma condição informada</span>
+                </label>
+              </div>
+              <div class="editor-lista-clinica">
+                <div class="editor-lista-clinica__entrada">
+                  <input type="text" id="condicoes-saude-entrada" placeholder="Ex.: Diabetes Tipo 2" />
+                  <button type="button" class="btn btn--secondary editor-lista-clinica__adicionar"
+                    id="condicoes-saude-adicionar">Adicionar</button>
+                </div>
+                <input type="hidden" id="health-conditions" name="health_conditions" />
+                <div class="editor-lista-clinica__itens" id="condicoes-saude-lista"></div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="form-group__label-row">
+                <label for="alergias-entrada">Alergias *</label>
+                <label class="checkbox-field checkbox-field--inline">
+                  <input type="checkbox" id="nenhuma-alergia" />
+                  <span>Nenhuma alergia conhecida</span>
+                </label>
+              </div>
+              <div class="editor-lista-clinica">
+                <div class="editor-lista-clinica__entrada">
+                  <input type="text" id="alergias-entrada" placeholder="Ex.: Dipirona" />
+                  <button type="button" class="btn btn--secondary editor-lista-clinica__adicionar"
+                    id="alergias-adicionar">Adicionar</button>
+                </div>
+                <input type="hidden" id="allergies" name="allergies" />
+                <div class="editor-lista-clinica__itens" id="alergias-lista"></div>
+              </div>
+            </div>
+
+            <div class="form-group form-group--full">
+              <div class="form-group__label-row">
+                <label for="medicamentos-entrada">Medicamentos em Uso *</label>
+                <label class="checkbox-field checkbox-field--inline">
+                  <input type="checkbox" id="nenhum-medicamento" />
+                  <span>Não utiliza medicamentos</span>
+                </label>
+              </div>
+              <div class="editor-lista-clinica">
+                <div class="editor-lista-clinica__entrada">
+                  <input type="text" id="medicamentos-entrada" placeholder="Ex.: Metformina 850 mg" />
+                  <button type="button" class="btn btn--secondary editor-lista-clinica__adicionar"
+                    id="medicamentos-adicionar">Adicionar</button>
+                </div>
+                <input type="hidden" id="medications" name="medications_in_use" />
+                <div class="editor-lista-clinica__itens editor-lista-clinica__itens--lista" id="medicamentos-lista"></div>
+              </div>
+            </div>
+
+            <div class="form-group form-group--full">
+              <label for="clinical-observations">Observações Clínicas</label>
+              <textarea id="clinical-observations" name="clinical_observations"
+                placeholder="Anotações clínicas importantes..." rows="3"></textarea>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. Situação e Observações Gerais -->
+        <section class="card form-section">
+          <h3 class="section-title">Situação e Observações Gerais</h3>
+          <div class="form-grid">
+            <div class="form-group form-group--full">
+              <label for="observations">Observações gerais</label>
+              <textarea id="observations" name="observations" placeholder="Informações adicionais relevantes..."
+                rows="4"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="status">Situação do cadastro *</label>
+              <select id="status" name="status" required>
+                <option value="">Selecione</option>
+                <option value="ativo">Ativo</option>
+                <option value="inativo">Inativo</option>
+              </select>
+            </div>
+
+            <div class="form-actions form-group--full">
+              <button type="button" class="btn btn--secondary" onclick="goBackToProfile()">
+                Cancelar
+              </button>
+              <button type="submit" class="btn btn--primary">
+                Salvar Alterações
+              </button>
+            </div>
+          </div>
+        </section>
+      </form>
+  </div>
+
+  <script src="../../recursos/js/icones.js"></script>
+  <script src="../../recursos/js/notificacoes.js"></script>
+  <script src="../../recursos/js/modal-confirmacao.js"></script>
+  <script src="../../recursos/js/util-jwt.js"></script>
+  <script src="../../recursos/js/shell-global.js"></script>
+  <script src="../../recursos/js/sidebar-menu.js"></script>
+  <script src="../../recursos/js/menu-usuario.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
+  <script src="../../recursos/js/date-picker-ptbr.js"></script>
+  <script src="../../recursos/js/formatador-texto.js"></script>
+  <script src="../../recursos/js/paciente-form-utils.js"></script>
+  <script src="../../recursos/js/paciente-foto-editor.js"></script>
+  <script>
+    const API_URL = '';
+    const form = document.getElementById('patient-form');
+    const photoInput = document.getElementById('patient-photo-input');
+    const photoPreview = document.getElementById('patient-photo-preview');
+    const photoInitials = document.getElementById('patient-photo-initials');
+    const photoAction = document.getElementById('patient-photo-action');
+    const photoFrame = document.getElementById('patient-photo-frame');
+    const photoMenu = document.getElementById('patient-photo-menu');
+    const photoView = document.getElementById('patient-photo-view');
+    const photoSelect = document.getElementById('patient-photo-select');
+    const photoRemove = document.getElementById('patient-photo-remove');
+    let pendingPhoto = null;
+    let removeCurrentPhoto = false;
+    let currentPhotoSrc = null;
+
+    function initialsFromName(name) {
+      return window.PatientFormUtils?.obterIniciaisPaciente?.(name, '--') || '--';
+    }
+
+    function ensurePhotoViewer() {
+      let modal = document.getElementById('patient-form-photo-viewer');
+      if (modal) return modal;
+      document.body.insertAdjacentHTML('beforeend', `<div class="profile-photo-modal" id="patient-form-photo-viewer" hidden role="dialog" aria-modal="true" aria-label="Foto do paciente"><div class="profile-photo-modal__dialog"><button type="button" class="profile-photo-modal__close" data-photo-viewer-close aria-label="Fechar foto">×</button><img alt="Foto ampliada do paciente"></div></div>`);
+      modal = document.getElementById('patient-form-photo-viewer');
+      const close = () => { modal.hidden = true; modal.querySelector('img').removeAttribute('src'); };
+      modal.querySelector('[data-photo-viewer-close]').addEventListener('click', close);
+      modal.addEventListener('click', (event) => { if (event.target === modal) close(); });
+      document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && !modal.hidden) close(); });
+      return modal;
+    }
+
+    function renderPhoto(src) {
+      currentPhotoSrc = src || null;
+      if (src) {
+        photoPreview.innerHTML = `<img src="${src}" alt="Foto do paciente"><span class="patient-photo-action" id="patient-photo-action">Visualizar</span>`;
+        photoPreview.classList.add('has-photo');
+        photoPreview.setAttribute('aria-label', 'Visualizar foto do paciente');
+        photoMenu.hidden = false;
+        photoFrame.classList.add('has-photo');
+        photoFrame.classList.remove('menu-open');
+      } else {
+        photoPreview.innerHTML = `<span class="patient-photo-initials" id="patient-photo-initials">${initialsFromName(document.getElementById('full-name')?.value)}</span><span class="patient-photo-action" id="patient-photo-action">Inserir imagem</span>`;
+        photoPreview.classList.remove('has-photo');
+        photoPreview.setAttribute('aria-label', 'Inserir imagem do paciente');
+        photoMenu.hidden = true;
+        photoFrame.classList.remove('has-photo', 'menu-open');
+      }
+    }
+
+    function choosePhoto() { photoInput.click(); }
+    function viewPhoto() {
+      if (!currentPhotoSrc) return;
+      const modal = ensurePhotoViewer();
+      modal.querySelector('img').src = currentPhotoSrc;
+      modal.hidden = false;
+      modal.querySelector('[data-photo-viewer-close]').focus();
+    }
+    photoView.addEventListener('click', (event) => { event.stopPropagation(); photoFrame.classList.remove('menu-open'); viewPhoto(); });
+    photoSelect.addEventListener('click', (event) => { event.stopPropagation(); photoFrame.classList.remove('menu-open'); choosePhoto(); });
+    photoPreview.addEventListener('click', () => {
+      if (!currentPhotoSrc) return choosePhoto();
+      viewPhoto();
+    });
+
+    let photoHoldTimer = null;
+    let photoHoldTriggered = false;
+    const cancelPhotoHold = () => { if (photoHoldTimer) clearTimeout(photoHoldTimer); photoHoldTimer = null; };
+    photoPreview.addEventListener('pointerdown', (event) => {
+      if (!currentPhotoSrc || event.pointerType === 'mouse') return;
+      photoHoldTriggered = false;
+      cancelPhotoHold();
+      photoHoldTimer = setTimeout(() => {
+        photoHoldTriggered = true;
+        photoFrame.classList.add('menu-open');
+        if (navigator.vibrate) navigator.vibrate(25);
+      }, 550);
+    });
+    ['pointerup','pointercancel','pointerleave'].forEach((type) => photoPreview.addEventListener(type, cancelPhotoHold));
+    photoPreview.addEventListener('click', (event) => {
+      if (photoHoldTriggered) { event.preventDefault(); event.stopImmediatePropagation(); photoHoldTriggered = false; }
+    }, true);
+    document.addEventListener('pointerdown', (event) => { if (!photoFrame.contains(event.target)) photoFrame.classList.remove('menu-open'); });
+
+    photoInput.addEventListener('change', () => {
+      const file = photoInput.files?.[0];
+      if (!file) return;
+      PacienteFotoEditor.open(file, (dataUrl) => {
+        pendingPhoto = dataUrl;
+        removeCurrentPhoto = false;
+        renderPhoto(dataUrl);
+        photoInput.value = '';
+      });
+    });
+    photoRemove.addEventListener('click', (event) => {
+      event.stopPropagation();
+      if (!currentPhotoSrc || !window.confirm('Excluir a foto deste paciente?')) return;
+      pendingPhoto = null;
+      removeCurrentPhoto = true;
+      renderPhoto(null);
+    });
+
+
+    document.getElementById('full-name')?.addEventListener('input', (event) => {
+      if (!currentPhotoSrc) renderPhoto(null);
+    });
+
+    const birthDateInput = document.getElementById('birth-date');
+    const ageInput = document.getElementById('age');
+    const patientNameEl = document.getElementById('patient-name');
+    const [birthDatePicker] = window.initPtBrDatePicker ? window.initPtBrDatePicker('#birth-date') : [];
+
+    const editoresClinicos = PatientFormUtils.inicializarEditoresClinicosPaciente();
+    const controlesClinicos = PatientFormUtils.configurarControlesClinicosSemOcorrencia(editoresClinicos);
+
+    if (!birthDatePicker) {
+      birthDateInput.type = 'date';
+      birthDateInput.lang = 'pt-BR';
+    }
+
+    let patientId = null;
+
+    if (window.UtilJWT) {
+      window.UtilJWT.exigirSessao();
+    }
+
+    // Obter ID da URL
+    function getIdFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('id');
+    }
+
+    function goBackToProfile() {
+      const id = patientId || getIdFromURL();
+      if (id) {
+        window.location.href = `./visualizar.html?id=${id}`;
+        return;
+      }
+      window.location.href = './lista.html';
+    }
+
+    function getDateParts(dateValue) {
+      if (!dateValue) return null;
+      const raw = typeof dateValue === 'string' ? dateValue : new Date(dateValue).toISOString();
+      const dateOnly = raw.split('T')[0];
+      const [year, month, day] = dateOnly.split('-');
+      if (!year || !month || !day) return null;
+      return {
+        year: Number(year),
+        month: Number(month),
+        day: Number(day)
+      };
+    }
+
+    function formatBirthDateIso(dateValue) {
+      const parts = getDateParts(dateValue);
+      if (!parts) return '';
+      const month = String(parts.month).padStart(2, '0');
+      const day = String(parts.day).padStart(2, '0');
+      return `${parts.year}-${month}-${day}`;
+    }
+
+    function normalizePatientStatus(status) {
+      const normalized = String(status || '').trim().toLowerCase();
+      return normalized === 'inativo' ? 'inativo' : 'ativo';
+    }
+
+    function calculateAgeFromParts(parts) {
+      if (!parts) return null;
+      if (window.PatientFormUtils?.calcularIdade) {
+        return window.PatientFormUtils.calcularIdade(parts);
+      }
+      return null;
+    }
+
+    // Carregar dados do paciente
+    async function loadPatient() {
+      patientId = getIdFromURL();
+      if (!patientId) {
+        notify.error('ID do paciente não encontrado');
+        setTimeout(() => window.location.href = './lista.html', 1500);
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_URL}/api/pacientes/${patientId}`);
+        if (response.ok) {
+          const data = await response.json();
+          populateForm(data);
+          if (patientNameEl) patientNameEl.textContent = data.name;
+        } else {
+          notify.error('Paciente não encontrado');
+          setTimeout(() => window.location.href = './lista.html', 1500);
+        }
+      } catch (error) {
+        console.error('Erro ao carregar paciente:', error);
+        notify.error('Erro ao carregar dados do paciente');
+      }
+    }
+
+    function populateForm(data) {
+      document.getElementById('full-name').value = window.FormatadorTexto?.formatarNomePessoa?.(data.name) || data.name || '';
+      renderPhoto(data.photo || null);
+
+      // Converter data de YYYY-MM-DD para DD/MM/YYYY
+      const dateParts = getDateParts(data.birth_date);
+      if (dateParts) {
+        const birthDateIso = formatBirthDateIso(data.birth_date);
+        if (birthDatePicker) {
+          birthDatePicker.setDate(birthDateIso, true, 'Y-m-d');
+        } else {
+          document.getElementById('birth-date').value = birthDateIso;
+        }
+
+        const age = calculateAgeFromParts(dateParts);
+        if (age !== null) {
+          document.getElementById('age').value = age;
+        }
+      }
+
+      document.getElementById('gender').value = data.gender || '';
+      document.getElementById('cpf').value = data.cpf || '';
+      document.getElementById('phone1').value = data.phone || '';
+      document.getElementById('phone2').value = data.phone2 || '';
+      document.getElementById('cep').value = data.cep || '';
+      document.getElementById('street').value = window.FormatadorTexto?.formatarTitulo?.(data.street) || data.street || '';
+      document.getElementById('number').value = data.number || '';
+      document.getElementById('neighborhood').value = window.FormatadorTexto?.formatarTitulo?.(data.neighborhood) || data.neighborhood || '';
+      document.getElementById('city').value = window.FormatadorTexto?.formatarTitulo?.(data.city) || data.city || '';
+      document.getElementById('state').value = window.FormatadorTexto?.formatarEstado?.(data.state) || data.state || '';
+      document.getElementById('responsible').value = window.FormatadorTexto?.formatarNomePessoa?.(data.responsible) || data.responsible || '';
+      const relationshipSelect = document.getElementById('responsible-relationship');
+      const relationshipRaw = String(data.responsible_relationship || data.relationship || data.parentesco_responsavel || data.parentesco || '').trim();
+      const normalizeRelationship = (value) => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+      const relationshipOption = Array.from(relationshipSelect.options).find((option) =>
+        normalizeRelationship(option.value) === normalizeRelationship(relationshipRaw) ||
+        normalizeRelationship(option.textContent) === normalizeRelationship(relationshipRaw)
+      );
+      relationshipSelect.value = relationshipOption?.value || '';
+      document.getElementById('responsible-phone').value = data.responsible_phone || '';
+      document.getElementById('observations').value = data.observations || '';
+      editoresClinicos.condicoesSaude?.definirValor(data.health_conditions || '');
+      editoresClinicos.alergias?.definirValor(data.allergies || '');
+      editoresClinicos.medicamentos?.definirValor(data.medications_in_use || '');
+      controlesClinicos.aplicarEstadoInicial({
+        condicoesAvaliadas: Boolean(data.health_conditions_evaluated),
+        semCondicoes: Boolean(data.health_conditions_evaluated && !data.health_conditions),
+        alergiasAvaliadas: Boolean(data.allergies_evaluated),
+        semAlergias: Boolean(data.allergies_evaluated && !data.allergies),
+        medicamentosAvaliados: Boolean(data.medications_in_use_evaluated),
+        semMedicamentos: Boolean(data.medications_in_use_evaluated && !data.medications_in_use)
+      });
+      document.getElementById('clinical-observations').value = data.clinical_observations || '';
+      document.getElementById('peso-kg').value = data.weight_kg ?? '';
+      const alturaNormalizada = PatientFormUtils.normalizarAlturaCm(data.height_cm);
+      document.getElementById('altura-cm').value = alturaNormalizada !== null ? String(alturaNormalizada) : '';
+      document.getElementById('status').value = normalizePatientStatus(data.status);
+      PatientFormUtils.atualizarExibicaoIMC();
+    }
+
+    function parseBirthDateParts(value) {
+      const raw = String(value || '').trim();
+      const match = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+
+      if (!match) {
+        return null;
+      }
+
+      const year = Number(match[1]);
+      const month = Number(match[2]);
+      const day = Number(match[3]);
+      const date = new Date(year, month - 1, day);
+
+      if (
+        date.getFullYear() !== year ||
+        date.getMonth() !== month - 1 ||
+        date.getDate() !== day
+      ) {
+        return null;
+      }
+
+      return { day, month, year, date };
+    }
+
+    function updateAgeFromBirthDate(showWarning = false) {
+      const parsed = parseBirthDateParts(birthDateInput.value);
+
+      if (!birthDateInput.value) {
+        ageInput.value = '';
+        birthDateInput.setCustomValidity('');
+        return false;
+      }
+
+      if (!parsed) {
+        ageInput.value = '';
+        birthDateInput.setCustomValidity('Selecione uma data válida');
+        if (showWarning) {
+          birthDateInput.reportValidity();
+        }
+        return false;
+      }
+
+      const age = window.PatientFormUtils?.calcularIdade
+        ? window.PatientFormUtils.calcularIdade(parsed)
+        : null;
+
+      if (age === null || age < 0 || age > 150) {
+        ageInput.value = '';
+        birthDateInput.setCustomValidity('Data de nascimento inválida');
+        if (showWarning) {
+          birthDateInput.reportValidity();
+        }
+        return false;
+      }
+
+      birthDateInput.setCustomValidity('');
+      ageInput.value = age;
+      return true;
+    }
+
+    birthDateInput.addEventListener('input', function () {
+      birthDateInput.setCustomValidity('');
+    });
+
+    birthDateInput.addEventListener('blur', function () {
+      updateAgeFromBirthDate(true);
+    });
+
+    birthDateInput.addEventListener('change', function () {
+      updateAgeFromBirthDate(false);
+    });
+
+    PatientFormUtils.attachPhoneMasks();
+    PatientFormUtils.attachCpfMask();
+    PatientFormUtils.attachCepAutoFill({
+      onNotFound: () => notify.warning('CEP não encontrado'),
+      onFilled: () => notify.success('Endereço preenchido automaticamente!'),
+      onError: (error) => console.error('Erro ao buscar CEP:', error)
+    });
+    PatientFormUtils.vincularCalculoIMC();
+    PatientFormUtils.vincularRestricaoAltura(document.getElementById('altura-cm'));
+
+    function goBackToProfile() {
+      if (patientId) {
+        window.location.href = `./visualizar.html?id=${encodeURIComponent(patientId)}`;
+      } else {
+        window.location.href = './lista.html';
+      }
+    }
+
+    // Salvar alterações
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalText = submitBtn.textContent;
+
+      try {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Salvando...';
+
+        const rawWeight = document.getElementById('peso-kg').value.trim();
+        const rawHeight = document.getElementById('altura-cm').value.trim();
+
+        const formData = PatientFormUtils.normalizePatientTextFields({
+          name: document.getElementById('full-name').value.trim(),
+          birth_date: PatientFormUtils.convertBrDateToDb(document.getElementById('birth-date').value),
+          gender: document.getElementById('gender').value || null,
+          cpf: document.getElementById('cpf').value.trim() || null,
+          phone: document.getElementById('phone1').value.trim() || null,
+          phone2: document.getElementById('phone2').value.trim() || null,
+          cep: document.getElementById('cep').value.trim() || null,
+          street: document.getElementById('street').value.trim(),
+          number: document.getElementById('number').value.trim(),
+          neighborhood: document.getElementById('neighborhood').value.trim(),
+          city: document.getElementById('city').value.trim(),
+          state: document.getElementById('state').value,
+          responsible: document.getElementById('responsible').value.trim(),
+          responsible_relationship: document.getElementById('responsible-relationship').value || null,
+          responsible_phone: document.getElementById('responsible-phone').value.trim() || null,
+          observations: document.getElementById('observations').value.trim() || null,
+          health_conditions: document.getElementById('nenhuma-condicao')?.checked
+            ? null
+            : (document.getElementById('health-conditions').value.trim() || null),
+          health_conditions_evaluated: Boolean(
+            document.getElementById('health-conditions').value.trim() ||
+            document.getElementById('nenhuma-condicao')?.checked
+          ),
+          has_no_health_conditions: Boolean(document.getElementById('nenhuma-condicao')?.checked),
+          allergies: document.getElementById('nenhuma-alergia')?.checked
+            ? null
+            : (document.getElementById('allergies').value.trim() || null),
+          allergies_evaluated: Boolean(
+            document.getElementById('allergies').value.trim() ||
+            document.getElementById('nenhuma-alergia')?.checked
+          ),
+          has_no_allergies: Boolean(document.getElementById('nenhuma-alergia')?.checked),
+          medications_in_use: document.getElementById('nenhum-medicamento')?.checked
+            ? null
+            : (document.getElementById('medications').value.trim() || null),
+          medications_in_use_evaluated: Boolean(
+            document.getElementById('medications').value.trim() ||
+            document.getElementById('nenhum-medicamento')?.checked
+          ),
+          has_no_medications: Boolean(document.getElementById('nenhum-medicamento')?.checked),
+          clinical_observations: document.getElementById('clinical-observations').value.trim() || null,
+          weight_kg: PatientFormUtils.normalizarPesoKg(rawWeight) ?? rawWeight,
+          height_cm: rawHeight,
+          status: document.getElementById('status').value
+        });
+
+        const validacao = PatientFormUtils.validarEExibirErrosFormulario(form, formData);
+        if (!validacao.valido) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+          return;
+        }
+
+        const response = await fetch(`${API_URL}/api/pacientes/${patientId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          if (removeCurrentPhoto) await PacienteFotoEditor.remove(patientId);
+          if (pendingPhoto) {
+            await PacienteFotoEditor.save(patientId, pendingPhoto);
+            const photoCheckResponse = await fetch(`${API_URL}/api/pacientes/${patientId}`);
+            const photoCheck = photoCheckResponse.ok ? await photoCheckResponse.json() : null;
+            if (!photoCheck?.photo) {
+              throw new Error('A foto não foi confirmada após a gravação.');
+            }
+            renderPhoto(`${photoCheck.photo}?v=${Date.now()}`);
+          }
+          notify.success('Paciente atualizado com sucesso!');
+          setTimeout(() => {
+            window.location.href = `./visualizar.html?id=${patientId}`;
+          }, 3000);
+        } else {
+          notify.error(data.message || 'Erro ao atualizar paciente');
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+        }
+      } catch (error) {
+        console.error('Erro:', error);
+        notify.error('Erro ao conectar com o servidor');
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Salvar Alterações';
+      }
+    });
+
+
+    // Carregar dados do paciente quando a página carrega
+    loadPatient();
+  </script>
+  <script src="/recursos/js/pwa.js"></script>
+</body>
+
+</html>

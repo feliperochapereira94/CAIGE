@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Painel</title>
+<link rel="stylesheet" href="../../recursos/css/base.css" />
+
+  <link rel="stylesheet" href="../../recursos/css/componentes.css" />
+
+  <link rel="stylesheet" href="../../recursos/css/layout.css" />
+
+  <link rel="stylesheet" href="../../recursos/css/responsive.css" />
+
+  <link rel="stylesheet" href="../../recursos/css/paginas/dashboard.css" />
+
+  <script src="../../recursos/js/text-normalizer.js"></script>
+  <script src="../../recursos/js/formatador-texto.js"></script>
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#123a78" />
+    <meta name="application-name" content="CAIGE" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="CAIGE" />
+    <link rel="apple-touch-icon" href="/recursos/images/pwa/apple-touch-icon.png" />
+    <link rel="stylesheet" href="../../recursos/css/componentes-movimentacao.css" />
+  </head>
+
+
+<body>
+
+  <div class="dashboard" data-page-title="Painel" data-page-subtitle="Acompanhe os principais pacientes, presenças e prontuários do dia.">
+
+    <!-- Shell Global -->
+    <div id="shell-sidebar"></div>
+
+
+    <!-- ===================================================
+         CONTEÚDO
+         =================================================== -->
+
+    <main class="content">
+
+      <!-- Shell Global -->
+      <div id="shell-header"></div>
+
+
+      <!-- =================================================
+           INDICADORES
+           ================================================= -->
+
+      <section class="section dashboard-stats-section largura-pagina">
+
+        <h3 class="dashboard-section-title">
+          Indicadores importantes
+        </h3>
+
+        <div class="cards dashboard-cards" id="stats-cards"></div>
+
+      </section>
+
+
+      <!-- =================================================
+           MOVIMENTAÇÕES IMPORTANTES
+           ================================================= -->
+
+      <section class="dashboard-main largura-pagina">
+
+        <div class="panel dashboard-events-panel" id="dashboard-events-panel"
+          data-painel-retratil-rotulo="movimentações importantes">
+
+          <div class="dashboard-events-header cabecalho-destaque" data-painel-retratil-header>
+
+            <div class="dashboard-events-title">
+
+              <h3>
+                Movimentações importantes
+              </h3>
+
+            </div>
+
+
+            <div class="dashboard-events-actions">
+
+              <a href="../atividades/atividades.html" class="dashboard-events-link">
+                Ver todos
+              </a>
+
+
+              <button type="button" class="dashboard-events-toggle cabecalho-destaque__toggle" id="dashboard-events-toggle"
+                data-painel-retratil-toggle aria-label="Retrair movimentações importantes" aria-expanded="true"
+                aria-controls="dashboard-events-body">
+
+                <span class="dashboard-events-toggle__icon cabecalho-destaque__toggle-icon" aria-hidden="true"></span>
+
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <div class="dashboard-events-body" id="dashboard-events-body" data-painel-retratil-content>
+
+            <div class="dashboard-events-table data-grid data-grid--embedded movimentacao-caige-lista" id="important-events-table" data-grid-redimensionavel="true" data-grid-id="dashboard-movimentacoes"></div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+
+  <!-- =====================================================
+       PAINEL
+       ===================================================== -->
+
+  <script>
+
+    const renderStatsFunction =
+      (
+        stats,
+        statsCards
+      ) => {
+
+        statsCards.innerHTML = "";
+
+
+        stats.forEach(
+          (stat) => {
+
+            const card =
+              document.createElement(
+                "div"
+              );
+
+
+            card.className =
+              "card dashboard-card";
+
+
+            const isPacientesCard = stat.title === "Pacientes cadastrados" || stat.title === "Pacientes ativos";
+            const cardTitle = isPacientesCard ? "Pacientes ativos" : stat.title;
+            const cardDelta = (isPacientesCard && (stat.delta === "Total" || stat.delta === "Ativos")) ? "Ativos" : stat.delta;
+
+            const getStatIconName = (titulo) => {
+              const normalizado = String(titulo || '').toLowerCase();
+              if (normalizado.includes('paciente')) return 'pacientes';
+              if (normalizado.includes('frequ') || normalizado.includes('presen')) return 'frequencia';
+              if (normalizado.includes('avalia') || normalizado.includes('prontu')) return 'prontuarios';
+              return 'informacao';
+            };
+
+            const nomeIcone = getStatIconName(stat.title);
+            const svgIcone = window.IconesCAIGE ? window.IconesCAIGE.obterSvg(nomeIcone) : stat.icon;
+
+            card.innerHTML = `
+
+              <div class="card__top">
+
+                <span class="card__icon icone" data-icone="${nomeIcone}" aria-hidden="true">
+                  ${svgIcone}
+                </span>
+
+                <span
+                  class="
+                    card__delta
+                    card__delta--${stat.deltaType}
+                  "
+                >
+                  ${cardDelta}
+                </span>
+
+              </div>
+
+
+              <div class="card__value">
+                ${stat.value}
+              </div>
+
+
+              <div class="card__title">
+                ${cardTitle}
+              </div>
+
+
+              <div class="card__note">
+                ${stat.note}
+              </div>
+
+            `;
+
+
+            statsCards.appendChild(
+              card
+            );
+
+          }
+        );
+
+
+        statsCards.style.display =
+          stats.length
+            ? "grid"
+            : "none";
+
+      };
+
+
+    /* =====================================================
+       TIPO VISUAL DAS MOVIMENTAÇÕES
+       ===================================================== */
+
+    const getEventTypeClass =
+      (type) => {
+
+        if (
+          window.FormatadorTexto &&
+          typeof window.FormatadorTexto.obterClasseTipoMovimentacao === 'function'
+        ) {
+          return window.FormatadorTexto.obterClasseTipoMovimentacao(type);
+        }
+
+        return 'sistema';
+
+      };
+
+
+    const getEventTypeLabel =
+      (type) => {
+
+        if (
+          window.FormatadorTexto &&
+          typeof window.FormatadorTexto.formatarTipoMovimentacao === 'function'
+        ) {
+          return window.FormatadorTexto.formatarTipoMovimentacao(type);
+        }
+
+        return String(type || 'Movimentação');
+
+      };
+
+
+    const renderizarDataHoraMovimentacao = (valor) => {
+
+      const texto = String(valor || '').trim();
+      const correspondencia = texto.match(/^(\d{2}\/\d{2}\/\d{4})(?:,)?\s+(\d{2}:\d{2})$/);
+
+      if (!correspondencia) {
+        return texto;
+      }
+
+      return `
+        <span class="dashboard-event-date__date">${correspondencia[1]}</span>
+        <span class="dashboard-event-date__separator">, </span>
+        <span class="dashboard-event-date__time">${correspondencia[2]}</span>
+      `;
+    };
+
+
+    /* =====================================================
+       MOVIMENTAÇÕES IMPORTANTES
+       ===================================================== */
+
+    const renderImportantEvents =
+      (
+        events,
+        eventsTable
+      ) => {
+
+        const limitedEvents =
+          events.slice(
+            0,
+            10
+          );
+
+
+        if (
+          !limitedEvents.length
+        ) {
+
+          eventsTable.innerHTML = `
+
+            <div class="dashboard-events-empty">
+
+              <span class="dashboard-events-empty__icon icone" data-icone="caixa-vazia" aria-hidden="true">
+                ${window.IconesCAIGE ? window.IconesCAIGE.obterSvg('caixa-vazia') : ''}
+              </span>
+
+              <p>
+                Nenhuma movimentação
+                registrada hoje.
+              </p>
+
+            </div>
+
+          `;
+
+          return;
+        }
+
+
+        const header = `
+
+          <div
+            class="
+              dashboard-event-row
+              dashboard-event-row--header
+              data-grid__header
+            "
+          >
+
+            <span class="data-grid__cell">Data/Hora</span>
+
+            <span class="data-grid__cell">Evento</span>
+
+            <span class="data-grid__cell">Detalhes</span>
+
+            <span class="data-grid__cell data-grid__cell--right">Responsável</span>
+
+          </div>
+
+        `;
+
+
+        const rows =
+          limitedEvents
+            .map(
+              (event) => {
+                const descFormatada = window.FormatadorTexto
+                  ? window.FormatadorTexto.formatarDescricaoMovimentacao(event.description)
+                  : (event.description || "");
+                const respFormatado = window.FormatadorTexto
+                  ? window.FormatadorTexto.formatarNomePessoa(event.responsavel)
+                  : (event.responsavel || "");
+
+                return `
+
+                <div class="dashboard-event-row data-grid__row record-accent movimentacao-caige-item">
+
+                  <span class="data-grid__cell">
+                    <span class="dashboard-event-date movimentacao-caige-data">${renderizarDataHoraMovimentacao(event.date)}</span>
+                  </span>
+
+
+                  <span class="data-grid__cell">
+                    <span
+                      class="
+                        dashboard-event-type
+                        movimentacao-caige-evento
+                        event-badge
+                        ${getEventTypeClass(
+                  event.type
+                )
+                  }
+                      "
+                    >
+                      ${getEventTypeLabel(event.type)}
+                    </span>
+                  </span>
+
+
+                  <span class="data-grid__cell">
+                    <span class="dashboard-event-description movimentacao-caige-detalhes">${descFormatada}</span>
+                  </span>
+
+
+                  <span class="data-grid__cell data-grid__cell--right">
+                    <span class="dashboard-event-responsible movimentacao-caige-responsavel">${respFormatado}</span>
+                  </span>
+
+                </div>
+
+              `;
+              }
+            )
+            .join("");
+
+
+        eventsTable.innerHTML =
+          header + rows;
+
+        normalizarColunasDashboard(
+          eventsTable
+        );
+
+      };
+
+
+    const normalizarColunasDashboard =
+      (
+        eventsTable
+      ) => {
+
+        if (
+          !eventsTable ||
+          window.innerWidth < 1025
+        ) {
+          return;
+        }
+
+
+        requestAnimationFrame(
+          () => {
+
+            if (
+              eventsTable.scrollWidth <=
+              eventsTable.clientWidth + 1
+            ) {
+              return;
+            }
+
+
+            window.RedimensionadorGrid
+              ?.limparPreferencias
+              ?.(
+                "dashboard-movimentacoes"
+              );
+
+
+            eventsTable
+              .style
+              .removeProperty(
+                "--data-grid-columns"
+              );
+
+          }
+        );
+
+      };
+
+
+    /* =====================================================
+       CARREGAMENTO DOS DADOS
+       ===================================================== */
+
+    const loadDashboardData =
+      async (
+        statsCards,
+        eventsTable
+      ) => {
+
+        try {
+
+          const dashboardResponse =
+            await fetch(
+              "/api/dados-painel"
+            );
+
+
+          if (
+            !dashboardResponse.ok
+          ) {
+
+            console.error(
+              "Erro na resposta do servidor:",
+              dashboardResponse.status
+            );
+
+
+            renderStatsFunction(
+              [],
+              statsCards
+            );
+
+
+            renderImportantEvents(
+              [],
+              eventsTable
+            );
+
+
+            return;
+          }
+
+
+          const dashboardData =
+            await dashboardResponse.json();
+
+
+          if (
+            dashboardData.stats &&
+            dashboardData.stats.length > 0
+          ) {
+
+            renderStatsFunction(
+              dashboardData.stats,
+              statsCards
+            );
+
+          } else {
+
+            renderStatsFunction(
+              [],
+              statsCards
+            );
+          }
+
+
+          if (
+            dashboardData.importantEvents &&
+            dashboardData.importantEvents.length > 0
+          ) {
+
+            renderImportantEvents(
+              dashboardData.importantEvents,
+              eventsTable
+            );
+
+          } else {
+
+            renderImportantEvents(
+              [],
+              eventsTable
+            );
+          }
+
+        } catch (error) {
+
+          console.error(
+            "Erro ao carregar painel:",
+            error
+          );
+
+
+          renderStatsFunction(
+            [],
+            statsCards
+          );
+
+
+          renderImportantEvents(
+            [],
+            eventsTable
+          );
+
+        }
+
+      };
+
+  </script>
+
+
+  <!-- =====================================================
+       SCRIPTS COMPARTILHADOS
+       ===================================================== -->
+
+  <script src="../../recursos/js/shell-global.js"></script>
+  <script src="../../recursos/js/painel-retratil.js"></script>
+  <script src="../../recursos/js/redimensionar-grid.js"></script>
+  <script src="../../recursos/js/icones.js"></script>
+  <script src="../../recursos/js/notificacoes.js"></script>
+  <script src="../../recursos/js/modal-confirmacao.js"></script>
+
+  <script src="../../recursos/js/util-jwt.js"></script>
+
+  <script src="../../recursos/js/menu-usuario.js"></script>
+
+  <script src="../../recursos/js/sidebar-menu.js"></script>
+
+  <script src="../../recursos/js/controle-acesso.js"></script>
+
+
+  <!-- =====================================================
+       INICIALIZAÇÃO
+       ===================================================== -->
+
+  <script>
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      async () => {
+
+        const userEmail =
+          localStorage.getItem(
+            "userEmail"
+          );
+
+
+        if (
+          !userEmail
+        ) {
+
+          console.warn(
+            "Usuário não autenticado. Redirecionando para login..."
+          );
+
+
+          setTimeout(
+            () => {
+
+              window.location.href =
+                "../autenticacao/entrar.html";
+
+            },
+            500
+          );
+
+
+          return;
+        }
+
+
+        PainelRetratil.inicializar(
+          "#dashboard-events-panel",
+          {
+            chaveEstado: `caige:dashboard:movimentacoes-expandida:${userEmail}`,
+            abertoInicial: true
+          }
+        );
+
+
+        const statsCards =
+          document.getElementById(
+            "stats-cards"
+          );
+
+
+        const eventsTable =
+          document.getElementById(
+            "important-events-table"
+          );
+
+
+        loadDashboardData(
+          statsCards,
+          eventsTable
+        );
+
+
+        window.addEventListener(
+          "resize",
+          () => normalizarColunasDashboard(
+            eventsTable
+          ),
+          { passive: true }
+        );
+
+      }
+    );
+
+  </script>
+
+  <script src="/recursos/js/pwa.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Entrar</title>
+
+    <link rel="stylesheet" href="../../recursos/css/base.css" />
+    <link rel="stylesheet" href="../../recursos/css/componentes.css" />
+    <link rel="stylesheet" href="../../recursos/css/paginas/login.css" />
+
+    <script src="../../recursos/js/text-normalizer.js"></script>
+    <script src="../../recursos/js/util-jwt.js"></script>
+      <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#123a78" />
+    <meta name="application-name" content="CAIGE" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="CAIGE" />
+    <link rel="apple-touch-icon" href="/recursos/images/pwa/apple-touch-icon.png" />
+  </head>
+
+  <body class="login-page">
+    <main class="login-layout">
+      <section class="login-panel" aria-labelledby="login-title">
+        <div class="login-card">
+          <header class="login-brand">
+            <img
+              src="../../recursos/images/logocaige.png"
+              alt="CAIGE Univale"
+              class="login-brand__logo"
+            />
+          </header>
+
+          <div class="login-heading">
+            <h1 id="login-title" class="login-heading__title-visually-hidden">Entrar no CAIGE</h1>
+            <p>Acesso exclusivo para equipe e colaboradores</p>
+          </div>
+
+          <form class="login-form" id="login-form" novalidate>
+            <div class="login-field" id="login-email-field">
+              <label for="login-email">E-mail</label>
+
+              <div class="login-input">
+                <span class="login-input__icon icone" data-icone="email" aria-hidden="true"></span>
+
+                <input
+                  id="login-email"
+                  type="email"
+                  autocomplete="username"
+                  placeholder="seuemail@univale.br"
+                  required
+                />
+              </div>
+
+              <p
+                class="login-field-message"
+                id="login-email-message"
+                role="alert"
+                aria-live="polite"
+                hidden
+              ></p>
+            </div>
+
+            <div class="login-field" id="login-password-field">
+              <label for="login-password">Senha</label>
+
+              <div class="login-input">
+                <span class="login-input__icon icone" data-icone="cadeado" aria-hidden="true"></span>
+
+                <input
+                  id="login-password"
+                  type="password"
+                  autocomplete="current-password"
+                  placeholder="Digite sua senha"
+                  required
+                />
+
+                <button
+                  class="login-password-toggle"
+                  id="login-password-toggle"
+                  type="button"
+                  aria-label="Mostrar senha"
+                  aria-pressed="false"
+                >
+                  Mostrar
+                </button>
+              </div>
+
+              <p
+                class="login-field-message"
+                id="login-password-message"
+                role="alert"
+                aria-live="polite"
+                hidden
+              ></p>
+            </div>
+
+            <div
+              class="login-form-message"
+              id="login-form-message"
+              role="alert"
+              aria-live="assertive"
+              hidden
+            >
+              <span class="icone icone--sm" data-icone="alerta" aria-hidden="true"></span>
+              <span id="login-form-message-text"></span>
+            </div>
+
+            <label class="checkbox-field login-remember">
+              <input id="login-remember" type="checkbox" />
+              <span>Lembrar de mim</span>
+            </label>
+
+            <button
+              class="login-submit"
+              id="login-submit"
+              type="submit"
+            >
+              Entrar
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <aside class="login-hero" aria-label="Apresentação do CAIGE">
+        <div class="login-hero__content">
+          <span class="login-hero__eyebrow">CAIGE • UNIVALE</span>
+
+          <h2>Cuidado Interdisciplinar</h2>
+
+          <p>
+            Nossa equipe multidisciplinar trabalha de forma integrada
+            para oferecer o melhor cuidado aos pacientes da nossa comunidade.
+          </p>
+
+          <div class="login-hero__dots" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <script src="../../recursos/js/icones.js"></script>
+    <script src="../../recursos/js/login.js"></script>
+    <script src="/recursos/js/pwa.js"></script>
+</body>
+</html>

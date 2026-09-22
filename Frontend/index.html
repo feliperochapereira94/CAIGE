@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAIGE</title>
+    <script>
+        const jwtToken = localStorage.getItem('jwtToken');
+        const sessionUserEmail = sessionStorage.getItem('userEmail');
+
+        if (jwtToken && sessionUserEmail) {
+            localStorage.setItem('userEmail', sessionUserEmail);
+            window.location.href = './paginas/painel/painel.html';
+        } else {
+            localStorage.removeItem('userEmail');
+            localStorage.removeItem('jwtToken');
+            window.location.href = './paginas/autenticacao/entrar.html';
+        }
+    </script>
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#123a78" />
+    <meta name="application-name" content="CAIGE" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="CAIGE" />
+    <link rel="apple-touch-icon" href="/recursos/images/pwa/apple-touch-icon.png" />
+  </head>
+<body>
+    <p>Redirecionando...</p>
+  <script src="/recursos/js/pwa.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,12 @@
+{
+  "name": "caige-frontend",
+  "version": "1.0.0",
+  "description": "Aplicação frontend do CAIGE",
+  "scripts": {
+    "serve": "live-server --port=5500 --entry-point=index.html",
+    "dev": "live-server --port=5500"
+  },
+  "keywords": ["caige", "frontend"],
+  "author": "",
+  "license": "ISC"
+}

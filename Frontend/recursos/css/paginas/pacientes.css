@@ -1,0 +1,4067 @@
+/* =========================================================
+   CAIGE - PACIENTES
+   Regras específicas da tela de listagem.
+
+   Componentes reutilizáveis permanecem em componentes.css:
+   - busca;
+   - selects;
+   - botões;
+   - paginação;
+   - menu flutuante de ações.
+   ========================================================= */
+
+
+/* =========================================================
+   1. CABEÇALHO
+   ========================================================= */
+
+.pacientes-section__header {
+    width: 100%;
+
+    margin-bottom: 10px;
+}
+
+.pacientes-section__header h3 {
+    margin: 0;
+
+    color: var(--gray-900);
+
+    font-size: var(--fonte-titulo-secao);
+    line-height: 1.25;
+    font-weight: var(--peso-titulo-secao);
+}
+
+.pacientes-section__header p {
+    margin: 3px 0 0;
+
+    color: var(--gray-500);
+
+    font-size: var(--fonte-subtitulo-secao);
+    line-height: 1.4;
+}
+
+
+/* =========================================================
+   2. TOOLBAR
+   DESKTOP:
+   [ Busca ] [ Status ] [ Ordenar ]              [ Novo ]
+   ========================================================= */
+
+.pacientes-toolbar.card.list-toolbar {
+    width: 100%;
+
+    margin-bottom: 12px;
+    padding: 12px 14px;
+}
+
+.pacientes-toolbar__filters.list-toolbar__main {
+    min-width: 0;
+}
+
+.pacientes-toolbar__actions.list-toolbar__actions {
+    min-width: 0;
+}
+
+.pacientes-new-btn {
+    min-height: 40px;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   3. TABELA
+   ========================================================= */
+
+.pacientes-list {
+    width: 100%;
+
+    padding: 12px 14px;
+}
+
+.pacientes-table-wrap {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+.pacientes-table {
+    width: 100%;
+
+    table-layout: fixed;
+
+    border-collapse: collapse;
+}
+
+.pacientes-table td {
+    vertical-align: middle;
+}
+
+.paciente-field-label--mobile,
+.paciente-meta-mobile,
+.paciente-phone-mobile,
+.paciente-btn-perfil {
+    display: none;
+}
+
+.paciente-meta-desktop,
+.paciente-phone-desktop {
+    display: inline;
+}
+
+
+/* =========================================================
+   4. PACIENTE
+   ========================================================= */
+
+.paciente-cell {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+}
+
+@media (min-width: 768px) {
+    .paciente-cell {
+        justify-content: center;
+        text-align: center;
+    }
+
+    .paciente-name-cell,
+    .paciente-address-cell {
+        text-align: center;
+    }
+}
+
+.paciente-info,
+.paciente-name-cell,
+.paciente-address-cell {
+    min-width: 0;
+}
+
+.paciente-name {
+    color: var(--gray-900);
+
+    font-size: inherit;
+    line-height: inherit;
+    font-weight: 400;
+
+    overflow-wrap: anywhere;
+}
+
+.paciente-address-cell {
+    color: var(--gray-500);
+
+    overflow-wrap: anywhere;
+}
+
+.pacientes-actions-col {
+    position: relative;
+}
+
+.paciente-actions-toggle {
+    width: 32px;
+    height: 32px;
+
+    display: inline-grid;
+    place-items: center;
+
+    padding: 0;
+
+    color: var(--gray-700);
+    background: var(--white);
+
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-md);
+
+    box-shadow:
+        0 2px 7px rgba(15, 23, 42, 0.05);
+
+    font-size: 17px;
+    line-height: 1;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   5. ESTADO VAZIO
+   ========================================================= */
+
+.pacientes-empty {
+    padding: 26px 12px;
+
+    color: var(--gray-500);
+
+    text-align: center;
+
+    font-size: var(--fonte-meta);
+}
+
+
+/* =========================================================
+   6. DESKTOP
+   Uma única definição da toolbar.
+   ========================================================= */
+
+@media (min-width: 1101px) {
+    .pacientes-toolbar.card.list-toolbar {
+        display: grid;
+        grid-template-columns: max-content 1fr max-content;
+        align-items: center;
+
+        column-gap: 12px;
+    }
+
+    .pacientes-toolbar__filters.list-toolbar__main {
+        grid-column: 1;
+
+        width: auto;
+
+        display: grid;
+        grid-template-columns:
+            minmax(320px, 430px) 155px 170px;
+        align-items: center;
+
+        gap: 8px;
+
+        margin: 0;
+        padding: 0;
+    }
+
+    .pacientes-toolbar__actions.list-toolbar__actions {
+        grid-column: 3;
+
+        width: auto;
+
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+
+        margin: 0;
+        padding: 0;
+    }
+
+    .pacientes-new-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-height: 40px;
+
+        margin: 0;
+    }
+}
+
+/* Composicao final do Perfil: cards independentes e informacao clinica compacta. */
+body[data-page-title="Perfil do Paciente"] .profile-clinical-summary--mobile {
+    display: none;
+}
+
+body[data-page-title="Perfil do Paciente"] .profile-desktop-columns {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+    grid-template-areas:
+        "clinical contact"
+        ". responsible"
+        ". address";
+    align-items: start;
+    gap: var(--space-4);
+}
+
+body[data-page-title="Perfil do Paciente"] .profile-clinical-summary {
+    grid-area: clinical;
+}
+
+body[data-page-title="Perfil do Paciente"] .profile-section--desktop--contato {
+    grid-area: contact;
+}
+
+body[data-page-title="Perfil do Paciente"] .profile-section--desktop--responsavel {
+    grid-area: responsible;
+}
+
+body[data-page-title="Perfil do Paciente"] .profile-section--desktop--endereco {
+    grid-area: address;
+}
+
+body[data-page-title="Perfil do Paciente"] .profile-section--desktop--observacoes {
+    display: block;
+    grid-column: 1 / -1;
+}
+
+body[data-page-title="Perfil do Paciente"] .profile-clinical-summary__body,
+body[data-page-title="Perfil do Paciente"] .profile-contact__actions,
+body[data-page-title="Perfil do Paciente"] .profile-responsible__phone-row,
+body[data-page-title="Perfil do Paciente"] .profile-address {
+    display: grid;
+    gap: var(--space-2);
+}
+
+body[data-page-title="Perfil do Paciente"] .profile-clinical-summary__observation,
+body[data-page-title="Perfil do Paciente"] .profile-clinical-summary__empty {
+    margin: 0;
+    color: var(--gray-700);
+    line-height: 1.5;
+}
+
+body[data-page-title="Perfil do Paciente"] .profile-clinical-summary__empty {
+    color: var(--text-muted);
+    font-size: var(--fonte-texto-auxiliar);
+}
+
+body[data-page-title="Perfil do Paciente"] .profile-contact__phone,
+body[data-page-title="Perfil do Paciente"] .profile-responsible__name {
+    margin-bottom: var(--space-3);
+    color: var(--gray-900);
+    font-weight: 700;
+}
+
+body[data-page-title="Perfil do Paciente"] .profile-contact-btn {
+    justify-content: flex-start;
+    min-height: 40px;
+    text-decoration: none;
+}
+
+body[data-page-title="Perfil do Paciente"] .profile-contact-btn--whatsapp {
+    color: var(--success-700);
+    border-color: var(--success-600);
+}
+
+body[data-page-title="Perfil do Paciente"] .profile-contact-btn--call {
+    color: var(--blue-600);
+    border-color: var(--blue-500);
+}
+
+body[data-page-title="Perfil do Paciente"] .profile-responsible__phone-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+}
+
+body[data-page-title="Perfil do Paciente"] .profile-responsible__call,
+body[data-page-title="Perfil do Paciente"] .profile-map-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    color: var(--blue-600);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+body[data-page-title="Perfil do Paciente"] .profile-address span {
+    color: var(--gray-700);
+    overflow-wrap: anywhere;
+}
+
+body[data-page-title="Perfil do Paciente"] .profile-map-link {
+    margin-top: var(--space-3);
+}
+
+@media (min-width: 768px) {
+    body[data-page-title="Perfil do Paciente"] .profile-header-quick-item {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 767px) {
+    body[data-page-title="Perfil do Paciente"] .profile-clinical-summary--mobile {
+        display: block;
+        padding: var(--space-3);
+        background: var(--surface);
+        border: 1px solid var(--border-default);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-clinical-summary--mobile .profile-clinical-summary__body {
+        display: grid;
+        gap: var(--space-2);
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-clinical-summary--mobile .profile-alert {
+        margin: 0;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-clinical-summary--mobile .profile-clinical-summary__observation {
+        margin: 0;
+        color: var(--gray-700);
+        line-height: 1.45;
+    }
+}
+
+
+/* =========================================================
+   7. TABLET
+   ========================================================= */
+
+@media (min-width: 768px) and (max-width: 1100px) {
+    .pacientes-toolbar.card.list-toolbar {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+
+        gap: 10px;
+    }
+
+    .pacientes-toolbar__filters.list-toolbar__main {
+        min-width: 0;
+
+        display: grid;
+        grid-template-columns:
+            minmax(220px, 1fr) minmax(135px, 155px) minmax(145px, 165px);
+        align-items: center;
+
+        gap: 7px;
+    }
+
+    .pacientes-toolbar__actions.list-toolbar__actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+    }
+}
+
+
+/* =========================================================
+   8. MOBILE
+   Regras consolidadas em um único bloco.
+   ========================================================= */
+
+@media (max-width: 767px) {
+    .patient-header__actions {
+        display: none;
+    }
+
+    .pacientes-section__header {
+        margin-bottom: var(--space-3);
+    }
+
+    .pacientes-section__header h3 {
+        font-size: var(--fonte-titulo-secao);
+        line-height: 1.25;
+    }
+
+    .pacientes-section__header p {
+        font-size: var(--fonte-subtitulo-secao);
+        line-height: 1.4;
+    }
+
+
+    /* ---------- Toolbar e Filtros ---------- */
+
+    .pacientes-toolbar.card.list-toolbar {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--space-2);
+        padding: var(--space-3);
+    }
+
+    .pacientes-toolbar__filters.list-toolbar__main {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-2);
+    }
+
+    .pacientes-search {
+        grid-column: 1 / -1;
+    }
+
+    .pacientes-search .search-box__input {
+        min-height: 44px;
+    }
+
+    .pacientes-toolbar__filters .filter-select {
+        min-height: 44px;
+        width: 100%;
+    }
+
+    .pacientes-toolbar__actions.list-toolbar__actions {
+        width: 100%;
+    }
+
+    .pacientes-new-btn {
+        width: 100%;
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        padding: var(--space-2) var(--space-3);
+    }
+
+
+    /* ---------- Lista e Cards de Paciente ---------- */
+    /* Container global e scroll interno gerenciados por .admin-list e .admin-list__body */
+
+    .pacientes-list {
+        padding: 8px 8px 0 8px;
+    }
+
+    .pacientes-table,
+    .pacientes-table tbody {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: var(--space-2);
+        background: transparent;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .pacientes-table thead {
+        display: none;
+    }
+
+    .pacientes-table tbody td {
+        padding: 0;
+        border: 0;
+    }
+
+    .pacientes-table tbody tr+tr td {
+        border-top: 0;
+    }
+
+    .pacientes-table td+td {
+        border-left: 0;
+    }
+
+    .pacientes-table tbody tr.paciente-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto auto;
+        grid-template-areas:
+            "name status actions"
+            "details details details";
+        align-items: center;
+        row-gap: 4px;
+        column-gap: var(--space-2);
+        padding: 10px 12px;
+        position: static;
+    }
+
+    .paciente-id-cell,
+    .paciente-address-cell,
+    .paciente-phone-cell {
+        display: none;
+    }
+
+    .paciente-meta-desktop,
+    .paciente-phone-desktop {
+        display: none;
+    }
+
+    .paciente-name-cell {
+        grid-area: name;
+        min-width: 0;
+        padding: 0;
+        border: 0;
+    }
+
+    .paciente-cell {
+        display: block;
+        margin-bottom: 0;
+    }
+
+    .paciente-name {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--text-primary);
+        line-height: 1.3;
+        word-break: normal;
+        overflow-wrap: break-word;
+        white-space: normal;
+    }
+
+    .paciente-status-cell {
+        grid-area: status;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 0;
+        border: 0;
+        flex-shrink: 0;
+    }
+
+    .paciente-meta-cell {
+        grid-area: details;
+        padding: 0;
+        border: 0;
+        width: 100%;
+    }
+
+    .paciente-meta-mobile {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: wrap;
+        color: var(--text-secondary);
+        line-height: 1.35;
+    }
+
+    .paciente-meta-idade {
+        color: var(--text-secondary);
+        font-weight: 500;
+    }
+
+    .paciente-meta-bullet {
+        color: var(--text-muted);
+        font-weight: 400;
+    }
+
+    .paciente-phone-link {
+        color: var(--blue-600);
+        text-decoration: none;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        min-height: 24px;
+    }
+
+    .paciente-phone-link:hover {
+        text-decoration: underline;
+    }
+
+    .paciente-phone-empty {
+        color: var(--text-muted);
+        font-style: italic;
+    }
+
+    .pacientes-actions-col {
+        grid-area: actions;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 0;
+        border: 0;
+        flex-shrink: 0;
+        position: static;
+    }
+
+    .paciente-actions-wrap {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        border: 0;
+        margin: 0;
+    }
+
+    .actions-toggle,
+    .paciente-actions-toggle {
+        width: 34px;
+        height: 34px;
+        min-width: 34px;
+        min-height: 34px;
+        box-sizing: border-box;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1;
+        border-radius: var(--radius-xs);
+        border: 1px solid var(--blue-200);
+        background: var(--blue-50);
+        color: var(--blue-600);
+        cursor: pointer;
+        position: relative;
+        box-shadow: none;
+        transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .actions-toggle::after,
+    .paciente-actions-toggle::after {
+        content: '';
+        position: absolute;
+        top: -5px;
+        bottom: -5px;
+        left: -5px;
+        right: -5px;
+    }
+
+    .actions-toggle:hover,
+    .actions-toggle:focus-visible,
+    .paciente-actions-toggle:hover,
+    .paciente-actions-toggle:focus-visible {
+        background: var(--blue-100);
+        border-color: var(--blue-400);
+        color: var(--blue-700);
+    }
+
+    .actions-toggle:focus-visible,
+    .paciente-actions-toggle:focus-visible {
+        outline: 2px solid var(--blue-600);
+        outline-offset: 2px;
+    }
+
+    .actions-toggle:active,
+    .paciente-actions-toggle:active {
+        background: var(--blue-600);
+        border-color: var(--blue-600);
+        color: var(--white);
+    }
+
+    .pacientes-empty {
+        display: block;
+        width: 100%;
+        text-align: center;
+        padding: var(--space-6) var(--space-4);
+        color: var(--text-secondary);
+        background: var(--surface);
+        border: 1px solid var(--border-default);
+        border-radius: var(--radius-lg);
+    }
+}
+
+@media (max-width: 340px) {
+    .pacientes-toolbar__filters.list-toolbar__main {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* =========================================================
+   9. MOBILE ESTREITO
+   ========================================================= */
+
+@media (max-width: 390px) {
+    .pacientes-toolbar__actions.list-toolbar__actions {
+        gap: 6px;
+    }
+}
+
+/* =========================================================
+   GRID DESKTOP - DISTRIBUIÇÃO DAS COLUNAS
+   ========================================================= */
+
+@media (min-width: 768px) {
+
+    .pacientes-table th:nth-child(1),
+    .pacientes-table td:nth-child(1) {
+        width: 6%;
+
+        text-align: center;
+    }
+
+    .pacientes-table th:nth-child(2),
+    .pacientes-table td:nth-child(2) {
+        width: 24%;
+    }
+
+    .pacientes-table th:nth-child(3),
+    .pacientes-table td:nth-child(3) {
+        width: 31%;
+    }
+
+    .pacientes-table th:nth-child(4),
+    .pacientes-table td:nth-child(4) {
+        width: 7%;
+
+        text-align: center;
+    }
+
+    .pacientes-table th:nth-child(5),
+    .pacientes-table td:nth-child(5) {
+        width: 13%;
+
+        text-align: center;
+    }
+
+    .pacientes-table th:nth-child(6),
+    .pacientes-table td:nth-child(6) {
+        width: 12%;
+
+        text-align: center;
+    }
+
+    .pacientes-table th:nth-child(7),
+    .pacientes-table td:nth-child(7) {
+        width: 9%;
+
+        text-align: center;
+    }
+
+    .paciente-name {
+        overflow: hidden;
+
+        text-overflow: ellipsis;
+
+        white-space: nowrap;
+    }
+}
+
+
+/* =========================================================
+   8.1 AÇÕES DO PERFIL DO PACIENTE
+   ========================================================= */
+
+.profile-actions--visualizar {
+    justify-content: flex-start;
+
+    margin-top: 0;
+    margin-bottom: var(--space-4);
+}
+
+
+/* =========================================================
+   8.2 RESPIRO DO PERFIL DO PACIENTE
+   ========================================================= */
+
+body[data-page-title="Perfil do Paciente"] .profile-container {
+    padding: var(--space-4);
+
+    gap: var(--space-5);
+}
+
+
+/* =========================================================
+   8.3 FORMULÁRIOS DE CADASTRO DO PACIENTE
+   ========================================================= */
+
+body[data-page-title="Editar Cadastro"] .form-container,
+body[data-page-title="Novo Cadastro"] .form-container {
+    margin-top: var(--space-3);
+    margin-bottom: var(--space-5);
+
+    padding: 0;
+
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+body[data-page-title="Editar Cadastro"] .form-section,
+body[data-page-title="Novo Cadastro"] .form-section {
+    padding: var(--space-4);
+    margin-bottom: var(--space-4);
+}
+
+.form-group--full {
+    grid-column: 1 / -1;
+}
+
+/* Exibição do IMC calculado e classificação */
+.imc-campo {
+    min-height: 40px;
+    padding: 6px 12px;
+
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+
+    background: var(--gray-50);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+}
+
+.imc-campo__valor {
+    font-size: var(--fonte-corpo);
+    font-weight: 700;
+    color: var(--blue-600);
+}
+
+.imc-campo__classificacao {
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Editor compacto para listas clínicas de Novo/Editar Paciente. */
+.editor-lista-clinica {
+    display: flex;
+    flex-direction: column;
+
+    gap: var(--space-2);
+}
+
+.editor-lista-clinica__entrada {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+
+    gap: var(--space-2);
+}
+
+.editor-lista-clinica__adicionar {
+    align-self: stretch;
+}
+
+.editor-lista-clinica__itens {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: var(--space-2);
+}
+
+.editor-lista-clinica__itens--lista {
+    flex-direction: column;
+}
+
+.editor-lista-clinica__item {
+    display: inline-flex;
+    align-items: center;
+
+    gap: var(--space-2);
+
+    padding: var(--space-1) var(--space-2);
+
+    border: 1px solid var(--blue-200);
+    border-radius: var(--radius-full);
+
+    background: var(--blue-50);
+    color: var(--gray-700);
+}
+
+.editor-lista-clinica__item--perigo {
+    border-color: var(--danger-100);
+
+    background: var(--danger-100);
+    color: var(--danger-700);
+}
+
+.editor-lista-clinica__item--linha {
+    width: 100%;
+
+    justify-content: space-between;
+
+    border-color: var(--gray-200);
+    border-radius: var(--radius-sm);
+
+    background: var(--gray-50);
+}
+
+.editor-lista-clinica__remover {
+    width: 20px;
+    height: 20px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 0;
+    border-radius: var(--radius-full);
+
+    background: transparent;
+    color: currentColor;
+
+    cursor: pointer;
+}
+
+.editor-lista-clinica__remover:hover {
+    background: var(--gray-100);
+}
+
+.editor-lista-clinica__vazio {
+    color: var(--gray-400);
+
+    font-size: var(--fonte-texto-auxiliar);
+}
+
+@media (max-width: 767px) {
+    .editor-lista-clinica__entrada {
+        grid-template-columns: 1fr;
+    }
+}
+
+.clinical-shortcut-row {
+    margin-bottom: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    background: var(--gray-50);
+    border: 1px dashed var(--gray-300);
+    border-radius: var(--radius-md);
+}
+
+.clinical-shortcut-row .checkbox-field {
+    font-weight: 500;
+}
+
+.form-group__label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-2);
+}
+
+.form-group__label-row label {
+    margin-bottom: 0;
+}
+
+.form-group__label-row .checkbox-field {
+    font-size: var(--fonte-texto-auxiliar);
+    font-weight: 500;
+    color: var(--gray-600);
+}
+
+.editor-lista-clinica.is-disabled {
+    opacity: 0.6;
+}
+
+.editor-lista-clinica.is-disabled .editor-lista-clinica__entrada input,
+.editor-lista-clinica.is-disabled .editor-lista-clinica__adicionar {
+    cursor: not-allowed;
+    background-color: var(--gray-100);
+}
+
+/* =========================================================
+   9. PERFIL DO PACIENTE (visualizar.html)
+
+   Classes sem regra global equivalente antes desta migração
+   (RC-1 da AUDITORIA_GLOBAL_2026-08-29.md). Superfícies base
+   (.profile-container, .profile-section, .profile-header,
+   .questionnaire-section, .questionnaire-form, .profile-avatar)
+   já são globais em componentes.css.
+   ========================================================= */
+
+.profile-main {
+    display: flex;
+    flex-direction: column;
+
+    gap: var(--space-5);
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: var(--space-4);
+
+    padding: var(--space-5);
+    background: var(--surface);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.patient-header__row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    width: 100%;
+    min-width: 0;
+}
+
+.profile-avatar {
+    width: 64px;
+    height: 64px;
+
+    flex: 0 0 64px;
+
+    font-size: 22px;
+
+    overflow: hidden;
+}
+
+.patient-header__title-block {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.patient-header__status-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.patient-header__actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--space-2);
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.patient-header__menu {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    min-height: 42px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    box-shadow: var(--shadow-xs);
+}
+
+.profile-header__info {
+    min-width: 0;
+}
+
+.profile-header__name {
+    margin: 0 0 6px;
+
+    font-size: var(--fonte-titulo-pagina);
+    font-weight: var(--peso-titulo-pagina);
+
+    color: var(--gray-900);
+}
+
+.profile-header__meta {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: var(--space-2) var(--space-4);
+}
+
+.profile-header-quick-desktop {
+    display: none;
+}
+
+.profile-alerts {
+    grid-column: 1 / -1;
+}
+
+.profile-alerts__body {
+    display: grid;
+    gap: var(--space-3);
+}
+
+.profile-alert {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    color: var(--gray-700);
+    background: var(--warning-50);
+    border: 1px solid var(--warning-100);
+    border-radius: var(--radius-sm);
+}
+
+.profile-alert .icone {
+    color: var(--warning-700);
+}
+
+.profile-alerts__observation {
+    display: grid;
+    gap: var(--space-1);
+}
+
+.profile-alerts__observation p {
+    margin: 0;
+    color: var(--gray-700);
+    line-height: 1.45;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+}
+
+.profile-alerts__empty {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: var(--fonte-texto-auxiliar);
+}
+
+.profile-responsible-relation-value {
+    color: var(--blue-600);
+    font-weight: 600;
+}
+
+.responsible-phone-action {
+    justify-items: end;
+}
+
+.responsible-phone-action .profile-link {
+    color: var(--blue-600);
+    font-weight: 600;
+}
+
+.profile-meta-item {
+    font-size: 12px;
+
+    color: var(--gray-600);
+}
+
+.profile-meta-item--full {
+    width: 100%;
+}
+
+.profile-section {
+    padding: var(--space-5);
+    background: var(--surface);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.profile-section__header {
+    margin-bottom: var(--space-3);
+}
+
+.profile-section__title {
+    margin: 0;
+
+    font-size: var(--fonte-titulo-secao);
+    font-weight: var(--peso-titulo-secao);
+
+    color: var(--gray-900);
+}
+
+body[data-page-title="Perfil do Paciente"] .profile-main {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+    align-items: start;
+}
+
+body[data-page-title="Perfil do Paciente"] .profile-container {
+    display: block;
+
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+body[data-page-title="Perfil do Paciente"] .profile-header {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-4);
+    grid-column: 1 / -1;
+}
+
+body[data-page-title="Perfil do Paciente"] .patient-header__row {
+    flex: 0 0 auto;
+}
+
+body[data-page-title="Perfil do Paciente"] .profile-desktop-columns {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+    align-items: start;
+}
+
+body[data-page-title="Perfil do Paciente"] .profile-desktop-column {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+body[data-page-title="Perfil do Paciente"] {
+    --profile-divider-color: var(--border-light);
+}
+
+body[data-page-title="Perfil do Paciente"] .data-grid--profile {
+    min-width: 0;
+}
+
+body[data-page-title="Perfil do Paciente"] .data-grid--profile .data-value {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+body[data-page-title="Perfil do Paciente"] .profile-section--desktop--observacoes {
+    grid-column: 1 / -1;
+}
+
+body[data-page-title="Perfil do Paciente"] .profile-section__header {
+    margin-bottom: 0;
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--profile-divider-color);
+}
+
+body[data-page-title="Perfil do Paciente"] .data-grid--profile {
+    gap: 0;
+}
+
+body[data-page-title="Perfil do Paciente"] .profile-header-data-grid {
+    margin-top: var(--space-4);
+}
+
+body[data-page-title="Perfil do Paciente"] .data-grid--profile>.data-field {
+    padding-block: calc(var(--space-3) + 2px);
+}
+
+body[data-page-title="Perfil do Paciente"] .profile-data-row {
+    min-width: 0;
+    display: grid;
+    grid-template-columns: inherit;
+    grid-column: 1 / -1;
+    gap: 0;
+    border-top: 1px solid var(--profile-divider-color);
+}
+body[data-page-title="Perfil do Paciente"] .profile-data-row:first-child {
+    border-top: 0;
+}
+
+body[data-page-title="Perfil do Paciente"] .profile-data-row>.data-field {
+    min-width: 0;
+    padding-block: calc(var(--space-3) + 2px);
+    padding-inline: 0;
+}
+
+body[data-page-title="Perfil do Paciente"] .profile-data-row>.data-field+.data-field {
+    border-left: 1px solid var(--profile-divider-color);
+    padding-left: var(--space-3);
+}
+
+body[data-page-title="Perfil do Paciente"] .profile-data-row--actions {
+    padding-top: var(--space-3);
+}
+
+body[data-page-title="Perfil do Paciente"] .data-label {
+    font-weight: 700;
+    color: var(--gray-600);
+}
+
+body[data-page-title="Perfil do Paciente"] .data-value {
+    font-size: 15px;
+    color: var(--gray-900);
+}
+
+body[data-page-title="Perfil do Paciente"] .profile-section--desktop .patient-contact-actions {
+    display: flex;
+    flex-direction: row;
+    gap: var(--space-2);
+}
+
+body[data-page-title="Perfil do Paciente"] .profile-section--desktop .patient-contact-btn {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+@media (min-width: 768px) {
+    body[data-page-title="Perfil do Paciente"] .profile-header .data-grid--profile {
+        padding-top: var(--space-4);
+        border-top: 1px solid var(--profile-divider-color);
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-section--desktop .profile-data-row>.data-field {
+        padding-left: 0;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-section--desktop .profile-data-row>.data-field+.data-field {
+        padding-left: var(--space-3);
+    }
+
+}
+
+@media (min-width: 768px) and (max-width: 1100px) {
+    body[data-page-title="Perfil do Paciente"] .profile-alerts {
+        display: none;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .data-grid--3.data-grid--profile {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-section--desktop--endereco .profile-data-row--address-paired {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    body[data-page-title="Perfil do Paciente"] .patient-header__row {
+        gap: var(--space-3);
+    }
+
+}
+
+@media (min-width: 1101px) {}
+
+.profile-observations {
+    font-size: 13px;
+    line-height: 1.5;
+
+    color: var(--gray-700);
+}
+
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 2px var(--space-2);
+
+    border-radius: var(--radius-full);
+
+    font-size: var(--fonte-badge);
+    font-weight: 700;
+}
+
+.status-badge--ativo {
+    background: var(--success-100);
+
+    color: var(--success-700);
+}
+
+.status-badge--inativo {
+    background: var(--gray-200);
+
+    color: var(--gray-600);
+}
+
+
+/* =========================================================
+   9.2 RESUMO CLÍNICO
+   ========================================================= */
+
+.clinical-summary {
+    padding: var(--space-3);
+
+    display: flex;
+    flex-direction: column;
+
+    gap: var(--space-2);
+
+    background: var(--white);
+
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+
+    box-shadow: var(--shadow-sm);
+}
+
+.clinical-summary__header {
+    margin: 0 0 var(--space-1);
+
+    display: flex;
+    align-items: center;
+
+    gap: 6px;
+
+    font-size: var(--fonte-titulo-secao);
+    line-height: 1.2;
+    font-weight: var(--peso-titulo-secao);
+
+    color: var(--gray-900);
+}
+
+.clinical-summary__label {
+    font-size: var(--fonte-texto-auxiliar);
+    font-weight: 700;
+
+    color: var(--gray-500);
+}
+
+.clinical-summary__value {
+    font-size: var(--fonte-corpo);
+    line-height: 1.4;
+
+    color: var(--gray-800);
+}
+
+.clinical-summary__medidas {
+    margin-top: 1px;
+
+    font-size: var(--fonte-texto-auxiliar);
+
+    color: var(--gray-500);
+}
+
+.clinical-summary__imc-row {
+    min-height: 29px;
+
+    display: flex;
+    align-items: center;
+
+    gap: var(--space-2);
+}
+
+.clinical-summary__imc-value {
+    font-size: 24px;
+    line-height: 1;
+    font-weight: 700;
+
+    color: var(--blue-600);
+}
+
+.clinical-summary__divider {
+    height: 1px;
+    margin: var(--space-1) 0;
+
+    background: var(--gray-200);
+}
+
+.clinical-summary__section {
+    display: grid;
+
+    gap: var(--space-1);
+}
+
+.clinical-summary__subhead {
+    display: flex;
+    align-items: center;
+
+    gap: 6px;
+
+    font-size: var(--fonte-texto-auxiliar);
+    line-height: 1.25;
+    font-weight: 700;
+
+    color: var(--gray-600);
+}
+
+.clinical-summary__chips {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 6px;
+}
+
+.clinical-chip {
+    padding: 2px var(--space-2);
+
+    border-radius: var(--radius-full);
+
+    font-size: var(--fonte-texto-auxiliar);
+    line-height: 1.3;
+    font-weight: 600;
+
+    background: var(--gray-100);
+
+    color: var(--gray-700);
+}
+
+.clinical-chip--danger {
+    background: var(--danger-100);
+
+    color: var(--danger-700);
+}
+
+.clinical-summary__list {
+    margin: 0;
+    padding-left: 17px;
+
+    font-size: var(--fonte-corpo);
+    line-height: 1.4;
+
+    color: var(--gray-700);
+}
+
+.clinical-summary__list li {
+    list-style: disc;
+}
+
+.clinical-summary__list li::marker {
+    color: var(--gray-900);
+    font-weight: 700;
+}
+
+.clinical-summary__list li+li {
+    margin-top: 2px;
+}
+
+.clinical-summary__empty {
+    font-size: var(--fonte-texto-auxiliar);
+
+    color: var(--gray-400);
+}
+
+
+/* =========================================================
+   9.3 PRONTUÁRIOS POR CURSO (ACORDEÃO)
+   ========================================================= */
+
+.questionnaire-empty {
+    padding: var(--space-6) var(--space-4);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    gap: 6px;
+
+    text-align: center;
+
+    color: var(--gray-500);
+}
+
+.questionnaire-empty__icon {
+    font-size: 28px;
+}
+
+.questionnaire-empty__text {
+    font-weight: 700;
+
+    color: var(--gray-700);
+}
+
+.questionnaire-empty__subtext {
+    font-size: 12px;
+}
+
+.course-accordion {
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-sm);
+
+    margin-bottom: var(--space-2);
+
+    overflow: hidden;
+}
+
+.course-accordion__header {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    gap: var(--space-2);
+
+    padding: var(--space-3);
+
+    border: none;
+
+    background: var(--blue-50);
+
+    cursor: pointer;
+}
+
+.course-accordion__title {
+    flex: 1;
+
+    text-align: left;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    color: var(--gray-800);
+}
+
+.course-accordion__badge {
+    padding: 1px 7px;
+
+    border-radius: var(--radius-full);
+
+    background: var(--blue-100);
+
+    color: var(--blue-700);
+
+    font-size: var(--fonte-badge);
+    font-weight: 700;
+}
+
+.course-accordion__chevron {
+    color: var(--gray-500);
+
+    transition: transform 0.2s;
+}
+
+.course-accordion.open .course-accordion__chevron {
+    transform: rotate(90deg);
+}
+
+.course-accordion__body {
+    display: none;
+
+    padding: var(--space-2);
+
+    background: var(--white);
+}
+
+.course-accordion.open .course-accordion__body {
+    display: block;
+}
+
+/* =========================================================
+   9.5 RESPONSIVO
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .profile-header {
+        flex-direction: column;
+
+        text-align: center;
+    }
+
+    .profile-header__meta {
+        justify-content: center;
+    }
+}
+
+/* =========================================================
+   10. MOBILE 2.1 — COMPONENTES DO PERFIL DO PACIENTE
+   ========================================================= */
+
+.patient-mobile-topbar {
+    display: none;
+}
+
+.patient-actions {
+    display: none;
+}
+
+.patient-info-accordions {
+    display: none;
+}
+
+
+
+@media (max-width: 767px) {
+
+    /* Esconder cabeçalhos e barras duplicadas desktop */
+    body[data-page-title="Perfil do Paciente"] .breadcrumb,
+    body[data-page-title="Perfil do Paciente"] .profile-actions--visualizar,
+    body[data-page-title="Perfil do Paciente"] .profile-section--desktop {
+        display: none;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .data-grid--profile {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-header .data-grid--profile .data-field {
+        min-width: 0;
+    }
+
+    /* Container e fluxo principal */
+    body[data-page-title="Perfil do Paciente"] .profile-container {
+        padding: var(--space-3);
+        gap: var(--space-3);
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-main {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--space-3);
+    }
+
+    body[data-page-title="Perfil do Paciente"] .patient-header__actions {
+        display: none;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .patient-actions,
+    body[data-page-title="Perfil do Paciente"] .patient-info-accordions {
+        width: 100%;
+        grid-column: auto;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-desktop-columns {
+        display: none;
+    }
+
+    /* 1. Barra superior compacta */
+    .patient-mobile-topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 48px;
+        margin-bottom: var(--space-3);
+        padding: 0 var(--space-1);
+    }
+
+    .patient-mobile-topbar__back {
+        min-height: 44px;
+        padding: var(--space-2) var(--space-3);
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        color: var(--blue-600);
+        background: var(--surface);
+        border: 1px solid var(--border-default);
+        border-radius: var(--radius-md);
+        font-size: var(--fonte-botao);
+        font-weight: 600;
+        text-decoration: none;
+        box-shadow: var(--shadow-xs);
+        transition: background-color var(--transition-default);
+    }
+
+    .patient-mobile-topbar__back:hover {
+        background: var(--blue-50);
+        border-color: var(--blue-300);
+    }
+
+    .patient-mobile-topbar__menu {
+        width: 44px;
+        height: 44px;
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        color: var(--text-secondary);
+        background: var(--surface);
+        border: 1px solid var(--border-default);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-xs);
+        cursor: pointer;
+    }
+
+    /* 2. Cabeçalho do paciente em telas móveis */
+    body[data-page-title="Perfil do Paciente"] .profile-header {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: left;
+        padding: var(--space-4);
+        gap: var(--space-3);
+        background: var(--surface);
+        border: 1px solid var(--border-default);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .patient-header__row {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        width: 100%;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-avatar {
+        width: 52px;
+        height: 52px;
+        flex: 0 0 52px;
+        font-size: 18px;
+        font-weight: 700;
+        background: var(--blue-100);
+        color: var(--blue-700);
+        border-radius: var(--radius-full);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .patient-header__title-block {
+        min-width: 0;
+        flex: 1;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-header__name {
+        margin: 0;
+        font-size: var(--fonte-titulo-pagina);
+        font-weight: var(--peso-titulo-pagina);
+        color: var(--gray-900);
+        line-height: 1.25;
+        overflow-wrap: anywhere;
+    }
+
+    .patient-header__status-row {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        margin-top: 4px;
+    }
+
+    .patient-header__meta-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--space-2) var(--space-3);
+        width: 100%;
+        padding-top: var(--space-2);
+        border-top: 1px solid var(--profile-divider-color);
+        font-size: var(--fonte-texto-auxiliar);
+        color: var(--text-secondary);
+    }
+
+    .patient-header__phone-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        color: var(--blue-600);
+        font-weight: 600;
+        text-decoration: none;
+        min-height: 32px;
+    }
+
+    /* 3. Ações do paciente em telas móveis */
+    .patient-actions {
+        display: block;
+        width: 100%;
+    }
+
+    .patient-actions__primary {
+        width: 100%;
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-2);
+        font-size: var(--fonte-corpo);
+        font-weight: 700;
+    }
+
+
+    /* 6. Painéis expansíveis de informações do paciente */
+    .patient-info-accordions {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+        width: 100%;
+    }
+
+    .patient-info-accordion {
+        border: 1px solid var(--border-default);
+        border-radius: var(--radius-md);
+        background: var(--surface);
+        box-shadow: var(--shadow-xs);
+        overflow: hidden;
+        transition: border-color var(--transition-default);
+    }
+
+    .patient-info-accordion[open] {
+        border-color: var(--blue-200);
+    }
+
+    .patient-info-accordion__summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 48px;
+        padding: var(--space-3) var(--space-4);
+        background: var(--surface);
+        cursor: pointer;
+        user-select: none;
+        list-style: none;
+        gap: var(--space-2);
+    }
+
+    .patient-info-accordion__summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .patient-info-accordion__header {
+        min-width: 0;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .patient-info-accordion__title {
+        font-size: var(--fonte-corpo);
+        font-weight: 700;
+        color: var(--gray-900);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .patient-info-accordion__preview {
+        font-size: var(--fonte-texto-auxiliar);
+        color: var(--text-muted);
+        font-weight: 400;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .patient-info-accordion__icon {
+        color: var(--gray-500);
+        transition: transform 0.2s ease;
+        flex: 0 0 auto;
+    }
+
+    .patient-info-accordion[open] .patient-info-accordion__icon {
+        transform: rotate(180deg);
+    }
+
+    .patient-info-accordion__content {
+        padding: var(--space-3) var(--space-4) var(--space-4);
+        border-top: 1px solid var(--profile-divider-color);
+        background: var(--surface-soft);
+    }
+
+    .patient-contact-actions {
+        margin-top: var(--space-2);
+        display: flex;
+        flex-direction: row;
+        gap: var(--space-2);
+    }
+
+    .patient-contact-btn {
+        flex: 1;
+        min-height: 40px;
+        font-size: var(--fonte-texto-auxiliar);
+        justify-content: center;
+        text-decoration: none;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-header .data-grid--profile,
+    body[data-page-title="Perfil do Paciente"] .patient-info-accordion .data-grid--profile {
+        gap: 0;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .patient-info-accordion .data-grid--profile>.data-field {
+        padding-inline: 0;
+    }
+
+}
+
+@media (max-width: 350px) {
+    body[data-page-title="Perfil do Paciente"] .data-grid--profile {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+/* Overrides finais da composicao do Perfil, apos as regras legadas. */
+@media (min-width: 768px) {
+    body[data-page-title="Perfil do Paciente"] .profile-desktop-columns {
+        display: grid;
+        grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+        grid-template-areas:
+            "clinical contact"
+            "activities responsible"
+            "activities address";
+        align-items: start;
+        gap: var(--space-4);
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-clinical-summary {
+        grid-area: clinical;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-section--desktop--contato {
+        grid-area: contact;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-section--desktop--responsavel {
+        grid-area: responsible;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-section--desktop--endereco {
+        grid-area: address;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-section--desktop--observacoes {
+        display: block;
+        grid-column: 1 / -1;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-header-quick-item {
+        justify-content: center;
+    }
+}
+
+@media (min-width: 1101px) {
+    body[data-page-title="Perfil do Paciente"] .profile-header-data-grid {
+        display: none;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-header-quick-desktop {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        align-items: center;
+        gap: var(--space-4);
+        width: 100%;
+        padding-top: var(--space-4);
+        border-top: 1px solid var(--profile-divider-color);
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-header-quick-item {
+        min-width: 0;
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        color: var(--text-secondary);
+        font-size: var(--fonte-corpo);
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-header-quick-item .icone {
+        flex: 0 0 auto;
+        color: var(--text-muted);
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-header-quick-item a {
+        min-width: 0;
+        color: var(--blue-600);
+        text-decoration: none;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-section--desktop--observacoes {
+        display: none;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-alerts {
+        display: block;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-section--desktop--responsavel .data-grid--profile {
+        grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-header-data-grid {
+        grid-template-columns: repeat(3, minmax(0, 280px));
+        justify-content: center;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-header-data-grid>.profile-data-row>.data-field {
+        padding-block: var(--space-4);
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-header-data-grid>.profile-data-row {
+        display: contents;
+        border-top: 0;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-header-data-grid .data-field {
+        border-left: 0;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-header-data-grid .profile-main-field--idade {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-header-data-grid .profile-main-field--nascimento {
+        grid-column: 2;
+        grid-row: 1;
+        border-left: 1px solid var(--profile-divider-color);
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-header-data-grid .profile-main-field--sexo {
+        grid-column: 3;
+        grid-row: 1;
+        border-left: 1px solid var(--profile-divider-color);
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-header-data-grid .profile-main-field--cpf {
+        grid-column: 1;
+        grid-row: 2;
+        border-top: 1px solid var(--profile-divider-color);
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-header-data-grid .profile-data-row>.profile-main-field--cpf {
+        border-left: 0;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-header-data-grid .profile-main-field--telefone {
+        grid-column: 2;
+        grid-row: 2;
+        border-top: 1px solid var(--profile-divider-color);
+        border-left: 1px solid var(--profile-divider-color);
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-header-data-grid .profile-main-field--responsavel {
+        grid-column: 3;
+        grid-row: 2;
+        border-top: 1px solid var(--profile-divider-color);
+        border-left: 1px solid var(--profile-divider-color);
+    }
+}
+
+@media (max-width: 350px) {
+    body[data-page-title="Perfil do Paciente"] .profile-data-row>.data-field {
+        border-left: 0;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-data-row>.data-field+.data-field {
+        border-left: 0;
+        border-top: 1px solid var(--profile-divider-color);
+        padding-left: 0;
+    }
+}
+
+@media (max-width: 767px) {
+    body[data-page-title="Perfil do Paciente"] .profile-header-data-grid>.profile-data-row {
+        grid-column: 1 / -1;
+        grid-template-columns: inherit;
+        border-top: 1px solid var(--profile-divider-color);
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-header-data-grid>.profile-data-row:first-child {
+        border-top: 0;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-header-data-grid>.profile-data-row>.data-field {
+        border-left: 0;
+        border-top: 0;
+        padding-left: 0;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-header-data-grid>.profile-data-row>.profile-data-cell--mobile-right {
+        border-left: 1px solid var(--profile-divider-color);
+        padding-left: var(--space-3);
+    }
+}
+
+@media (max-width: 350px) {
+    body[data-page-title="Perfil do Paciente"] .profile-header-data-grid>.profile-data-row {
+        grid-template-columns: 1fr;
+        border-top: 0;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-header-data-grid>.profile-data-row>.data-field {
+        border-top: 1px solid var(--profile-divider-color);
+        border-left: 0;
+        padding-left: 0;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-header-data-grid>.profile-data-row:first-child>.data-field:first-child {
+        border-top: 0;
+    }
+}
+
+@media (min-width: 768px) {
+    body[data-page-title="Perfil do Paciente"] .profile-desktop-columns {
+        display: grid;
+        grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+        grid-template-areas:
+            "clinical contact"
+            "activities responsible"
+            "activities address";
+        align-items: start;
+        gap: var(--space-4);
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-clinical-summary {
+        grid-area: clinical;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-recent-activities {
+        grid-area: activities;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-section--desktop--contato {
+        grid-area: contact;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-section--desktop--responsavel {
+        grid-area: responsible;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-section--desktop--endereco {
+        grid-area: address;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-section--desktop--observacoes {
+        display: block;
+        grid-column: 1 / -1;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-header-quick-item {
+        justify-content: center;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-section--desktop .profile-section__header {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-recent-activities {
+        align-self: stretch;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-recent-activities__list {
+        min-height: 100%;
+        align-content: start;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-contact__phones {
+        display: grid;
+        gap: var(--space-2);
+        margin-bottom: var(--space-3);
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-contact__phone-row {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        align-items: baseline;
+        gap: var(--space-2);
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-contact__label {
+        color: var(--text-muted);
+        font-size: var(--fonte-texto-auxiliar);
+        font-weight: 500;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-contact__value {
+        color: var(--gray-900);
+        font-weight: 700;
+        overflow-wrap: anywhere;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-contact__actions {
+        width: 100%;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-contact-btn {
+        width: 100%;
+        box-sizing: border-box;
+        justify-content: center;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-contact-btn--whatsapp {
+        color: var(--white);
+        background: var(--success-600);
+        border: 1px solid var(--success-600);
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-contact-btn--whatsapp:hover {
+        color: var(--white);
+        background: var(--success-700);
+        border-color: var(--success-700);
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-contact-btn--call,
+    body[data-page-title="Perfil do Paciente"] .profile-secondary-action {
+        color: var(--blue-600);
+        background: var(--surface);
+        border: 1px solid var(--blue-300);
+        box-shadow: none;
+        text-decoration: none;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-contact-btn--call:hover,
+    body[data-page-title="Perfil do Paciente"] .profile-secondary-action:hover {
+        color: var(--blue-700);
+        background: var(--blue-50);
+        border-color: var(--blue-400);
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-secondary-action {
+        width: fit-content;
+        min-height: 34px;
+        padding: 6px 10px;
+        justify-content: center;
+        border-radius: var(--radius-sm);
+        font-size: var(--fonte-texto-auxiliar);
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-responsible__phone-row {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: var(--space-2);
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-address-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: end;
+        gap: var(--space-3);
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-map-link {
+        justify-self: end;
+        align-self: end;
+        margin-top: 0;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-header-quick-desktop,
+    body[data-page-title="Perfil do Paciente"] .profile-header .profile-header-data-grid {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-recent-activities__list {
+        display: grid;
+        gap: var(--space-2);
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-recent-activity {
+        display: grid;
+        gap: 2px;
+        padding-bottom: var(--space-2);
+        border-bottom: 1px solid var(--border-light);
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-recent-activity:last-child {
+        padding-bottom: 0;
+        border-bottom: 0;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-recent-activity strong {
+        color: var(--gray-900);
+        font-size: var(--fonte-corpo);
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-recent-activity span,
+    body[data-page-title="Perfil do Paciente"] .profile-recent-activities__empty {
+        margin: 0;
+        color: var(--text-muted);
+        font-size: var(--fonte-texto-auxiliar);
+    }
+}
+
+/* =========================================================
+   PERFIL DO PACIENTE — AJUSTES FINAIS SOMENTE DESKTOP
+   Referência: composição aprovada no mobile permanece intacta.
+   ========================================================= */
+
+body[data-page-title="Perfil do Paciente"] .profile-desktop-column {
+    display: contents;
+}
+
+@media (min-width: 1101px) {
+    /* Duas colunas independentes: evita que a altura dos cards da direita
+       empurre "Atividades recentes" para baixo. */
+    body[data-page-title="Perfil do Paciente"] .profile-desktop-columns {
+        display: grid;
+        grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+        grid-template-areas: none;
+        grid-template-rows: auto;
+        align-items: stretch;
+        gap: var(--space-4);
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-desktop-column {
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-desktop-column--main {
+        grid-column: 1;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-desktop-column--aside {
+        grid-column: 2;
+    }
+
+    /* Respiro entre a linha divisória do cabeçalho e as informações do card. */
+    body[data-page-title="Perfil do Paciente"] .profile-section--desktop > .profile-section__header {
+        margin-bottom: 16px;
+        padding-bottom: 10px;
+    }
+
+    /* Atividades mantém altura natural; o espaço livre fica entre cards,
+       nunca dentro da lista. */
+    body[data-page-title="Perfil do Paciente"] .profile-recent-activities {
+        align-self: auto;
+        min-height: 0;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-recent-activities__list {
+        min-height: 0;
+    }
+
+    /* Observações passam a encerrar a coluna esquerda e alinham o final
+       com o card de Endereço da coluna direita. */
+    body[data-page-title="Perfil do Paciente"] .profile-section--desktop--observacoes {
+        display: block;
+        width: 100%;
+        margin-top: auto;
+        grid-column: auto;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-section--desktop--endereco {
+        margin-top: auto;
+    }
+
+    /* Endereço compacto em três linhas; "Ver mapa" fica exatamente
+       alinhado à segunda linha (bairro). */
+    body[data-page-title="Perfil do Paciente"] .profile-address-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-rows: auto auto auto;
+        column-gap: var(--space-3);
+        row-gap: 4px;
+        align-items: center;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-address {
+        display: contents;
+    }
+
+    body[data-page-title="Perfil do Paciente"] #profile-address-line {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    body[data-page-title="Perfil do Paciente"] #profile-address-neighborhood {
+        grid-column: 1;
+        grid-row: 2;
+    }
+
+    body[data-page-title="Perfil do Paciente"] #profile-address-city-state {
+        grid-column: 1;
+        grid-row: 3;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-map-link {
+        grid-column: 2;
+        grid-row: 2;
+        justify-self: end;
+        align-self: center;
+        margin: 0;
+    }
+
+    /* Ação principal do perfil no azul institucional do CAIGE. */
+    body[data-page-title="Perfil do Paciente"] .profile-prontuario-primary {
+        color: var(--white);
+        background: var(--blue-600);
+        border-color: var(--blue-600);
+        box-shadow: var(--shadow-xs);
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-prontuario-primary .icone {
+        color: var(--white);
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-prontuario-primary:hover,
+    body[data-page-title="Perfil do Paciente"] .profile-prontuario-primary:focus-visible {
+        color: var(--white);
+        background: var(--blue-700);
+        border-color: var(--blue-700);
+    }
+}
+
+
+/* =========================================================
+   PERFIL DO PACIENTE — FECHAMENTO VISUAL SOMENTE DESKTOP
+   ========================================================= */
+@media (min-width: 1101px) {
+    /* Observações aproveitam o espaço restante da coluna esquerda,
+       preservando área confortável para textos longos. */
+    body[data-page-title="Perfil do Paciente"] .profile-section--desktop--observacoes {
+        flex: 1 1 auto;
+        min-height: 150px;
+        margin-top: 0;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-section--desktop--observacoes .profile-observations {
+        line-height: 1.55;
+        overflow-wrap: anywhere;
+    }
+
+    /* Atividades recentes em uma única linha: calendário, data,
+       atividade e profissional. */
+    body[data-page-title="Perfil do Paciente"] .profile-recent-activities__list {
+        gap: 0;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-recent-activity {
+        grid-template-columns: auto auto minmax(0, 1fr) minmax(150px, auto);
+        align-items: center;
+        column-gap: 10px;
+        min-height: 44px;
+        padding: 8px 0;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-recent-activity__icon {
+        color: var(--blue-600);
+        flex-shrink: 0;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-recent-activity__date {
+        color: var(--blue-600);
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-recent-activity__name {
+        min-width: 0;
+        overflow: hidden;
+        color: var(--gray-900);
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-recent-activity__professional {
+        min-width: 0;
+        color: var(--text-muted);
+        text-align: right;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+/* =========================================================
+   PERFIL DO PACIENTE — ATIVIDADES RECENTES EM LINHA DO TEMPO
+   Somente desktop. Mantém o mobile aprovado sem alterações.
+   ========================================================= */
+@media (min-width: 1101px) {
+    body[data-page-title="Perfil do Paciente"] .profile-recent-activities__list {
+        position: relative;
+        display: grid;
+        gap: 0;
+        padding-left: 34px;
+    }
+
+    /* Linha vertical da timeline. */
+    body[data-page-title="Perfil do Paciente"] .profile-recent-activities__list::before {
+        content: "";
+        position: absolute;
+        top: 22px;
+        bottom: 22px;
+        left: 8px;
+        width: 1px;
+        background: var(--border-default);
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-recent-activity {
+        position: relative;
+        display: grid;
+        grid-template-columns: 20px 96px minmax(180px, 1fr) minmax(150px, 0.75fr);
+        align-items: center;
+        column-gap: 12px;
+        min-height: 52px;
+        padding: 8px 0;
+        border-bottom: 0;
+    }
+
+    /* Marcador azul de cada atividade. */
+    body[data-page-title="Perfil do Paciente"] .profile-recent-activity::before {
+        content: "";
+        position: absolute;
+        left: -30px;
+        top: 50%;
+        width: 8px;
+        height: 8px;
+        border: 2px solid var(--surface);
+        border-radius: 50%;
+        background: var(--blue-600);
+        box-shadow: 0 0 0 1px var(--blue-200);
+        transform: translateY(-50%);
+        z-index: 1;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-recent-activity__icon {
+        width: 18px;
+        height: 18px;
+        color: var(--gray-500);
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-recent-activity__date {
+        color: var(--blue-600);
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-recent-activity__name {
+        min-width: 0;
+        color: var(--gray-900);
+        font-weight: 600;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-recent-activity__professional {
+        min-width: 0;
+        color: var(--text-muted);
+        text-align: left;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-recent-activity:last-child {
+        padding-bottom: 8px;
+    }
+}
+
+/* =========================================================
+   PERFIL DO PACIENTE — COMPACTAÇÃO RESPONSÁVEL/ENDEREÇO
+   Somente desktop. Mobile permanece inalterado.
+   ========================================================= */
+@media (min-width: 1101px) {
+    /* Responsável: aproxima nome, telefone e parentesco sem afetar o botão. */
+    body[data-page-title="Perfil do Paciente"] .profile-section--desktop--responsavel .profile-responsible__name {
+        margin-bottom: 6px;
+        line-height: 1.3;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-section--desktop--responsavel .profile-responsible__phone-row {
+        gap: 8px;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-section--desktop--responsavel .profile-responsible-relation-value {
+        margin-top: -4px;
+        line-height: 1.25;
+    }
+
+    /* Endereço: reduz o espaço vertical entre rua, bairro e cidade/UF. */
+    body[data-page-title="Perfil do Paciente"] .profile-section--desktop--endereco .profile-address-layout {
+        row-gap: 2px;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-section--desktop--endereco .profile-address span {
+        line-height: 1.25;
+    }
+}
+
+/* =========================================================
+   PERFIL DO PACIENTE — TABLET
+   Mantém a mesma composição lógica aprovada no desktop:
+   Resumo/Atividades/Observações à esquerda e
+   Contato/Responsável/Endereço à direita.
+   ========================================================= */
+@media (min-width: 768px) and (max-width: 1100px) {
+    body[data-page-title="Perfil do Paciente"] .profile-desktop-columns {
+        display: grid;
+        grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+        grid-template-areas: none;
+        align-items: stretch;
+        gap: var(--space-4);
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-desktop-column {
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-desktop-column--main {
+        grid-column: 1;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-desktop-column--aside {
+        grid-column: 2;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-section--desktop--observacoes {
+        grid-area: auto;
+        grid-column: auto;
+        width: 100%;
+        min-width: 0;
+        margin-top: auto;
+    }
+
+    body[data-page-title="Perfil do Paciente"] .profile-section--desktop--endereco {
+        margin-top: auto;
+    }
+}
+
+/* =========================================================
+   HOTFIX MOBILE V1 - LISTA DE PACIENTES EM CARDS INDEPENDENTES
+   Desktop permanece inalterado.
+   ========================================================= */
+@media (max-width: 767px) {
+    .pacientes-list.card.admin-list.surface-primary {
+        padding: 0;
+        background: transparent;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+        overflow: visible;
+    }
+
+    .pacientes-list .pacientes-table-wrap.admin-list__body {
+        flex: 0 0 auto;
+        max-height: none;
+        padding: 0;
+        overflow: visible;
+        background: transparent;
+    }
+
+    .pacientes-table,
+    .pacientes-table tbody {
+        gap: 9px;
+    }
+
+    .pacientes-table tbody tr.paciente-row {
+        grid-template-columns: 44px minmax(0, 1fr) auto auto;
+        grid-template-areas:
+            "avatar name status actions"
+            "avatar details status actions";
+        min-height: 72px;
+        padding: 11px 11px;
+        column-gap: 9px;
+        row-gap: 3px;
+        background: var(--surface);
+        border: 1px solid var(--border-default);
+        border-left: 1px solid var(--border-default);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-xs);
+    }
+
+    .paciente-name-cell {
+        display: contents;
+    }
+
+    .paciente-cell {
+        display: contents;
+    }
+
+    .paciente-avatar {
+        grid-area: avatar;
+        width: 42px;
+        height: 42px;
+        align-self: center;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: var(--blue-50);
+        border: 1px solid var(--blue-100);
+        color: var(--blue-700);
+        font-size: 13px;
+        line-height: 1;
+        font-weight: 700;
+        letter-spacing: .02em;
+    }
+
+    .paciente-info {
+        grid-area: name;
+        min-width: 0;
+        align-self: center;
+    }
+
+    .paciente-name {
+        display: block;
+        font-size: 15px;
+        font-weight: 700;
+        line-height: 1.25;
+    }
+
+    .paciente-meta-cell {
+        padding-top: 1px;
+    }
+
+    .paciente-meta-mobile {
+        font-size: 12px;
+        gap: 5px;
+    }
+
+    .paciente-status-cell .status-pill {
+        padding: 3px 7px;
+        font-size: var(--fonte-badge);
+    }
+
+    .paciente-actions-toggle {
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        min-height: 32px;
+        background: transparent;
+        border-color: transparent;
+    }
+}
+
+
+/* =========================================================
+   HOTFIX MOBILE V3 - CARDS DE PACIENTE
+   Reforça a separação visual, aproxima nome e metadados e
+   centraliza status/ações entre as duas linhas de conteúdo.
+   Desktop permanece inalterado.
+   ========================================================= */
+@media (max-width: 767px) {
+    .pacientes-table tbody {
+        gap: 10px;
+    }
+
+    .pacientes-table tbody tr.paciente-row {
+        background: linear-gradient(
+            90deg,
+            var(--blue-50) 0%,
+            var(--surface-soft) 54%,
+            var(--surface) 100%
+        );
+        border-color: var(--blue-200);
+        border-left: 3px solid var(--blue-600);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .paciente-avatar {
+        background: var(--blue-100);
+        border-color: var(--blue-300);
+        color: var(--blue-700);
+        box-shadow: inset 0 0 0 1px var(--blue-50);
+    }
+
+    .paciente-status-cell,
+    .pacientes-actions-col {
+        align-self: stretch;
+        justify-content: center;
+    }
+
+    .paciente-status-cell {
+        justify-self: end;
+    }
+
+    .pacientes-actions-col {
+        justify-self: end;
+    }
+
+    .paciente-actions-toggle {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        min-height: 36px;
+        color: var(--blue-700);
+        background: var(--blue-50);
+        border-color: var(--blue-200);
+        box-shadow: var(--shadow-xs);
+    }
+}
+
+
+/* =========================================================
+   HOTFIX - AVATAR EXCLUSIVO DO MOBILE
+   Impede que as iniciais adicionadas aos cards mobile
+   interfiram na tabela de pacientes em tablet/desktop.
+   ========================================================= */
+@media (min-width: 768px) {
+    .paciente-avatar {
+        display: none !important;
+    }
+
+    .paciente-cell {
+        display: table-cell;
+    }
+
+    .paciente-cell .paciente-main {
+        display: inline;
+    }
+}
+
+
+/* =========================================================
+   REFINAMENTO DESKTOP - ALINHAMENTO SEMÂNTICO DA GRID
+   Texto descritivo à esquerda; dados compactos ao centro.
+   ========================================================= */
+@media (min-width: 768px) {
+    .paciente-cell {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        text-align: left;
+    }
+
+    .paciente-name-cell,
+    .paciente-address-cell {
+        text-align: left !important;
+    }
+
+    .paciente-name-cell {
+        padding-left: 16px;
+    }
+
+    .paciente-address-cell {
+        padding-left: 18px;
+    }
+
+    .paciente-address-text {
+        display: block;
+        text-align: left;
+    }
+
+    .pacientes-table th:nth-child(2),
+    .pacientes-table th:nth-child(3) {
+        text-align: left;
+    }
+
+    .pacientes-table th:nth-child(2) {
+        padding-left: 16px;
+    }
+
+    .pacientes-table th:nth-child(3) {
+        padding-left: 18px;
+    }
+
+    .pacientes-table th:nth-child(1),
+    .pacientes-table td:nth-child(1),
+    .pacientes-table th:nth-child(4),
+    .pacientes-table td:nth-child(4),
+    .pacientes-table th:nth-child(6),
+    .pacientes-table td:nth-child(6),
+    .pacientes-table th:nth-child(7),
+    .pacientes-table td:nth-child(7) {
+        text-align: center;
+    }
+}
+
+
+/* =========================================================
+   REFINAMENTO DESKTOP - GRID DE PACIENTES MAIS COMPACTA
+   Reduz apenas espaçamento vertical; preserva tipografia
+   e área de toque dos cards no mobile.
+   ========================================================= */
+@media (min-width: 768px) {
+    .pacientes-table th {
+        padding-top: 9px;
+        padding-bottom: 9px;
+    }
+
+    .pacientes-table td {
+        padding-top: 7px;
+        padding-bottom: 7px;
+        height: 44px;
+    }
+
+    .pacientes-table .actions-toggle,
+    .pacientes-table .paciente-actions-toggle,
+    .pacientes-table .menu-acoes-trigger {
+        min-width: 34px;
+        width: 34px;
+        min-height: 34px;
+        height: 34px;
+        padding: 0;
+    }
+}
+
+
+/* =========================================================
+   PACIENTES - ADESÃO À DENSIDADE GLOBAL DE GRID
+   Remove a altura específica do hotfix anterior no desktop.
+   ========================================================= */
+@media (min-width: 768px) {
+    .pacientes-table td {
+        height: auto;
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+
+    .pacientes-table th {
+        padding-top: 7px;
+        padding-bottom: 7px;
+    }
+}
+
+/* CORREÇÃO 02E - seletor de comparação agrupado por curso */
+.compare-course-group {
+    overflow: hidden;
+    margin-bottom: 8px;
+    border: 1px solid #d6e2f3;
+    border-radius: 6px;
+    background: #fff;
+}
+.compare-course-group__header {
+    width: 100%;
+    min-height: 54px;
+    display: grid;
+    grid-template-columns: minmax(0,1fr) auto 24px;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 0;
+    background: #f5f8fd;
+    color: var(--text-primary);
+    text-align: left;
+    cursor: pointer;
+}
+.compare-course-group__header:hover { background: #edf4ff; }
+.compare-course-group__title {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.compare-course-group__title strong { color: #173f7a; }
+.compare-course-group__title span,
+.compare-course-group__selection {
+    font-size: var(--fonte-meta);
+    color: var(--text-muted);
+}
+.compare-course-group__selection {
+    color: var(--blue-700);
+    font-weight: 700;
+    white-space: nowrap;
+}
+.compare-course-group__chevron {
+    display: inline-flex;
+    justify-content: center;
+    font-size: 20px;
+    color: var(--blue-700);
+    transition: transform 160ms ease;
+}
+.compare-course-group__header[aria-expanded="true"] .compare-course-group__chevron {
+    transform: rotate(180deg);
+}
+.compare-course-group__body {
+    padding: 10px;
+    border-top: 1px solid #e2e8f0;
+}
+.compare-course-select-all {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    padding: 8px 10px;
+    border-radius: 4px;
+    background: #eef5ff;
+    color: #174ea6;
+    font-size: var(--fonte-meta);
+    font-weight: 700;
+    cursor: pointer;
+}
+.compare-course-group__records {
+    display: grid;
+    gap: 7px;
+}
+@media (min-width: 900px) {
+    #compare-record-options {
+        display: grid;
+        grid-template-columns: repeat(2,minmax(0,1fr));
+        gap: 8px;
+        align-items: start;
+    }
+    .compare-course-group { margin-bottom: 0; }
+}
+@media (max-width: 767px) {
+    #compare-record-options { display: block; }
+    .compare-course-group__header {
+        grid-template-columns: minmax(0,1fr) auto 22px;
+        padding: 10px;
+    }
+    .compare-course-group__body { padding: 8px; }
+    .compare-course-group__selection { font-size: 11px; }
+}
+
+/* =========================================================
+   CORREÇÃO 02F - COMPARAÇÃO COMPACTA
+   Mesma linguagem visual dos expansores do CAIGE.
+   ========================================================= */
+.compare-course-group {
+    margin-bottom: 6px;
+    border-color: #dbe5f2;
+    border-radius: 5px;
+}
+
+.compare-course-group__header {
+    min-height: 44px;
+    grid-template-columns: minmax(0, 1fr) auto 30px;
+    gap: 6px;
+    padding: 7px 9px;
+    background: #f7f9fc;
+}
+
+.compare-course-group__title {
+    gap: 0;
+}
+
+.compare-course-group__title strong {
+    font-size: 13px;
+    line-height: 1.2;
+}
+
+.compare-course-group__title span {
+    margin-top: 2px;
+    font-size: 11px;
+    line-height: 1.2;
+}
+
+.compare-course-group__selection {
+    font-size: 11px;
+}
+
+.compare-course-group__chevron {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    justify-self: end;
+    background: #e7f0ff;
+    color: var(--blue-700);
+    font-size: 16px;
+    line-height: 1;
+    transition: background 160ms ease;
+}
+
+.compare-course-group__chevron > span {
+    display: inline-block;
+    transform: translateY(-1px);
+    transition: transform 160ms ease;
+}
+
+.compare-course-group__header:hover .compare-course-group__chevron {
+    background: #d9e8ff;
+}
+
+.compare-course-group__header[aria-expanded="true"] .compare-course-group__chevron {
+    transform: none;
+}
+
+.compare-course-group__header[aria-expanded="true"] .compare-course-group__chevron > span {
+    transform: translateY(1px) rotate(180deg);
+}
+
+.compare-course-group__body {
+    padding: 6px;
+}
+
+.compare-course-select-all {
+    min-height: 30px;
+    gap: 6px;
+    margin-bottom: 5px;
+    padding: 5px 7px;
+    border-radius: 4px;
+    font-size: 11px;
+    line-height: 1.2;
+}
+
+.compare-course-select-all input,
+.prontuario-selection-option input[name="compare-record"] {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 16px;
+    margin: 0;
+}
+
+.compare-course-group__records {
+    gap: 4px;
+}
+
+.compare-course-group .prontuario-selection-option {
+    min-height: 44px;
+    gap: 7px;
+    padding: 7px 8px;
+    border-radius: 4px;
+}
+
+.compare-course-group .prontuario-selection-option__content {
+    gap: 1px;
+}
+
+.compare-course-group .prontuario-selection-option__content strong {
+    font-size: 12px;
+    line-height: 1.25;
+}
+
+.compare-course-group .prontuario-selection-option__content span {
+    font-size: 10.5px;
+    line-height: 1.25;
+}
+
+@media (min-width: 900px) {
+    #compare-record-options {
+        gap: 6px 8px;
+    }
+}
+
+@media (max-width: 767px) {
+    .compare-course-group__header {
+        min-height: 42px;
+        grid-template-columns: minmax(0, 1fr) auto 28px;
+        padding: 6px 8px;
+    }
+
+    .compare-course-group__chevron {
+        width: 26px;
+        height: 26px;
+    }
+
+    .compare-course-group__body {
+        padding: 5px;
+    }
+}
+
+/* =========================================================
+   CORREÇÃO 02G - MODAL DE COMPARAÇÃO REFINADO
+   - dimensão estável;
+   - grupo aberto ocupa a largura toda;
+   - seleção resumida;
+   - toggle no padrão cabecalho-destaque do CAIGE.
+   ========================================================= */
+#modal-compare-select .compare-prontuarios-modal {
+    width: min(680px, calc(100vw - 32px));
+    height: min(560px, calc(100vh - 32px));
+    max-height: calc(100vh - 32px);
+    display: flex;
+    flex-direction: column;
+}
+
+#modal-compare-select .compare-prontuarios-modal > .modal__body {
+    min-height: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+#modal-compare-select #compare-record-options {
+    min-height: 0;
+    flex: 1;
+    overflow-y: auto;
+    align-content: start;
+    padding-right: 3px;
+}
+
+/* Fechado: dois cursos por linha. Aberto: curso ocupa a linha inteira,
+   eliminando o vazio lateral mostrado na referência. */
+@media (min-width: 768px) {
+    #modal-compare-select #compare-record-options {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 6px 8px;
+    }
+
+    #modal-compare-select .compare-course-group:has(
+        .compare-course-group__header[aria-expanded="true"]
+    ) {
+        grid-column: 1 / -1;
+    }
+}
+
+#modal-compare-select .compare-course-group {
+    align-self: start;
+    margin: 0;
+    border-radius: 5px;
+}
+
+#modal-compare-select .compare-course-group__header {
+    min-height: 42px;
+    grid-template-columns: minmax(0, 1fr) auto 28px;
+    gap: 6px;
+    padding: 6px 8px;
+}
+
+#modal-compare-select .compare-course-group__title strong {
+    font-size: 12px;
+}
+
+#modal-compare-select .compare-course-group__title span,
+#modal-compare-select .compare-course-group__selection {
+    font-size: 10px;
+}
+
+/* Mesmo princípio do .cabecalho-destaque__toggle:
+   círculo azul + chevron branco construído com bordas. */
+#modal-compare-select .compare-course-group__chevron {
+    width: 28px;
+    min-width: 28px;
+    height: 28px;
+    min-height: 28px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    justify-self: end;
+    color: #fff;
+    background: #2b6ee7;
+    border: 0;
+    border-radius: 50%;
+    box-shadow: none;
+}
+
+#modal-compare-select .compare-course-group__chevron-icon {
+    width: 7px;
+    height: 7px;
+    display: block;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg);
+    transition: transform 160ms ease;
+}
+
+#modal-compare-select
+.compare-course-group__header[aria-expanded="true"]
+.compare-course-group__chevron-icon {
+    transform: rotate(225deg);
+}
+
+#modal-compare-select .compare-course-group__body {
+    padding: 5px 6px 6px;
+}
+
+#modal-compare-select .compare-course-select-all {
+    width: max-content;
+    min-height: 24px;
+    margin: 0 0 4px;
+    padding: 3px 6px;
+    gap: 5px;
+    font-size: 10px;
+    line-height: 1;
+    background: #eef5ff;
+}
+
+#modal-compare-select .compare-course-select-all input,
+#modal-compare-select .prontuario-selection-option input[name="compare-record"] {
+    width: 14px;
+    height: 14px;
+    flex: 0 0 14px;
+}
+
+#modal-compare-select .compare-course-group__records {
+    gap: 3px;
+}
+
+#modal-compare-select .prontuario-selection-option {
+    min-height: 30px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 6px;
+    border-radius: 4px;
+}
+
+#modal-compare-select .compare-prontuario-row {
+    min-width: 0;
+    flex: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 8px;
+}
+
+#modal-compare-select .compare-prontuario-row strong {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 11px;
+    line-height: 1.15;
+}
+
+#modal-compare-select .compare-prontuario-row__date {
+    white-space: nowrap;
+    font-size: 9.5px;
+    line-height: 1;
+    color: var(--text-muted);
+}
+
+#modal-compare-select .modal__form-actions {
+    flex: 0 0 auto;
+    margin-top: 8px;
+}
+
+@media (max-width: 767px) {
+    #modal-compare-select .compare-prontuarios-modal {
+        width: calc(100vw - 20px);
+        height: min(78vh, 560px);
+        max-height: calc(100vh - 20px);
+    }
+
+    #modal-compare-select #compare-record-options {
+        display: block;
+    }
+
+    #modal-compare-select .compare-course-group {
+        margin-bottom: 5px;
+    }
+
+    #modal-compare-select .compare-prontuario-row {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 5px;
+    }
+
+    #modal-compare-select .compare-prontuario-row strong {
+        font-size: 10.5px;
+    }
+
+    #modal-compare-select .compare-prontuario-row__date {
+        font-size: 9px;
+    }
+}
+
+
+/* =========================================================
+   PACIENTES MOBILE — scroll interno + ajuste junto à navegação
+   ========================================================= */
+@media (max-width: 767px) {
+    .pacientes-list.card.admin-list.surface-primary {
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+    }
+
+    .pacientes-list .pacientes-table-wrap.admin-list__body {
+        flex: 0 1 auto;
+        min-height: 0;
+        max-height: clamp(260px, 48dvh, 520px);
+        padding: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .pacientes-list > .pagination-bar--integrated.admin-list__footer {
+        flex: 0 0 auto;
+    }
+
+    /* A paginação já encerra o conteúdo útil da tela; evita o vazio
+       adicional criado pelo padding global reservado ao menu fixo. */
+    body.caige-has-mobile-bottom-nav .content {
+        padding-bottom: 10px;
+    }
+}
+
+/* =========================================================
+   PACIENTES MOBILE — elimina respiro final antes da navegação
+   ========================================================= */
+@media (max-width: 767px) {
+    body.caige-has-mobile-bottom-nav .content {
+        padding-bottom: 0 !important;
+    }
+
+    .pacientes-list.card.admin-list.surface-primary {
+        margin-bottom: 0;
+    }
+
+    .pacientes-list > .pagination-bar--integrated.admin-list__footer {
+        margin-bottom: 0;
+    }
+}
+
+/* 17/09/2026 — Pacientes mobile: paginação sempre acima da navegação fixa */
+@media (max-width: 767px) {
+    .pacientes-list > .pagination-bar--integrated.admin-list__footer {
+        position: sticky;
+        bottom: calc(64px + env(safe-area-inset-bottom, 0px));
+        z-index: 30;
+        background: var(--surface);
+    }
+}
+
+/* 17/09/2026 — Pacientes mobile: a paginação encerra a lista, sem sobrepor registros. */
+@media (max-width: 767px) {
+    .pacientes-list > .pagination-bar--integrated.admin-list__footer {
+        position: relative !important;
+        inset: auto !important;
+        z-index: 2;
+        margin: 8px 0 0 !important;
+        flex: 0 0 auto;
+        background: var(--surface);
+    }
+
+    .pacientes-list .pacientes-table-wrap.admin-list__body {
+        padding-bottom: 0 !important;
+        margin-bottom: 0 !important;
+    }
+
+    .pacientes-list.card.admin-list.surface-primary {
+        padding-bottom: 0 !important;
+    }
+}
+
+
+/* 17/09/2026 — Pacientes: rodapé da lista acima da navegação fixa */
+@media (max-width: 767px) {
+    body.caige-has-mobile-bottom-nav .content {
+        padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+    .pacientes-list > .pagination-bar--integrated.admin-list__footer {
+        position: relative !important;
+        inset: auto !important;
+        z-index: 2 !important;
+        margin: 8px 0 0 !important;
+    }
+}
+
+@media (min-width: 1101px) {
+  body[data-page-title="Perfil do Paciente"] .patient-header__actions--desktop-stack {
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    gap:7px;
+    min-width:250px;
+  }
+  body[data-page-title="Perfil do Paciente"] .patient-header__actions--desktop-stack .profile-prontuario-primary {
+    width:100%;
+    min-height:42px;
+    justify-content:center;
+  }
+  body[data-page-title="Perfil do Paciente"] .patient-header__secondary-actions {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:7px;
+  }
+  body[data-page-title="Perfil do Paciente"] .patient-header__secondary-actions .btn {
+    min-height:34px;
+    padding:6px 9px;
+    justify-content:center;
+    font-size:12px;
+  }
+}
+
+/* Editar Cadastro: aviso obrigatório alinhado ao limite direito do formulário. */
+@media (min-width: 768px) {
+  body[data-page-title="Editar Cadastro"] .patient-required-note {
+    text-align: right;
+  }
+}
+
+/* Perfil: contato alinhado e ações compactas do responsável no padrão do card Endereço. */
+body[data-page-title="Perfil do Paciente"] .profile-contact__phone-row {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr);
+  align-items: baseline;
+  column-gap: 8px;
+}
+body[data-page-title="Perfil do Paciente"] .profile-contact__value {
+  font-weight: 700;
+  color: var(--gray-900);
+}
+body[data-page-title="Perfil do Paciente"] .profile-responsible__phone-value {
+  font-weight: 400;
+  color: var(--gray-900);
+}
+body[data-page-title="Perfil do Paciente"] .profile-responsible__phone-row {
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: var(--space-3) !important;
+}
+body[data-page-title="Perfil do Paciente"] .profile-responsible__actions {
+  display: grid;
+  grid-template-columns: auto;
+  gap: 7px;
+  justify-items: stretch;
+  justify-self: end;
+}
+body[data-page-title="Perfil do Paciente"] .profile-responsible__actions .btn {
+  width: auto;
+  min-width: 88px;
+  min-height: 34px;
+  padding: 6px 10px;
+  justify-content: center;
+}
+body[data-page-title="Perfil do Paciente"] .profile-responsible__whatsapp {
+  color: var(--white) !important;
+  background: var(--success-600) !important;
+  border-color: var(--success-600) !important;
+}
+body[data-page-title="Perfil do Paciente"] .profile-responsible__call {
+  color: var(--blue-600);
+  background: var(--white);
+  border-color: var(--blue-500);
+}
+
+
+/* Perfil do Paciente — Responsável no mesmo ritmo visual do card Endereço. */
+body[data-page-title="Perfil do Paciente"] .profile-responsible__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: var(--space-3);
+}
+
+body[data-page-title="Perfil do Paciente"] .profile-responsible__info {
+  display: grid;
+  row-gap: 2px;
+  min-width: 0;
+}
+
+body[data-page-title="Perfil do Paciente"] .profile-responsible__info .profile-responsible__name {
+  margin: 0 !important;
+  line-height: 1.25;
+}
+
+body[data-page-title="Perfil do Paciente"] .profile-responsible__info .profile-responsible__phone-value,
+body[data-page-title="Perfil do Paciente"] .profile-responsible__info .profile-responsible-relation-value {
+  margin: 0 !important;
+  line-height: 1.25;
+}
+
+body[data-page-title="Perfil do Paciente"] .profile-responsible__phone-value {
+  font-weight: 400 !important;
+}
+
+body[data-page-title="Perfil do Paciente"] .profile-responsible__actions {
+  align-self: center;
+  justify-self: end;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 7px;
+}
+
+body[data-page-title="Perfil do Paciente"] .profile-responsible__actions .btn {
+  width: 104px;
+  min-width: 104px;
+  min-height: 34px;
+  padding: 6px 10px;
+  justify-content: center;
+}
+
+@media (max-width: 767px) {
+  body[data-page-title="Perfil do Paciente"] .profile-responsible__layout {
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 10px;
+  }
+
+  body[data-page-title="Perfil do Paciente"] .profile-responsible__actions .btn {
+    width: 96px;
+    min-width: 96px;
+  }
+}
+
+
+/* Perfil mobile — ações de Contato/Responsável seguem o mesmo padrão semântico do desktop. */
+@media (max-width: 767px) {
+  body[data-page-title="Perfil do Paciente"] .patient-contact-btn--whatsapp,
+  body[data-page-title="Perfil do Paciente"] #m-btn-whatsapp {
+    color: var(--white) !important;
+    background: var(--success-600) !important;
+    border: 1px solid var(--success-600) !important;
+    box-shadow: none !important;
+  }
+
+  body[data-page-title="Perfil do Paciente"] .patient-contact-btn--whatsapp:hover,
+  body[data-page-title="Perfil do Paciente"] #m-btn-whatsapp:hover {
+    color: var(--white) !important;
+    background: var(--success-700) !important;
+    border-color: var(--success-700) !important;
+  }
+
+  body[data-page-title="Perfil do Paciente"] .patient-contact-btn--call,
+  body[data-page-title="Perfil do Paciente"] #m-btn-call {
+    color: var(--blue-600) !important;
+    background: var(--surface) !important;
+    border: 1px solid var(--blue-300) !important;
+  }
+
+  body[data-page-title="Perfil do Paciente"] .patient-responsible-actions {
+    margin-top: var(--space-2);
+    width: 100%;
+  }
+
+  body[data-page-title="Perfil do Paciente"] .patient-responsible-actions .patient-contact-btn {
+    flex: 1 1 0;
+    width: auto;
+  }
+}
+
+/* Editor de foto do paciente */
+.patient-photo-field{display:flex;align-items:center;gap:16px;flex-wrap:wrap}.patient-photo-preview{width:88px;height:88px;border-radius:50%;background:#e8eef7;border:2px solid #d2ddeb;display:grid;place-items:center;overflow:hidden;font-weight:700;color:var(--primary-700,#174ea6)}.patient-photo-preview img{width:100%;height:100%;object-fit:cover}.patient-photo-controls{display:flex;gap:8px;flex-wrap:wrap}.foto-crop-modal{position:fixed;inset:0;z-index:99999;background:rgba(5,20,45,.68);display:grid;place-items:center;padding:16px}.foto-crop-modal[hidden]{display:none}.foto-crop-dialog{width:min(420px,100%)}.foto-crop-stage{padding:18px 18px 8px;display:grid;place-items:center}.foto-crop-stage canvas{width:min(320px,100%);height:auto;aspect-ratio:1;background:#dbe3ed;cursor:grab;touch-action:none}.foto-crop-help{text-align:center;font-size:13px;color:#667085}.foto-crop-zoom{display:flex;align-items:center;gap:12px;padding:14px 18px}.foto-crop-zoom input{flex:1}.foto-crop-actions{display:flex;justify-content:flex-end;gap:8px;padding:0 18px 18px}@media(max-width:600px){.patient-photo-field{align-items:flex-start}.patient-photo-preview{width:76px;height:76px}.patient-photo-controls{flex:1}.patient-photo-controls .btn{flex:1}.foto-crop-actions .btn{flex:1}}
+.paciente-avatar__img,.profile-avatar-img{width:100%;height:100%;display:block;object-fit:cover;object-position:center;border-radius:inherit}
+
+/* Foto do paciente integrada às Informações Pessoais */
+.patient-personal-grid { align-items: end; }
+.patient-photo-inline { grid-column: 1 / -1; display:flex; align-items:center; gap:14px; padding:2px 0 4px; }
+.patient-photo-inline .patient-photo-preview { width:82px; height:82px; flex:0 0 82px; }
+.patient-photo-inline .patient-photo-controls { align-items:center; }
+
+/* Perfil: avatar maior, com destaque e ampliação da foto */
+body[data-page-title="Perfil do Paciente"] .profile-avatar {
+  width: 88px;
+  height: 88px;
+  flex: 0 0 88px;
+  font-size: 27px;
+  border: 3px solid #fff;
+  outline: 2px solid var(--primary-500, #2878c8);
+  box-shadow: 0 5px 16px rgba(18, 67, 120, .18);
+}
+body[data-page-title="Perfil do Paciente"] .profile-avatar--photo { cursor: zoom-in; transition: box-shadow .18s ease, outline-color .18s ease; }
+@media (hover:hover) and (pointer:fine) {
+  body[data-page-title="Perfil do Paciente"] .profile-avatar--photo:hover { outline-color: var(--primary-700, #15549a); box-shadow: 0 7px 20px rgba(18,67,120,.27); }
+}
+.profile-photo-modal { position:fixed; inset:0; z-index:100000; display:grid; place-items:center; padding:20px; background:rgba(4,18,38,.78); }
+.profile-photo-modal[hidden] { display:none; }
+.profile-photo-modal__dialog { position:relative; width:min(520px, 92vw); max-height:88vh; display:grid; place-items:center; }
+.profile-photo-modal__dialog img { display:block; max-width:100%; max-height:82vh; width:auto; height:auto; object-fit:contain; border:4px solid #fff; box-shadow:0 18px 48px rgba(0,0,0,.38); }
+.profile-photo-modal__close { position:absolute; top:-14px; right:-14px; z-index:2; width:42px; height:42px; border:2px solid #fff; border-radius:50%; background:var(--primary-700,#15549a); color:#fff; font-size:27px; line-height:1; cursor:pointer; }
+@media (max-width:600px) {
+  .patient-photo-inline { align-items:center; }
+  .patient-photo-inline .patient-photo-preview { width:72px; height:72px; flex-basis:72px; }
+  .patient-photo-inline .patient-photo-controls { flex:1; }
+  body[data-page-title="Perfil do Paciente"] .profile-avatar { width:76px; height:76px; flex-basis:76px; font-size:24px; }
+  .profile-photo-modal { padding:16px; }
+  .profile-photo-modal__dialog { width:100%; }
+}
+
+/* Foto do paciente integrada às Informações Pessoais */
+.patient-personal-grid { align-items: end; }
+.patient-photo-inline { grid-column: 1 / -1; display:flex; align-items:center; gap:14px; padding:2px 0 4px; }
+.patient-photo-inline .patient-photo-preview { width:82px; height:82px; flex:0 0 82px; }
+.patient-photo-inline .patient-photo-controls { align-items:center; }
+
+/* Perfil: avatar maior, com destaque e ampliação da foto */
+body[data-page-title="Perfil do Paciente"] .profile-avatar { width:88px; height:88px; flex:0 0 88px; font-size:27px; border:3px solid #fff; outline:2px solid var(--primary-500,#2878c8); box-shadow:0 5px 16px rgba(18,67,120,.18); }
+body[data-page-title="Perfil do Paciente"] .profile-avatar--photo { cursor:zoom-in; transition:box-shadow .18s ease, outline-color .18s ease; }
+@media (hover:hover) and (pointer:fine) { body[data-page-title="Perfil do Paciente"] .profile-avatar--photo:hover { outline-color:var(--primary-700,#15549a); box-shadow:0 7px 20px rgba(18,67,120,.27); } }
+.profile-photo-modal { position:fixed; inset:0; z-index:100000; display:grid; place-items:center; padding:20px; background:rgba(4,18,38,.78); }
+.profile-photo-modal[hidden] { display:none; }
+.profile-photo-modal__dialog { position:relative; width:min(520px,92vw); max-height:88vh; display:grid; place-items:center; }
+.profile-photo-modal__dialog img { display:block; max-width:100%; max-height:82vh; width:auto; height:auto; object-fit:contain; border:4px solid #fff; box-shadow:0 18px 48px rgba(0,0,0,.38); }
+.profile-photo-modal__close { position:absolute; top:-14px; right:-14px; z-index:2; width:42px; height:42px; border:2px solid #fff; border-radius:50%; background:var(--primary-700,#15549a); color:#fff; font-size:27px; line-height:1; cursor:pointer; }
+@media (max-width:600px) { .patient-photo-inline { align-items:center; } .patient-photo-inline .patient-photo-preview { width:72px; height:72px; flex-basis:72px; } .patient-photo-inline .patient-photo-controls { flex:1; } body[data-page-title="Perfil do Paciente"] .profile-avatar { width:76px; height:76px; flex-basis:76px; font-size:24px; } .profile-photo-modal { padding:16px; } .profile-photo-modal__dialog { width:100%; } }
+
+
+/* =========================================================
+   FOTO DO PACIENTE — FLUXO INTEGRADO ÀS INFORMAÇÕES PESSOAIS
+   ========================================================= */
+.patient-personal-grid { align-items: stretch; }
+.patient-personal-top { grid-column:1 / -1; display:grid; grid-template-columns:156px minmax(0,1fr); gap:20px; align-items:center; }
+.patient-photo-area { position:relative; width:148px; min-height:148px; display:grid; place-items:center; align-self:center; }
+.patient-photo-preview { position:relative; width:136px; height:136px; padding:0; border-radius:50%; overflow:hidden; border:4px solid #fff; outline:2px solid var(--primary-500,#2878c8); background:#e8eef7; box-shadow:0 6px 18px rgba(18,67,120,.18); color:var(--primary-700,#174ea6); cursor:pointer; display:grid; place-items:center; font:inherit; }
+.patient-photo-preview img { width:100%; height:100%; object-fit:cover; object-position:center; display:block; }
+.patient-photo-initials { font-size:30px; font-weight:800; letter-spacing:.5px; }
+.patient-photo-action { position:absolute; left:0; right:0; bottom:0; min-height:34px; padding:7px 8px 8px; display:flex; align-items:center; justify-content:center; background:rgba(11,62,128,.88); color:#fff; font-size:11px; font-weight:700; line-height:1.1; }
+.patient-photo-change { position:absolute; left:50%; bottom:-4px; transform:translate(-50%,100%); white-space:nowrap; border:0; background:transparent; color:var(--primary-700,#174ea6); font-size:12px; font-weight:700; cursor:pointer; padding:5px 7px; }
+.patient-photo-remove { position:absolute; top:4px; right:4px; z-index:2; width:28px; height:28px; border-radius:50%; border:2px solid #fff; background:#fff; color:var(--danger-600,#c62828); box-shadow:0 2px 7px rgba(0,0,0,.16); font-size:20px; line-height:20px; cursor:pointer; }
+.patient-personal-primary-fields { min-width:0; display:grid; gap:14px; }
+.patient-birth-age-grid { display:grid; grid-template-columns:minmax(0,1fr) minmax(160px,1fr); gap:16px; }
+@media (hover:hover) and (pointer:fine) { .patient-photo-preview:hover { outline-color:var(--primary-700,#15549a); box-shadow:0 8px 22px rgba(18,67,120,.26); } }
+@media (max-width:700px) {
+  .patient-personal-top { grid-template-columns:112px minmax(0,1fr); gap:14px; align-items:start; }
+  .patient-photo-area { width:106px; min-height:126px; }
+  .patient-photo-preview { width:100px; height:100px; }
+  .patient-photo-initials { font-size:24px; }
+  .patient-photo-action { min-height:30px; font-size:10px; padding:5px; }
+  .patient-birth-age-grid { grid-template-columns:1fr; gap:14px; }
+}
+@media (max-width:480px) {
+  .patient-personal-top { grid-template-columns:1fr; }
+  .patient-photo-area { width:132px; min-height:150px; justify-self:center; }
+  .patient-photo-preview { width:120px; height:120px; }
+  .patient-personal-primary-fields { width:100%; }
+}
+
+
+/* FOTO DO PACIENTE — refinamento de ações e cabeçalho (18/09/2026) */
+.patient-section-heading { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:14px; }
+.patient-section-heading .section-title { margin:0; }
+.patient-required-note--inline { width:auto; margin:0; padding:0; text-align:right; font-size:12px; color:var(--text-secondary,#475467); }
+.patient-photo-area { padding-bottom:32px; }
+.patient-photo-buttons { position:absolute; left:50%; bottom:0; transform:translateX(-50%); display:flex; align-items:center; justify-content:center; gap:6px; white-space:nowrap; }
+.patient-photo-buttons[hidden] { display:none; }
+.patient-photo-change,
+.patient-photo-remove { position:static; transform:none; width:auto; height:28px; min-height:28px; padding:4px 9px; border-radius:0; box-shadow:none; font-size:11px; line-height:1; font-weight:700; cursor:pointer; }
+.patient-photo-change { border:1px solid var(--primary-600,#1769c2); background:#fff; color:var(--primary-700,#15549a); }
+.patient-photo-remove { border:1px solid var(--danger-600,#c62828); background:#fff; color:var(--danger-600,#c62828); }
+.patient-photo-preview.has-photo .patient-photo-action { opacity:0; visibility:hidden; transition:opacity .16s ease, visibility .16s ease; }
+@media (hover:hover) and (pointer:fine) {
+  .patient-photo-preview.has-photo:hover .patient-photo-action,
+  .patient-photo-preview.has-photo:focus-visible .patient-photo-action { opacity:1; visibility:visible; }
+}
+@media (hover:none), (pointer:coarse) {
+  .patient-photo-preview.has-photo .patient-photo-action { display:none; }
+}
+.profile-photo-modal__close { top:8px !important; right:8px !important; width:30px !important; height:30px !important; border-width:1px !important; font-size:20px !important; line-height:1 !important; background:rgba(11,62,128,.92) !important; }
+@media (max-width:600px) {
+  .patient-section-heading { align-items:flex-start; }
+  .patient-required-note--inline { max-width:48%; font-size:11px; }
+  .patient-photo-area { padding-bottom:30px; }
+  .patient-photo-change, .patient-photo-remove { min-height:30px; height:30px; padding:5px 8px; font-size:10px; }
+}
+
+
+/* FOTO DO PACIENTE — refinamento compacto dos controles (18/09/2026) */
+.patient-photo-area { padding-bottom:27px; }
+.patient-photo-buttons { gap:4px; }
+.patient-photo-change,
+.patient-photo-remove {
+  height:24px;
+  min-height:24px;
+  padding:3px 7px;
+  font-size:10px;
+  line-height:1;
+}
+.patient-photo-change:hover { background:var(--primary-50,#eef6ff); }
+.patient-photo-remove:hover { background:var(--danger-50,#fff1f1); }
+
+/* Visualizador: fechar integrado à própria imagem, menor e discreto */
+.profile-photo-modal__dialog img { border-width:2px; }
+.profile-photo-modal__close {
+  top:6px !important;
+  right:6px !important;
+  width:26px !important;
+  height:26px !important;
+  min-width:26px !important;
+  min-height:26px !important;
+  padding:0 !important;
+  border:1px solid rgba(255,255,255,.92) !important;
+  font-size:17px !important;
+  font-weight:600 !important;
+  line-height:22px !important;
+  background:rgba(8,45,92,.82) !important;
+  box-shadow:0 1px 5px rgba(0,0,0,.18) !important;
+}
+.profile-photo-modal__close:hover { background:rgba(8,45,92,.96) !important; }
+
+@media (max-width:600px) {
+  .patient-photo-area { padding-bottom:29px; }
+  .patient-photo-change,
+  .patient-photo-remove {
+    height:27px;
+    min-height:27px;
+    padding:4px 7px;
+    font-size:10px;
+  }
+  .profile-photo-modal__close {
+    width:28px !important;
+    height:28px !important;
+    min-width:28px !important;
+    min-height:28px !important;
+    font-size:18px !important;
+    line-height:24px !important;
+  }
+}
+
+/* FOTO DO PACIENTE — ações integradas ao avatar (18/09/2026) */
+.patient-photo-area { min-height:148px; padding-bottom:0; }
+.patient-photo-frame { position:relative; width:136px; height:136px; border-radius:50%; }
+.patient-photo-frame .patient-photo-preview { position:absolute; inset:0; width:100%; height:100%; }
+.patient-photo-frame .patient-photo-action { transition:opacity .16s ease; }
+.patient-photo-frame.has-photo .patient-photo-action { opacity:0; }
+.patient-photo-menu { position:absolute; inset:0; z-index:4; border-radius:50%; overflow:hidden; display:flex; align-items:flex-end; justify-content:center; gap:1px; padding:0 8px 13px; background:linear-gradient(to top,rgba(5,34,73,.90) 0 43%,rgba(5,34,73,.18) 68%,transparent 100%); opacity:0; visibility:hidden; pointer-events:none; transition:opacity .16s ease,visibility .16s ease; }
+.patient-photo-menu[hidden] { display:none !important; }
+.patient-photo-menu__action { min-width:0; width:37px; height:34px; padding:2px 1px; border:0; background:transparent; color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px; cursor:pointer; font-size:8px; font-weight:700; line-height:1; }
+.patient-photo-menu__action > span:first-child { font-size:15px; line-height:15px; }
+.patient-photo-menu__action:hover,.patient-photo-menu__action:focus-visible { background:rgba(255,255,255,.16); outline:1px solid rgba(255,255,255,.72); }
+.patient-photo-menu__action--danger { color:#ffd6d6; }
+@media (hover:hover) and (pointer:fine) { .patient-photo-frame:hover .patient-photo-menu,.patient-photo-frame:focus-within .patient-photo-menu { opacity:1; visibility:visible; pointer-events:auto; } .patient-photo-frame.has-photo:hover .patient-photo-action { opacity:0; } }
+@media (hover:none), (pointer:coarse) { .patient-photo-frame.menu-open .patient-photo-menu { opacity:1; visibility:visible; pointer-events:auto; } .patient-photo-frame.has-photo .patient-photo-action { display:none; } }
+@media (max-width:700px) { .patient-photo-area { min-height:106px; } .patient-photo-frame { width:100px; height:100px; } .patient-photo-menu { padding:0 4px 8px; } .patient-photo-menu__action { width:29px; height:31px; font-size:7px; } .patient-photo-menu__action > span:first-child { font-size:13px; } }
+@media (max-width:480px) { .patient-photo-area { min-height:120px; } .patient-photo-frame { width:120px; height:120px; } .patient-photo-menu { padding:0 6px 10px; } .patient-photo-menu__action { width:33px; } }
+
+
+/* FOTO DO PACIENTE — faixa de ações final e fechar ancorado à foto (18/09/2026) */
+.patient-photo-menu {
+  inset:auto 0 0 0 !important;
+  height:42px !important;
+  border-radius:0 0 68px 68px !important;
+  padding:0 22px 7px !important;
+  gap:0 !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  background:rgba(5,34,73,.82) !important;
+  backdrop-filter:blur(2px);
+}
+.patient-photo-menu__action {
+  width:30px !important;
+  height:30px !important;
+  min-width:30px !important;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:50% !important;
+  background:transparent !important;
+  color:#fff !important;
+  display:grid !important;
+  place-items:center !important;
+  outline:none !important;
+}
+.patient-photo-menu__action svg {
+  width:16px;
+  height:16px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.9;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  pointer-events:none;
+}
+.patient-photo-menu__action--danger { color:#ffd5d5 !important; }
+.patient-photo-menu__action:hover,
+.patient-photo-menu__action:focus-visible {
+  background:rgba(255,255,255,.18) !important;
+  outline:1px solid rgba(255,255,255,.68) !important;
+}
+.patient-photo-menu__action--danger:hover,
+.patient-photo-menu__action--danger:focus-visible { background:rgba(198,40,40,.45) !important; }
+
+/* O diálogo acompanha a largura real da imagem; assim o X não fica solto. */
+.profile-photo-modal__dialog {
+  width:max-content !important;
+  max-width:calc(100vw - 40px) !important;
+  position:relative !important;
+}
+.profile-photo-modal__dialog img {
+  max-width:calc(100vw - 40px) !important;
+  max-height:82vh !important;
+  border:2px solid #fff !important;
+}
+.profile-photo-modal__close {
+  top:7px !important;
+  right:7px !important;
+  width:26px !important;
+  height:26px !important;
+  min-width:26px !important;
+  min-height:26px !important;
+  padding:0 !important;
+  border:1px solid rgba(255,255,255,.9) !important;
+  border-radius:50% !important;
+  display:grid !important;
+  place-items:center !important;
+  background:rgba(5,34,73,.82) !important;
+  color:#fff !important;
+  font-size:17px !important;
+  line-height:1 !important;
+  box-shadow:0 1px 5px rgba(0,0,0,.2) !important;
+}
+@media (max-width:700px) {
+  .patient-photo-menu { height:38px !important; padding:0 15px 6px !important; }
+  .patient-photo-menu__action { width:29px !important; height:29px !important; min-width:29px !important; }
+  .patient-photo-menu__action svg { width:15px; height:15px; }
+}
+@media (max-width:480px) {
+  .patient-photo-menu { height:41px !important; padding:0 19px 7px !important; }
+  .profile-photo-modal__dialog { max-width:calc(100vw - 24px) !important; }
+  .profile-photo-modal__dialog img { max-width:calc(100vw - 24px) !important; max-height:80vh !important; }
+  .profile-photo-modal__close { width:28px !important; height:28px !important; min-width:28px !important; min-height:28px !important; }
+}
+
+
+/* FOTO DO PACIENTE — recorte circular da faixa sem foto (18/09/2026) */
+.patient-photo-frame {
+  overflow:hidden;
+  outline:2px solid var(--primary-500,#2878c8);
+  outline-offset:0;
+}
+.patient-photo-frame .patient-photo-preview {
+  border:4px solid #fff;
+  outline:0;
+  box-sizing:border-box;
+}
+.patient-photo-frame:not(.has-photo) .patient-photo-action {
+  left:4px;
+  right:4px;
+  bottom:4px;
+  min-height:31px;
+  padding:6px 8px 7px;
+  border-radius:0 0 64px 64px;
+  box-sizing:border-box;
+}
+@media (max-width:700px) {
+  .patient-photo-frame:not(.has-photo) .patient-photo-action {
+    border-radius:0 0 46px 46px;
+  }
+}
+@media (max-width:480px) {
+  .patient-photo-frame:not(.has-photo) .patient-photo-action {
+    border-radius:0 0 56px 56px;
+  }
+}
+
+
+/* ETAPA 8 — comparação de prontuários: seleção compacta (18/09/2026) */
+#modal-compare-select .compare-course-group__body {
+  padding: 5px 6px 6px;
+}
+#modal-compare-select .compare-course-selection-actions {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0 0 4px;
+}
+#modal-compare-select .compare-course-selection-action {
+  min-height: 23px;
+  padding: 3px 7px;
+  border: 1px solid #c9daf4;
+  border-radius: 3px;
+  background: #eef5ff;
+  color: #174ea6;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+#modal-compare-select .compare-course-selection-action--clear {
+  background: #fff;
+  color: #53657d;
+  border-color: #d7dee8;
+}
+#modal-compare-select .compare-course-selection-action:hover:not(:disabled),
+#modal-compare-select .compare-course-selection-action:focus-visible:not(:disabled) {
+  border-color: #8fb5ef;
+  background: #e2eeff;
+}
+#modal-compare-select .compare-course-selection-action--clear:hover:not(:disabled),
+#modal-compare-select .compare-course-selection-action--clear:focus-visible:not(:disabled) {
+  background: #f5f7fa;
+  border-color: #bfc9d6;
+}
+#modal-compare-select .compare-course-selection-action:disabled {
+  opacity: .48;
+  cursor: default;
+}
+#modal-compare-select .prontuario-selection-option {
+  min-height: 28px;
+  gap: 5px;
+  padding: 3px 6px;
+}
+#modal-compare-select .prontuario-selection-option input[name="compare-record"] {
+  width: 13px;
+  height: 13px;
+  min-height: 13px;
+  flex: 0 0 13px;
+  margin: 0;
+}
+@media (max-width: 767px) {
+  #modal-compare-select .compare-course-selection-actions {
+    flex-wrap: wrap;
+  }
+}

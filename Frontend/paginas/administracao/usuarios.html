@@ -1,0 +1,2755 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel de Gerenciamento</title>
+  <link rel="stylesheet" href="../../recursos/css/base.css" />
+  <link rel="stylesheet" href="../../recursos/css/componentes.css" />
+  <link rel="stylesheet" href="../../recursos/css/layout.css" />
+  <link rel="stylesheet" href="../../recursos/css/responsive.css" />
+  <link rel="stylesheet" href="../../recursos/css/paginas/usuarios.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+  <script src="../../recursos/js/text-normalizer.js"></script>
+  <script src="../../recursos/js/formatador-texto.js"></script>
+  <script src="../../recursos/js/util-jwt.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.4/jspdf.plugin.autotable.min.js"></script>
+  <script src="../../recursos/js/gerador-pdf.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+  <script>
+    (function () {
+      try {
+        if (!window.UtilJWT || typeof window.UtilJWT.exigirSessao !== 'function' || !window.UtilJWT.exigirSessao()) {
+          return;
+        }
+
+        const usuario = typeof window.UtilJWT.obterUsuario === 'function'
+          ? window.UtilJWT.obterUsuario()
+          : null;
+        const papel = String(usuario?.papel || usuario?.role || '').toUpperCase();
+
+        if (!usuario || papel !== 'SUPERVISOR') {
+          window.location.replace('../painel/painel.html');
+        }
+      } catch {
+        window.location.replace('../painel/painel.html');
+      }
+    })();
+  </script>
+
+
+  <style>
+    /* Auditoria — layout estrutural consolidado. */
+    #tab-panel-auditoria .audit-desktop-main {
+      display: grid;
+      grid-template-columns: minmax(500px, 1fr) minmax(500px, 1fr);
+      gap: 18px;
+      align-items: end;
+      width: 100%;
+    }
+
+    #tab-panel-auditoria .audit-primary-side,
+    #tab-panel-auditoria .audit-period-side {
+      min-width: 0;
+    }
+
+    #tab-panel-auditoria .audit-primary-side {
+      overflow: hidden;
+    }
+
+    #tab-panel-auditoria .audit-filter-row > input,
+    #tab-panel-auditoria .audit-filter-row > select {
+      max-width: 100%;
+    }
+
+    #tab-panel-auditoria .audit-filter-grid {
+      display: block;
+      width: 100%;
+      max-width: none;
+    }
+
+    #tab-panel-auditoria .audit-filter-block {
+      width: 100%;
+      max-width: none;
+      box-sizing: border-box;
+    }
+
+    #tab-panel-auditoria .audit-filter-row {
+      display: grid;
+      grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+      gap: 10px;
+      width: 100%;
+      min-width: 0;
+    }
+
+    #tab-panel-auditoria .audit-filter-row > *,
+    #tab-panel-auditoria .audit-range-row input {
+      width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+
+    #tab-panel-auditoria .audit-filter-toggles {
+      margin-top: 10px;
+    }
+
+    #tab-panel-auditoria .audit-period-label {
+      margin: 0 0 7px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--gray-700, #374151);
+    }
+
+    #tab-panel-auditoria .audit-range-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      width: 100%;
+      max-width: none;
+      margin: 0;
+    }
+
+    #tab-panel-auditoria .audit-filter-actions {
+      margin-top: 10px;
+    }
+
+    @media (max-width: 767px) {
+      /* Menu do Painel de Gerenciamento preservado conforme versão mobile aprovada. */
+      .admin-page .admin-tabs {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 4px;
+      }
+
+      .admin-page .admin-tab-btn {
+        grid-column: span 2;
+        min-width: 0;
+        padding-inline: 4px;
+        line-height: 1.15;
+      }
+
+      .admin-page .admin-tab-btn:nth-child(4),
+      .admin-page .admin-tab-btn:nth-child(5) {
+        grid-column: span 3;
+      }
+
+      #tab-panel-auditoria .audit-desktop-main {
+        display: block;
+      }
+
+      #tab-panel-auditoria .audit-filter-row {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+
+      #tab-panel-auditoria .audit-period-side {
+        margin-top: 10px;
+      }
+
+      #tab-panel-auditoria .audit-range-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+    }
+
+    @media (max-width: 340px) {
+      #tab-panel-auditoria .audit-range-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+
+  <style>
+    /* Calendário SVG sem alterar a geometria aprovada do card Período. */
+    #tab-panel-auditoria .audit-range-row > div {
+      min-width: 0;
+    }
+
+    #tab-panel-auditoria .audit-range-row .caige-date-filter {
+      width: 100%;
+      min-width: 0;
+    }
+
+    #tab-panel-auditoria .audit-range-row .caige-date-filter > input {
+      width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+
+    /* Auditoria — período compacto e independente da altura dos filtros. */
+    @media (min-width: 768px) {
+      #tab-panel-auditoria .audit-desktop-main {
+        align-items: start;
+      }
+
+      #tab-panel-auditoria .audit-period-side,
+      #tab-panel-auditoria .audit-period-block {
+        align-self: start;
+        height: auto;
+        min-height: 0;
+        padding: 14px 16px;
+        border: 1px solid var(--gray-200, #dfe3ea);
+        border-radius: 6px;
+        box-sizing: border-box;
+      }
+
+      #tab-panel-auditoria .audit-period-side .audit-period-label,
+      #tab-panel-auditoria .audit-period-block .audit-period-label {
+        margin: 0 0 8px;
+      }
+
+      #tab-panel-auditoria .audit-period-side .audit-range-row,
+      #tab-panel-auditoria .audit-period-block .audit-range-row {
+        margin: 0;
+        align-items: end;
+      }
+
+      #tab-panel-auditoria .audit-primary-side .audit-filter-row,
+      #tab-panel-auditoria .audit-primary-column .audit-filter-row {
+        width: 100%;
+      }
+
+      #tab-panel-auditoria #audit-filter-secondary .audit-filter-row {
+        grid-template-columns: minmax(150px, .55fr) minmax(230px, 1fr) minmax(250px, 1.15fr);
+      }
+    }
+
+    @media (max-width: 767px) {
+      #tab-panel-auditoria .audit-period-side,
+      #tab-panel-auditoria .audit-period-block {
+        height: auto;
+        min-height: 0;
+      }
+    }
+  </style>
+
+
+  <style>
+    /* Auditoria — respiro entre filtro principal e filtro adicional. */
+    #tab-panel-auditoria #audit-filter-secondary {
+      margin-top: 10px;
+    }
+
+    @media (max-width: 767px) {
+      #tab-panel-auditoria #audit-filter-secondary {
+        margin-top: 8px;
+      }
+    }
+  </style>
+
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#123a78" />
+    <meta name="application-name" content="CAIGE" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="CAIGE" />
+    <link rel="apple-touch-icon" href="/recursos/images/pwa/apple-touch-icon.png" />
+  
+  <style>
+    @media (max-width: 767px) {
+      #audit-pagination .pagination-page-size > span {
+        display: none;
+      }
+
+      #audit-pagination #audit-page-size {
+        width: 76px;
+        min-width: 76px;
+        height: 30px;
+        min-height: 30px;
+        padding: 3px 18px 3px 6px;
+        font-size: 10px;
+        font-weight: 600;
+        line-height: 1;
+      }
+
+      #audit-pagination .pagination-page-info {
+        min-width: 72px;
+        max-width: 92px;
+        white-space: nowrap;
+      }
+    }
+  </style>
+
+</head>
+
+<body data-page-title="Painel de Gerenciamento" data-page-subtitle="Gerencie usuários, cursos e arquivos do sistema">
+  <div class="dashboard admin-page">
+    <div id="shell-sidebar"></div>
+
+    <main class="content">
+      <div id="shell-header"></div>
+
+      <div class="breadcrumb largura-pagina"><span>Painel de Gerenciamento</span></div>
+
+      <div class="admin-tabs largura-pagina">
+        <button class="admin-tab-btn" data-tab="usuarios"><span class="icone icone--sm" data-icone="usuario" aria-hidden="true"></span><span>Usuários</span></button>
+        <button class="admin-tab-btn" data-tab="cursos"><span class="icone icone--sm" data-icone="cursos" aria-hidden="true"></span><span>Cursos</span></button>
+        <button class="admin-tab-btn" data-tab="periodos"><span class="icone icone--sm" data-icone="calendario" aria-hidden="true"></span><span>Calendário de Frequência</span></button>
+        <button class="admin-tab-btn" data-tab="auditoria"><span class="icone icone--sm" data-icone="auditoria" aria-hidden="true"></span><span>Auditoria</span></button>
+        <button class="admin-tab-btn" data-tab="arquivados"><span class="icone icone--sm" data-icone="arquivar" aria-hidden="true"></span><span>Arquivados</span></button>
+      </div>
+
+      <div id="tab-panel-usuarios" class="admin-tab-panel largura-pagina">
+        <div class="users-container">
+          <div class="card">
+            <button type="button" class="admin-section-toggle" data-mobile-collapse-target="form-criar-usuario"
+              aria-expanded="false">
+              <span class="titulo-com-icone"><span class="icone icone--sm" data-icone="mais" aria-hidden="true"></span><span>Novo Usuário</span></span>
+              <span class="admin-section-toggle__icon icone" data-icone="chevron-baixo" aria-hidden="true"></span>
+            </button>
+            <form id="form-criar-usuario" class="admin-mobile-collapsible">
+              <div class="form-group">
+                <label for="email-novo">E-mail *</label>
+                <input type="email" id="email-novo" placeholder="usuario@univale.br" required />
+              </div>
+              <div class="form-group">
+                <label for="nome-novo">Nome Completo *</label>
+                <input type="text" id="nome-novo" placeholder="Digite o nome completo" required />
+              </div>
+              <div class="form-group">
+                <label for="senha-nova">Senha *</label>
+                <input type="password" id="senha-nova" minlength="6" placeholder="Mínimo de 6 caracteres" required />
+              </div>
+              <div class="form-group">
+                <label for="papel-novo">Nível de Acesso *</label>
+                <select id="papel-novo" required>
+                  <option value="">Selecione um nível</option>
+                  <option value="PROFESSOR">Professor</option>
+                  <option value="SUPERVISOR">Supervisor</option>
+                </select>
+              </div>
+              <div class="form-group" data-group="curso-novo" style="display: none;">
+                <label for="curso-novo">Curso *</label>
+                <select id="curso-novo">
+                  <option value="">Selecione um curso</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="checkbox-usuario-ativo checkbox-field">
+                  <input type="checkbox" id="ativo-novo" checked />
+                  <span>Usuário Ativo</span>
+                </label>
+              </div>
+              <button type="submit" class="btn-create">Criar Usuário</button>
+            </form>
+          </div>
+          <div class="card">
+            <div class="admin-list-header">
+              <h3 class="titulo-com-icone"><span class="icone icone--sm" data-icone="usuarios" aria-hidden="true"></span><span>Usuários Cadastrados</span></h3>
+            </div>
+<div class="users-list data-grid admin-data-grid admin-data-grid--users" id="lista-usuarios">
+              <div class="data-grid__header">
+                <div class="data-grid__cell">Usuário</div>
+                <div class="data-grid__cell data-grid__cell--center">Perfil</div>
+                <div class="data-grid__cell">Curso</div>
+                <div class="data-grid__cell data-grid__cell--center">Status</div>
+                <div class="data-grid__cell data-grid__cell--center">Ações</div>
+              </div>
+              <div class="data-grid__body" data-grid-body>
+                <p class="admin-empty-state">Carregando usuários...</p>
+              </div>
+            </div>
+
+            <div class="pagination-bar--integrated" id="usuarios-pagination" hidden>
+              <label class="pagination-page-size">
+                <span>Registros por página</span>
+
+                <select id="usuarios-page-size" aria-label="Registros por página"></select>
+              </label>
+
+              <div class="pagination-navigation">
+                <button class="pagination-nav-button" id="usuarios-first-page" type="button"
+                  aria-label="Primeira página" title="Primeira página">
+                  <span class="icone icone--sm" data-icone="primeira-pagina" aria-hidden="true"></span>
+                </button>
+
+                <button class="pagination-nav-button" id="usuarios-prev-page" type="button" aria-label="Página anterior"
+                  title="Página anterior">
+                  <span class="icone icone--sm" data-icone="chevron-esquerda" aria-hidden="true"></span>
+                </button>
+
+                <span class="pagination-page-info" id="usuarios-page-indicator">
+                  Página 1 de 1 (0 registros)
+                </span>
+
+                <button class="pagination-nav-button" id="usuarios-next-page" type="button" aria-label="Próxima página"
+                  title="Próxima página">
+                  <span class="icone icone--sm" data-icone="chevron-direita" aria-hidden="true"></span>
+                </button>
+
+                <button class="pagination-nav-button" id="usuarios-last-page" type="button" aria-label="Última página"
+                  title="Última página">
+                  <span class="icone icone--sm" data-icone="ultima-pagina" aria-hidden="true"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-panel-cursos" class="admin-tab-panel largura-pagina" hidden>
+        <div class="courses-container">
+          <div class="card">
+            <button type="button" class="admin-section-toggle" data-mobile-collapse-target="create-course-form"
+              aria-expanded="false">
+              <span class="titulo-com-icone"><span class="icone icone--sm" data-icone="mais" aria-hidden="true"></span><span>Novo Curso</span></span>
+              <span class="admin-section-toggle__icon icone" data-icone="chevron-baixo" aria-hidden="true"></span>
+            </button>
+            <form id="create-course-form" class="admin-mobile-collapsible">
+              <div class="form-group">
+                <label for="course-name">Nome do Curso *</label>
+                <input type="text" id="course-name" placeholder="Ex: Fisioterapia" required />
+              </div>
+              <button type="submit" class="btn-create">Criar Curso</button>
+            </form>
+          </div>
+          <div class="card">
+            <h3 class="titulo-com-icone"><span class="icone icone--sm" data-icone="cursos" aria-hidden="true"></span><span>Cursos Cadastrados</span></h3>
+<div class="courses-list data-grid admin-data-grid admin-data-grid--courses" id="courses-list">
+              <div class="data-grid__header">
+                <div class="data-grid__cell">Curso</div>
+                <div class="data-grid__cell data-grid__cell--center">Status</div>
+                <div class="data-grid__cell data-grid__cell--center">Ações</div>
+              </div>
+              <div class="data-grid__body" data-grid-body>
+                <p class="admin-empty-state">Carregando cursos...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-panel-periodos" class="admin-tab-panel largura-pagina" hidden>
+        <div class="periodos-letivos">
+          <div class="periodos-letivos__configuracao">
+            <section class="card">
+              <h3 class="titulo-com-icone" id="periodo-letivo-form-titulo"><span class="icone icone--sm" data-icone="calendario" aria-hidden="true"></span><span>Novo semestre</span></h3>
+              <p class="admin-helper-text">Defina apenas o intervalo do semestre. Os dias de atendimento são configurados depois.</p>
+              <form id="periodo-letivo-form" class="periodo-letivo-form">
+                                <div class="form-group">
+                  <label for="periodo-letivo-ano">Ano *</label>
+                  <input type="number" id="periodo-letivo-ano" min="2000" max="2100" required />
+                </div>
+                <div class="form-group">
+                  <label for="periodo-letivo-semestre">Semestre *</label>
+                  <select id="periodo-letivo-semestre" required>
+                    <option value="1">1º semestre</option>
+                    <option value="2">2º semestre</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="periodo-letivo-inicio">Data inicial *</label>
+                  <input type="date" id="periodo-letivo-inicio" required />
+                </div>
+                <div class="form-group">
+                  <label for="periodo-letivo-fim">Data final *</label>
+                  <input type="date" id="periodo-letivo-fim" required />
+                </div>
+                <div class="form-group">
+                  <label for="periodo-letivo-status">Status *</label>
+                  <select id="periodo-letivo-status" required>
+                    <option value="PLANEJADO">Planejado</option>
+                    <option value="ATIVO">Ativo</option>
+                    <option value="ENCERRADO">Encerrado</option>
+                  </select>
+                </div>
+                <div class="periodo-letivo-form__acoes">
+                  <button type="submit" class="btn-create">Salvar semestre</button>
+                </div>
+              </form>
+            </section>
+
+            <section class="card">
+              <h3 class="titulo-com-icone"><span class="icone icone--sm" data-icone="calendario" aria-hidden="true"></span><span>Semestres cadastrados</span></h3>
+              <p class="admin-helper-text">Cada semestre mantém seu próprio calendário. Períodos encerrados ficam bloqueados para preservar o histórico.</p>
+              <div id="periodos-letivos-lista" class="lista-entidades">
+                <p class="admin-empty-state lista-entidades__vazio">Carregando semestres...</p>
+              </div>
+            </section>
+          </div>
+
+          <div id="periodo-letivo-detalhes" class="periodo-letivo-detalhes" hidden>
+            <div class="periodo-letivo-detalhes__cabecalho card">
+              <div>
+                <h3 id="periodo-selecionado-titulo">Semestre</h3>
+                <p id="periodo-selecionado-meta"></p>
+              </div>
+              <p class="admin-helper-text">Marque os dias em que cada curso ou atividade acontece. Horários e profissionais não entram no cálculo.</p>
+            </div>
+
+            <div class="periodo-letivo-detalhes__grid">
+              <section class="card">
+                <h3 class="titulo-com-icone"><span class="icone icone--sm" data-icone="frequencia" aria-hidden="true"></span><span>Dias de atendimento</span></h3>
+                <form id="grade-periodo-form" class="grade-periodo-form grade-periodo-form--lote">
+                  <div class="form-group">
+                    <label for="grade-curso">Curso *</label>
+                    <select id="grade-curso" required><option value="">Selecione um curso</option></select>
+                  </div>
+                  <p class="admin-helper-text grade-editor-ajuda">Selecione um curso e marque os dias diretamente em cada atividade.</p>
+                  <div id="grade-atividades-editor" class="grade-atividades-editor">
+                    <p class="admin-empty-state">Selecione um curso para configurar as atividades.</p>
+                  </div>
+                  <div class="grade-periodo-form__acoes">
+                    <button type="submit" class="btn-create">Salvar alterações</button>
+                  </div>
+                </form>
+                <div id="grade-periodo-lista" class="lista-entidades grade-periodo-lista">
+                  <p class="admin-empty-state lista-entidades__vazio">Selecione um semestre.</p>
+                </div>
+              </section>
+
+              <section class="card">
+                <h3 class="titulo-com-icone"><span class="icone icone--sm" data-icone="calendario" aria-hidden="true"></span><span>Datas sem atendimento</span></h3>
+                <p class="admin-helper-text">Use para feriados nacionais, estaduais ou municipais, recessos e cancelamentos. A data pode valer para todo o CAIGE ou somente para um atendimento.</p>
+                <form id="excecao-periodo-form" class="excecao-periodo-form">
+                  <div class="form-group">
+                    <label for="excecao-data">Data *</label>
+                    <input type="date" id="excecao-data" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="excecao-escopo">Aplicar a *</label>
+                    <select id="excecao-escopo" required>
+                      <option value="GERAL">Todo o CAIGE</option>
+                      <option value="ATENDIMENTO">Somente um atendimento</option>
+                    </select>
+                  </div>
+                  <div class="form-group excecao-atendimento-campo" id="excecao-atendimento-campo" hidden>
+                    <label for="excecao-atendimento">Atendimento *</label>
+                    <select id="excecao-atendimento"><option value="">Selecione</option></select>
+                  </div>
+                  <div class="form-group excecao-motivo-campo">
+                    <label for="excecao-motivo">Motivo</label>
+                    <input type="text" id="excecao-motivo" maxlength="255" placeholder="Ex: feriado municipal, recesso..." />
+                  </div>
+                  <div class="excecao-periodo-form__acoes">
+                    <button type="submit" class="btn-create">Adicionar data</button>
+                  </div>
+                </form>
+                <div id="excecoes-periodo-lista" class="lista-entidades excecoes-periodo-lista">
+                  <p class="admin-empty-state lista-entidades__vazio">Nenhuma data sem atendimento cadastrada.</p>
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-panel-auditoria" class="admin-tab-panel largura-pagina" hidden>
+        <div class="audit-container">
+          <section class="audit-filters">
+            <button type="button" class="audit-filters-title admin-audit-toggle" id="admin-audit-toggle"
+              aria-expanded="false">
+              <span>Filtros de auditoria</span>
+              <span class="admin-section-toggle__icon icone" data-icone="chevron-baixo" aria-hidden="true"></span>
+            </button>
+            <div class="audit-desktop-main">
+              <div class="audit-primary-side">
+                <div class="audit-filter-grid">
+                  <div class="audit-filter-block" id="audit-filter-primary">
+                    <div class="audit-filter-label">Filtro principal</div>
+                    <div class="audit-filter-row">
+                      <select id="audit-field-1">
+                        <option value="">Selecione o tipo de filtro</option>
+                        <option value="type">Tipo de ação</option>
+                        <option value="description">Ação (descrição)</option>
+                        <option value="responsible">Responsável</option>
+                      </select>
+                      <input id="audit-value-text-1" type="text" placeholder="Digite o valor do filtro" />
+                      <input id="audit-value-date-1" type="date" style="display:none" />
+                      <select id="audit-value-type-1" style="display:none">
+                        <option value="">Selecione um tipo</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="audit-filter-block" id="audit-filter-secondary" style="display:none">
+                    <div class="audit-filter-label">Filtro adicional</div>
+                    <div class="audit-filter-row">
+                      <select id="audit-operator-2">
+                        <option value="and">Combinar com E</option>
+                        <option value="or">Combinar com OU</option>
+                      </select>
+                      <select id="audit-field-2">
+                        <option value="">Selecione o tipo de filtro</option>
+                        <option value="type">Tipo de ação</option>
+                        <option value="description">Ação (descrição)</option>
+                        <option value="responsible">Responsável</option>
+                      </select>
+                      <input id="audit-value-text-2" type="text" placeholder="Digite o valor do filtro" />
+                      <input id="audit-value-date-2" type="date" style="display:none" />
+                      <select id="audit-value-type-2" style="display:none">
+                        <option value="">Selecione um tipo</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="audit-filter-toggles">
+                  <label>
+                    <input type="checkbox" id="audit-enable-second-filter" />
+                    Adicionar segundo filtro
+                  </label>
+                  <label>
+                    <input type="checkbox" id="audit-only-professors" />
+                    Mostrar apenas ações de professores
+                  </label>
+                </div>
+              </div>
+
+              <div class="audit-period-side">
+                <div class="audit-period-label">Período</div>
+                <div class="audit-range-row">
+                  <div>
+                    <label for="audit-date-from">Data inicial</label>
+                    <div class="caige-date-filter">
+                      <input type="text" id="audit-date-from" autocomplete="off" />
+                      <button class="caige-date-filter__calendar" type="button" id="audit-date-from-calendar" aria-label="Abrir calendário da data inicial" title="Abrir calendário"><span class="icone icone--sm" data-icone="calendario" aria-hidden="true"></span></button>
+                    </div>
+                  </div>
+                  <div>
+                    <label for="audit-date-to">Data final</label>
+                    <div class="caige-date-filter">
+                      <input type="text" id="audit-date-to" autocomplete="off" />
+                      <button class="caige-date-filter__calendar" type="button" id="audit-date-to-calendar" aria-label="Abrir calendário da data final" title="Abrir calendário"><span class="icone icone--sm" data-icone="calendario" aria-hidden="true"></span></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="audit-filter-actions">
+              <button type="button" class="btn-small" id="audit-apply-filters">Aplicar filtros</button>
+              <button type="button" class="btn-small" id="audit-clear-filters">Limpar filtros</button>
+              <button type="button" class="btn-small" id="audit-refresh">Atualizar auditoria</button>
+              <button type="button" class="btn-small" id="audit-export-excel">Exportar Excel</button>
+              <button type="button" class="btn-small" id="audit-export-pdf">Exportar PDF</button>
+            </div>
+          </section>
+
+          <section class="card audit-results-card">
+            <div class="audit-card-header">
+              <h3 class="titulo-com-icone"><span class="icone icone--sm" data-icone="auditoria" aria-hidden="true"></span><span>Auditoria de Ações no Sistema</span></h3>
+            </div>
+
+            <div class="audit-table-wrap">
+              <table class="data-table audit-table">
+                <colgroup>
+                  <col class="audit-table__date" />
+                  <col class="audit-table__type" />
+                  <col class="audit-table__description" />
+                  <col class="audit-table__responsible" />
+                  <col class="audit-table__role" />
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th scope="col">Data</th>
+                    <th scope="col">Tipo</th>
+                    <th scope="col">Ação</th>
+                    <th scope="col">Responsável</th>
+                    <th scope="col">Papel</th>
+                  </tr>
+                </thead>
+                <tbody id="audit-list">
+                  <tr>
+                    <td class="audit-empty" colspan="5">Defina pelo menos um filtro e clique em Aplicar filtros para consultar a auditoria.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="pagination-bar--integrated" id="audit-pagination" hidden>
+              <label class="pagination-page-size">
+                <span>Registros por página</span>
+
+                <select id="audit-page-size" class="pagination-page-size__native" aria-label="Registros por página">
+                  <option value="10">10 por pág.</option>
+                  <option value="20">20 por pág.</option>
+                  <option value="30">30 por pág.</option>
+                  <option value="50">50 por pág.</option>
+                  <option value="100">100 por pág.</option>
+                </select>
+              </label>
+
+              <div class="pagination-navigation">
+                <button class="pagination-nav-button" id="audit-first-page" type="button" aria-label="Primeira página"
+                  title="Primeira página">
+                  <span class="icone icone--sm" data-icone="primeira-pagina" aria-hidden="true"></span>
+                </button>
+
+                <button class="pagination-nav-button" id="audit-prev-page" type="button" aria-label="Página anterior"
+                  title="Página anterior">
+                  <span class="icone icone--sm" data-icone="chevron-esquerda" aria-hidden="true"></span>
+                </button>
+
+                <span class="pagination-page-info" id="audit-page-indicator">Página 1 de 1 (0 registros)</span>
+
+                <button class="pagination-nav-button" id="audit-next-page" type="button" aria-label="Próxima página"
+                  title="Próxima página">
+                  <span class="icone icone--sm" data-icone="chevron-direita" aria-hidden="true"></span>
+                </button>
+
+                <button class="pagination-nav-button" id="audit-last-page" type="button" aria-label="Última página"
+                  title="Última página">
+                  <span class="icone icone--sm" data-icone="ultima-pagina" aria-hidden="true"></span>
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <div id="tab-panel-arquivados" class="admin-tab-panel largura-pagina" hidden>
+        <div class="archive-grid">
+          <section class="archive-card">
+            <div class="admin-list-header">
+              <h3 class="titulo-com-icone"><span class="icone icone--sm" data-icone="pacientes" aria-hidden="true"></span><span>Pacientes Arquivados</span></h3>
+
+              <div class="search-box">
+                <span class="search-box__icon icone icone--sm" data-icone="buscar" aria-hidden="true"></span>
+                <input type="search" class="search-box__input" id="arquivados-pacientes-busca"
+                  placeholder="Pesquisar paciente arquivado..." autocomplete="off" />
+              </div>
+            </div>
+
+            <div id="patient-archived-list" class="archive-list lista-entidades">
+              <p class="archive-empty lista-entidades__vazio">Carregando...</p>
+            </div>
+
+            <div class="pagination-bar--integrated" id="arquivados-pacientes-pagination" hidden>
+              <label class="pagination-page-size">
+                <span>Registros por página</span>
+
+                <select id="arquivados-pacientes-page-size" aria-label="Registros por página"></select>
+              </label>
+
+              <div class="pagination-navigation">
+                <button class="pagination-nav-button" id="arquivados-pacientes-first" type="button"
+                  aria-label="Primeira página" title="Primeira página">
+                  <span class="icone icone--sm" data-icone="primeira-pagina" aria-hidden="true"></span>
+                </button>
+
+                <button class="pagination-nav-button" id="arquivados-pacientes-prev" type="button"
+                  aria-label="Página anterior" title="Página anterior">
+                  <span class="icone icone--sm" data-icone="chevron-esquerda" aria-hidden="true"></span>
+                </button>
+
+                <span class="pagination-page-info" id="arquivados-pacientes-indicator">
+                  Página 1 de 1 (0 registros)
+                </span>
+
+                <button class="pagination-nav-button" id="arquivados-pacientes-next" type="button"
+                  aria-label="Próxima página" title="Próxima página">
+                  <span class="icone icone--sm" data-icone="chevron-direita" aria-hidden="true"></span>
+                </button>
+
+                <button class="pagination-nav-button" id="arquivados-pacientes-last" type="button"
+                  aria-label="Última página" title="Última página">
+                  <span class="icone icone--sm" data-icone="ultima-pagina" aria-hidden="true"></span>
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <section class="archive-card">
+            <div class="admin-list-header">
+              <h3 class="titulo-com-icone"><span class="icone icone--sm" data-icone="usuario" aria-hidden="true"></span><span>Usuários Arquivados</span></h3>
+
+              <div class="search-box">
+                <span class="search-box__icon icone icone--sm" data-icone="buscar" aria-hidden="true"></span>
+                <input type="search" class="search-box__input" id="arquivados-usuarios-busca"
+                  placeholder="Pesquisar usuário arquivado..." autocomplete="off" />
+              </div>
+            </div>
+
+            <div id="users-archived-list" class="archive-list lista-entidades">
+              <p class="archive-empty lista-entidades__vazio">Carregando...</p>
+            </div>
+
+            <div class="pagination-bar--integrated" id="arquivados-usuarios-pagination" hidden>
+              <label class="pagination-page-size">
+                <span>Registros por página</span>
+
+                <select id="arquivados-usuarios-page-size" aria-label="Registros por página"></select>
+              </label>
+
+              <div class="pagination-navigation">
+                <button class="pagination-nav-button" id="arquivados-usuarios-first" type="button"
+                  aria-label="Primeira página" title="Primeira página">
+                  <span class="icone icone--sm" data-icone="primeira-pagina" aria-hidden="true"></span>
+                </button>
+
+                <button class="pagination-nav-button" id="arquivados-usuarios-prev" type="button"
+                  aria-label="Página anterior" title="Página anterior">
+                  <span class="icone icone--sm" data-icone="chevron-esquerda" aria-hidden="true"></span>
+                </button>
+
+                <span class="pagination-page-info" id="arquivados-usuarios-indicator">
+                  Página 1 de 1 (0 registros)
+                </span>
+
+                <button class="pagination-nav-button" id="arquivados-usuarios-next" type="button"
+                  aria-label="Próxima página" title="Próxima página">
+                  <span class="icone icone--sm" data-icone="chevron-direita" aria-hidden="true"></span>
+                </button>
+
+                <button class="pagination-nav-button" id="arquivados-usuarios-last" type="button"
+                  aria-label="Última página" title="Última página">
+                  <span class="icone icone--sm" data-icone="ultima-pagina" aria-hidden="true"></span>
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <div class="modal" id="modal-editar-periodo" style="display:none;">
+        <div class="modal__content modal__content--small">
+          <div class="modal__header modal__header--destaque">
+            <h2 class="modal__title" id="modal-editar-periodo-titulo">Editar semestre</h2>
+            <button class="modal__close" type="button" aria-label="Fechar">&times;</button>
+          </div>
+          <form class="modal__form periodo-modal-form" id="form-editar-periodo">
+            <div class="modal__body">
+              <input type="hidden" id="editar-periodo-id" />
+              <div class="periodo-modal-grid">
+                <div class="form-group"><label for="editar-periodo-ano">Ano *</label><input type="number" id="editar-periodo-ano" min="2000" max="2100" required /></div>
+                <div class="form-group"><label for="editar-periodo-semestre">Semestre *</label><select id="editar-periodo-semestre" required><option value="1">1º semestre</option><option value="2">2º semestre</option></select></div>
+                <div class="form-group"><label for="editar-periodo-inicio">Data inicial *</label><input type="date" id="editar-periodo-inicio" required /></div>
+                <div class="form-group"><label for="editar-periodo-fim">Data final *</label><input type="date" id="editar-periodo-fim" required /></div>
+                <div class="form-group periodo-modal-grid__full"><label for="editar-periodo-status">Status *</label><select id="editar-periodo-status" required><option value="PLANEJADO">Planejado</option><option value="ATIVO">Ativo</option><option value="ENCERRADO">Encerrado</option></select></div>
+              </div>
+            </div>
+            <div class="modal__form-actions periodo-modal-actions"><button type="button" class="modal__btn modal__btn--secondary" data-fechar-modal-periodo>Cancelar</button><button type="submit" class="modal__btn modal__btn--primary">Salvar alterações</button></div>
+          </form>
+        </div>
+      </div>
+
+      <div class="modal" id="modal-copiar-periodo" style="display:none;">
+        <div class="modal__content modal__content--small">
+          <div class="modal__header modal__header--destaque">
+            <h2 class="modal__title" id="modal-copiar-periodo-titulo">Copiar semestre</h2>
+            <button class="modal__close" type="button" aria-label="Fechar">&times;</button>
+          </div>
+          <form class="modal__form periodo-modal-form" id="form-copiar-periodo">
+            <div class="modal__body">
+              <input type="hidden" id="copiar-periodo-origem-id" />
+              <p class="admin-helper-text">Copia somente a configuração de cursos, atividades e dias. Frequências e exceções não são copiadas.</p>
+              <div class="periodo-modal-grid">
+                <div class="form-group"><label for="copiar-periodo-ano">Novo ano *</label><input type="number" id="copiar-periodo-ano" min="2000" max="2100" required /></div>
+                <div class="form-group"><label for="copiar-periodo-semestre">Novo semestre *</label><select id="copiar-periodo-semestre" required><option value="1">1º semestre</option><option value="2">2º semestre</option></select></div>
+                <div class="form-group"><label for="copiar-periodo-inicio">Data inicial *</label><input type="date" id="copiar-periodo-inicio" required /></div>
+                <div class="form-group"><label for="copiar-periodo-fim">Data final *</label><input type="date" id="copiar-periodo-fim" required /></div>
+              </div>
+            </div>
+            <div class="modal__form-actions periodo-modal-actions"><button type="button" class="modal__btn modal__btn--secondary" data-fechar-modal-periodo>Cancelar</button><button type="submit" class="modal__btn modal__btn--primary">Copiar semestre</button></div>
+          </form>
+        </div>
+      </div>
+
+      <div class="modal" id="modal-calendario-periodo" style="display:none;">
+        <div class="modal__content modal__content--small calendario-periodo-modal">
+          <div class="modal__header modal__header--destaque">
+            <h2 class="modal__title" id="modal-calendario-periodo-titulo">Calendário do semestre</h2>
+            <button class="modal__close" type="button" aria-label="Fechar">
+              <span class="icone icone--sm" data-icone="fechar" aria-hidden="true"></span>
+            </button>
+          </div>
+          <div class="modal__body">
+            <dl class="calendario-periodo-resumo">
+              <div><dt>Período:</dt><dd id="modal-calendario-periodo-datas">-</dd></div>
+              <div><dt>Status:</dt><dd id="modal-calendario-periodo-status">-</dd></div>
+              <div><dt>Dias de atendimento:</dt><dd id="modal-calendario-periodo-dias">-</dd></div>
+            </dl>
+            <div class="modal__form-actions calendario-periodo-modal__acoes">
+              <button type="button" class="modal__btn modal__btn--secondary modal__close">Fechar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal" id="modal-editar-usuario">
+        <div class="modal__content modal__content--medium">
+          <div class="modal__header modal__header--destaque">
+            <h2 class="modal__title">Editar Usuário</h2>
+            <button class="modal__close" type="button" aria-label="Fechar"><span class="icone icone--sm" data-icone="fechar" aria-hidden="true"></span></button>
+          </div>
+          <div class="modal__body">
+            <form class="modal__form" id="form-editar-usuario">
+              <div class="modal__form-group">
+                <label for="email-edicao">E-mail</label>
+                <input type="email" id="email-edicao" placeholder="usuario@univale.br" required />
+              </div>
+              <div class="modal__form-group">
+                <label for="nome-edicao">Nome Completo</label>
+                <input type="text" id="nome-edicao" placeholder="Digite o nome completo" required />
+              </div>
+              <div class="modal__form-group">
+                <label for="papel-edicao">Nível de Acesso</label>
+                <select id="papel-edicao" required>
+                  <option value="">Selecione um nível</option>
+                  <option value="SUPERVISOR">Supervisor</option>
+                  <option value="PROFESSOR">Professor</option>
+                </select>
+              </div>
+              <div class="modal__form-group" data-group="curso-edicao" style="display: none;">
+                <label for="curso-edicao">Curso</label>
+                <select id="curso-edicao">
+                  <option value="">Selecione um curso</option>
+                </select>
+              </div>
+              <div class="modal__form-group">
+                <label for="senha-edicao">Nova Senha</label>
+                <input type="password" id="senha-edicao" minlength="6" autocomplete="new-password"
+                  placeholder="Deixe em branco para manter a senha atual" />
+              </div>
+              <div class="modal__form-group">
+                <label for="senha-edicao-confirmacao">Confirmar Nova Senha</label>
+                <input type="password" id="senha-edicao-confirmacao" minlength="6" autocomplete="new-password"
+                  placeholder="Repita a nova senha" />
+                <p class="form-hint">Preencha os dois campos somente quando precisar redefinir a senha.</p>
+              </div>
+              <div class="modal__form-group">
+                <label class="admin-checkbox checkbox-field">
+                  <input type="checkbox" id="ativo-edicao" />
+                  <span>Usuário Ativo</span>
+                </label>
+              </div>
+              <div class="modal__form-actions">
+                <button type="submit" class="modal__btn modal__btn--primary">Salvar Alterações</button>
+                <button type="button" class="modal__btn modal__btn--secondary modal__close">Cancelar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal" id="modal-confirmar-senha">
+        <div class="modal__content modal__content--small">
+          <div class="modal__header modal__header--destaque">
+            <h2 class="modal__title">Confirmar alteração</h2>
+            <button class="modal__close" type="button" aria-label="Fechar"><span class="icone icone--sm" data-icone="fechar" aria-hidden="true"></span></button>
+          </div>
+          <div class="modal__body">
+            <p>Confirme sua senha para concluir esta alteração sensível.</p>
+            <label class="modal__form-group" for="senha-supervisor-confirmacao">
+              <span>Senha do supervisor</span>
+              <input type="password" id="senha-supervisor-confirmacao" autocomplete="current-password" required />
+            </label>
+            <div class="modal__form-actions">
+              <button type="button" class="modal__btn modal__btn--primary" id="confirmar-senha-supervisor">Confirmar
+                alteração</button>
+              <button type="button" class="modal__btn modal__btn--cancel modal__close">Cancelar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal" id="modal-edit-course" style="display:none;">
+        <div class="modal__content modal__content--small">
+          <div class="modal__header modal__header--destaque">
+            <h2 class="modal__title">Editar Curso</h2>
+            <button class="modal__close" type="button" aria-label="Fechar"><span class="icone icone--sm" data-icone="fechar" aria-hidden="true"></span></button>
+          </div>
+          <div class="modal__body">
+            <form class="modal__form" id="form-edit-course">
+              <input type="hidden" id="edit-course-id" />
+              <div class="modal__form-group">
+                <label for="edit-course-name">Nome do Curso</label>
+                <input type="text" id="edit-course-name" required />
+              </div>
+              <div class="modal__form-group">
+                <label class="admin-checkbox checkbox-field">
+                  <input type="checkbox" id="edit-course-active" />
+                  <span>Curso ativo</span>
+                </label>
+              </div>
+              <div class="modal__form-actions">
+                <button type="submit" class="modal__btn modal__btn--primary">Salvar</button>
+                <button type="button" class="modal__btn modal__btn--secondary modal__close">Cancelar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal" id="modal-activities" style="display:none;">
+        <div class="modal__content modal__content--large">
+          <div class="modal__header modal__header--destaque">
+            <h2 class="modal__title">Atividades - <span id="activities-course-name"></span></h2><button
+              class="modal__close" type="button" aria-label="Fechar"><span class="icone icone--sm" data-icone="fechar" aria-hidden="true"></span></button>
+          </div>
+          <div class="modal__body">
+            <input type="hidden" id="activities-course-id" />
+
+            <section class="modal-section activity-form-section">
+              <div class="activity-form-heading">
+                <span class="activity-form-heading__eyebrow">Cadastro</span>
+                <h3 class="modal-section__title" id="activity-form-title">Cadastrar nova atividade</h3>
+                <p class="activity-form-heading__description">Adicione uma atividade de atendimento para este curso.</p>
+              </div>
+
+              <form class="modal__form" id="activity-form">
+                <input type="hidden" id="activity-id" />
+
+                <div class="modal__form-group">
+                  <label for="activity-name">Nome</label>
+                  <input id="activity-name" required />
+                </div>
+
+
+                <div class="modal__form-group">
+                  <label class="checkbox-field">
+                    <input type="checkbox" id="activity-active" checked />
+                    <span>Ativa</span>
+                  </label>
+                </div>
+
+                <div class="modal__form-actions">
+                  <button class="modal__btn modal__btn--primary" type="submit">Salvar</button>
+                  <button class="modal__btn modal__btn--secondary modal__close" type="button">Cancelar</button>
+                </div>
+              </form>
+            </section>
+
+            <section class="modal-section activity-list-section">
+              <div class="activity-list-heading">
+                <span class="activity-form-heading__eyebrow">Atividades cadastradas</span>
+              </div>
+<div id="activities-list" class="modal-list data-grid data-grid--activities admin-data-grid admin-data-grid--activities">
+              <div class="data-grid__header">
+                <div class="data-grid__cell">Atividade</div>
+                <div class="data-grid__cell data-grid__cell--center">Status</div>
+                <div class="data-grid__cell data-grid__cell--center">Ações</div>
+              </div>
+              <div class="data-grid__body" data-grid-body></div>
+            </div>
+            </section>
+          </div>
+        </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
+  <script src="../../recursos/js/date-picker-ptbr.js"></script>
+  <script src="../../recursos/js/icones.js"></script>
+  <script src="../../recursos/js/notificacoes.js"></script>
+  <script src="../../recursos/js/modal-confirmacao.js"></script>
+  <script src="../../recursos/js/shell-global.js"></script>
+  <script src="../../recursos/js/sidebar-menu.js"></script>
+  <script src="../../recursos/js/menu-usuario.js"></script>
+  <script src="../../recursos/js/controle-acesso.js"></script>
+  <script src="../../recursos/js/paginacao.js"></script>
+  <script src="../../recursos/js/estado-sessao.js"></script>
+  <script src="../../recursos/js/gerenciador-usuarios.js"></script>
+  <script src="../../recursos/js/gerenciador-atividades.js"></script>
+  <script src="../../recursos/js/menu-acoes.js"></script>
+  <script src="../../recursos/js/painel-retratil.js"></script>
+  <script src="../../recursos/js/gerenciador-periodos-letivos.js"></script>
+  <script>
+    const API_URL = '';
+    const usuarioSessao = window.UtilJWT?.obterUsuario?.() || null;
+    const userEmail = String(usuarioSessao?.email || '').trim().toLowerCase();
+
+    function obterPapelAtual() {
+      try {
+        if (window.controleAcesso && typeof window.controleAcesso.obterDados === 'function') {
+          const dados = window.controleAcesso.obterDados();
+          return String(dados.papel || '').toUpperCase();
+        }
+
+        if (window.UtilJWT && typeof window.UtilJWT.obterUsuario === 'function') {
+          const usuario = window.UtilJWT.obterUsuario();
+          return String(usuario?.papel || usuario?.role || '').toUpperCase();
+        }
+      } catch (error) {
+        console.error('Erro ao identificar papel do usuário:', error);
+      }
+
+      return '';
+    }
+
+    function configurarPainelGerenciamentoPorPapel() {
+      const papel = obterPapelAtual();
+      if (papel !== 'SUPERVISOR') {
+        window.location.replace('../painel/painel.html');
+        return '';
+      }
+
+      const tabs = Array.from(document.querySelectorAll('.admin-tab-btn'));
+      const mapaVisibilidade = {
+        SUPERVISOR: ['usuarios', 'cursos', 'periodos', 'auditoria', 'arquivados']
+      };
+
+      const tabsPermitidas = mapaVisibilidade.SUPERVISOR;
+      const tabInicial = 'usuarios';
+
+      tabs.forEach((btn) => {
+        const permitida = tabsPermitidas.includes(btn.dataset.tab);
+        btn.hidden = !permitida;
+        btn.setAttribute('data-permitido', permitida ? 'true' : 'false');
+      });
+
+      document.querySelectorAll('.admin-tab-panel').forEach((panel) => {
+        const nomeTab = panel.id.replace('tab-panel-', '');
+        const permitida = tabsPermitidas.includes(nomeTab);
+        panel.hidden = !permitida;
+      });
+
+      return tabInicial;
+    }
+
+    // Tab Navigation
+    let archivedLoaded = false;
+    let auditLoaded = false;
+
+    const CAMPOS_PERSISTENTES_GERENCIAMENTO = [
+      'email-novo', 'nome-novo', 'papel-novo', 'curso-novo', 'ativo-novo',
+      'course-name', 'arquivados-pacientes-busca', 'arquivados-usuarios-busca'
+    ];
+
+    function salvarRascunhoGerenciamento() {
+      const campos = {};
+      CAMPOS_PERSISTENTES_GERENCIAMENTO.forEach((id) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        campos[id] = el.type === 'checkbox' ? el.checked : el.value;
+      });
+
+      const secoesMobile = {};
+      document.querySelectorAll('[data-mobile-collapse-target]').forEach((toggle) => {
+        secoesMobile[toggle.dataset.mobileCollapseTarget] = toggle.getAttribute('aria-expanded') === 'true';
+      });
+
+      window.EstadoSessao?.salvar?.('gerenciamento', 'rascunho', { campos, secoesMobile });
+    }
+
+    function restaurarRascunhoGerenciamento() {
+      const estado = window.EstadoSessao?.obter?.('gerenciamento', 'rascunho');
+      if (!estado) return;
+
+      const aplicar = () => {
+        Object.entries(estado.campos || {}).forEach(([id, valor]) => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          if (el.type === 'checkbox') el.checked = Boolean(valor);
+          else el.value = valor ?? '';
+          el.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+
+        Object.entries(estado.secoesMobile || {}).forEach(([targetId, expanded]) => {
+          const toggle = document.querySelector(`[data-mobile-collapse-target="${targetId}"]`);
+          const target = document.getElementById(targetId);
+          if (!toggle || !target) return;
+          toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+          target.classList.toggle('admin-mobile-collapsible--open', Boolean(expanded));
+        });
+      };
+
+      aplicar();
+      setTimeout(aplicar, 250);
+    }
+
+    function restaurarModalAtividadesGerenciamento() {
+      const modalState = window.EstadoSessao?.obter?.('gerenciamento', 'atividades-modal');
+      if (!modalState?.aberto || !modalState.idCurso || !window.GerenciadorAtividades) return;
+
+      window.GerenciadorAtividades.abrirModal(modalState.idCurso, modalState.nomeCurso || '');
+      const draft = window.EstadoSessao?.obter?.('gerenciamento', 'atividades-rascunho');
+      if (draft) {
+        window.GerenciadorAtividades.preencherFormulario({
+          id: draft.id || '', nome: draft.nome || '', ativo: draft.ativo !== false
+        });
+      }
+    }
+
+    function switchTab(name) {
+      document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tab === name);
+      });
+      document.querySelectorAll('.admin-tab-panel').forEach(panel => {
+        panel.hidden = panel.id !== 'tab-panel-' + name;
+      });
+      if (name === 'auditoria' && !auditLoaded) {
+        restaurarEstadoAuditoria();
+        auditLoaded = true;
+      }
+      if (name === 'arquivados' && !archivedLoaded) {
+        loadArchivedData();
+        archivedLoaded = true;
+      }
+      history.replaceState(null, '', '#' + name);
+      window.EstadoSessao?.salvar?.('gerenciamento', 'navegacao', { aba: name });
+      try { sessionStorage.setItem('caige:gerenciamento:aba-ativa', name); } catch {}
+    }
+    document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
+
+    const tabInicial = configurarPainelGerenciamentoPorPapel();
+
+    // Modal close
+    document.querySelectorAll('.modal__close').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const modal = btn.closest('.modal');
+        if (modal) { modal.style.display = 'none'; }
+      });
+    });
+    document.querySelectorAll('.modal').forEach(modal => {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) { modal.style.display = 'none'; }
+      });
+    });
+
+    // -- USERS --
+    // Gerenciamento de usuários delegado para gerenciador-usuarios.js
+
+    // -- COURSES --
+    async function loadCourses() {
+      try {
+        const response = await fetch(`${API_URL}/api/cursos`);
+        if (response.status === 403) { notify.error('Apenas supervisores podem gerenciar cursos'); return; }
+        const courses = await response.json();
+        renderCourses(courses);
+      } catch { notify.error('Erro ao carregar cursos'); }
+    }
+
+    function renderCourses(courses) {
+      const grid = document.getElementById('courses-list');
+      const list = grid?.querySelector('[data-grid-body]');
+      if (!grid || !list) return;
+      if (!courses.length) { list.innerHTML = '<p class="admin-empty-state">Nenhum curso cadastrado</p>'; return; }
+      list.innerHTML = courses.map(c => `
+          <div class="course-item data-grid__row admin-record ${c.ativo ? '' : 'inactive'}" id="course-row-${c.id}">
+            <div class="course-name data-grid__cell" data-label="Curso">${c.nome}</div>
+            <div class="course-status data-grid__cell data-grid__cell--center" data-label="Status"><span class="status-badge ${c.ativo ? 'active' : 'inactive'}">${c.ativo ? 'Ativo' : 'Inativo'}</span></div>
+            <div class="course-actions data-grid__cell data-grid__cell--center" data-label="Ações">
+              <button type="button" class="menu-acoes-trigger" data-course-actions="${c.id}" aria-label="Ações de ${c.nome}" aria-expanded="false"><span class="icone icone--sm" data-icone="menu" aria-hidden="true"></span></button>
+            </div>
+          </div>
+        `).join('');
+
+      window.IconesCAIGE?.aplicar?.(list);
+      list.querySelectorAll('[data-course-actions]').forEach((botao) => {
+        botao.addEventListener('click', () => {
+          const id = Number(botao.dataset.courseActions);
+          const curso = courses.find((item) => Number(item.id) === id);
+          if (!curso || !window.MenuAcoes) return;
+
+          MenuAcoes.abrir(botao, [
+            { rotulo: 'Editar', acao: () => openEditCourse(curso.id, curso.nome, curso.ativo) },
+            { rotulo: 'Atividades', acao: () => openActivities(curso.id, curso.nome) },
+            { rotulo: 'Remover', perigo: true, acao: () => deleteCourse(curso.id, curso.nome) }
+          ]);
+        });
+      });
+    }
+
+    document.getElementById('create-course-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const name = document.getElementById('course-name').value.trim();
+      if (!/^[\p{L}]+(?:[ '\u2019-][\p{L}]+)*$/u.test(name)) {
+        notify.warning('O nome do curso deve conter somente letras.');
+        document.getElementById('course-name')?.focus();
+        return;
+      }
+      if (!name) return;
+      const btn = e.target.querySelector('button[type="submit"]');
+      btn.disabled = true; btn.textContent = 'Criando...';
+      try {
+        const res = await fetch(`${API_URL}/api/cursos`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          notify.success(`Curso "${name}" criado com sucesso!`);
+          document.getElementById('course-name').value = '';
+          loadCourses(); loadCoursesIntoSelects();
+        } else { notify.error(data.message || 'Erro ao criar curso'); }
+      } catch { notify.error('Erro ao conectar com o servidor'); }
+      finally { btn.disabled = false; btn.textContent = 'Criar Curso'; }
+    });
+
+    function openEditCourse(id, name, isActive) {
+      document.getElementById('edit-course-id').value = id;
+      document.getElementById('edit-course-name').value = name;
+      document.getElementById('edit-course-active').checked = isActive;
+      document.getElementById('modal-edit-course').style.display = 'flex';
+    }
+
+    document.getElementById('form-edit-course').addEventListener('submit', async e => {
+      e.preventDefault();
+      const id = document.getElementById('edit-course-id').value;
+      const name = document.getElementById('edit-course-name').value.trim();
+      if (!/^[\p{L}]+(?:[ '\u2019-][\p{L}]+)*$/u.test(name)) {
+        notify.warning('O nome do curso deve conter somente letras.');
+        document.getElementById('edit-course-name')?.focus();
+        return;
+      }
+      const is_active = document.getElementById('edit-course-active').checked;
+      if (!name) return;
+      const btn = e.target.querySelector('button[type="submit"]');
+      btn.disabled = true; btn.textContent = 'Salvando...';
+      try {
+        const res = await fetch(`${API_URL}/api/cursos/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, is_active })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          notify.success('Curso atualizado com sucesso!');
+          document.getElementById('modal-edit-course').style.display = 'none';
+          loadCourses(); loadCoursesIntoSelects();
+        } else { notify.error(data.message || 'Erro ao atualizar curso'); }
+      } catch { notify.error('Erro ao conectar com o servidor'); }
+      finally { btn.disabled = false; btn.textContent = 'Salvar'; }
+    });
+
+    async function deleteCourse(id, name) {
+      let confirmado = false;
+      if (window.ModalConfirmacao && typeof window.ModalConfirmacao.confirmar === 'function') {
+        confirmado = await window.ModalConfirmacao.confirmar({
+          titulo: 'Remover Curso',
+          mensagem: `Deseja remover o curso "${name}"? Isto só é possível se não houver usuários vinculados.`,
+          variante: 'perigo',
+          textoConfirmar: 'Remover',
+          textoCancelar: 'Cancelar',
+          icone: 'excluir'
+        });
+      }
+      if (!confirmado) return;
+      try {
+        const res = await fetch(`${API_URL}/api/cursos/${id}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (res.ok) { notify.success(`Curso "${name}" removido`); loadCourses(); loadCoursesIntoSelects(); }
+        else { notify.error(data.message || 'Erro ao remover curso'); }
+      } catch { notify.error('Erro ao conectar com o servidor'); }
+    }
+
+    // Atividades de atendimento gerenciadas via GerenciadorAtividades (recursos/js/gerenciador-atividades.js)
+
+    // -- ARCHIVED --
+    let paginacaoPacientesArquivados = null;
+    let paginacaoUsuariosArquivados = null;
+    let pacientesArquivadosTodos = [];
+    let usuariosArquivadosTodos = [];
+
+    function renderArchivedPatients(items) {
+      const container = document.getElementById('patient-archived-list');
+
+      if (!Array.isArray(items) || !items.length) {
+        container.innerHTML = '<p class="archive-empty lista-entidades__vazio"><span class="icone icone--md" data-icone="caixa-vazia" aria-hidden="true"></span><span>Nenhum paciente arquivado.</span></p>';
+        window.IconesCAIGE?.aplicar?.(container);
+        return;
+      }
+
+      container.innerHTML = items.map(item => `
+          <article class="archive-item archive-item--compact lista-entidades__item lista-entidades__item--suave lista-entidades__item--horizontal">
+            <div class="lista-entidades__conteudo archive-item__content">
+              <div class="archive-title lista-entidades__titulo archive-item__title-row">
+                <span class="archive-item__name">${item.name || 'Sem nome'}</span>
+                <span class="status-badge inactive archive-item__status">Arquivado</span>
+              </div>
+              <div class="archive-meta lista-entidades__meta archive-item__details">
+                <span><strong>CPF:</strong> ${item.cpf || '-'}</span>
+                <span><strong>Contato:</strong> ${item.phone || item.phone2 || '-'}</span>
+                <span><strong>Criado em:</strong> ${item.created_at || '-'}</span>
+              </div>
+            </div>
+            <div class="lista-entidades__acoes">
+              <button type="button" class="menu-acoes-trigger" data-arquivado-paciente-acoes="${item.id}" aria-label="Ações de ${item.name || 'paciente'}" aria-expanded="false">⋮</button>
+            </div>
+          </article>
+        `).join('');
+
+      container.querySelectorAll('[data-arquivado-paciente-acoes]').forEach((botao) => {
+        botao.addEventListener('click', () => {
+          const id = Number(botao.dataset.arquivadoPacienteAcoes);
+          const item = items.find((paciente) => Number(paciente.id) === id);
+          if (!item || !window.MenuAcoes) return;
+
+          window.MenuAcoes.abrir(botao, [
+            { rotulo: 'Recuperar', acao: () => recuperarPacienteArquivado(item.id, item.name || 'Sem nome') },
+            { rotulo: 'Excluir permanentemente', perigo: true, acao: () => confirmarExclusaoPermanentePaciente(item.id, item.name || 'Sem nome') }
+          ]);
+        });
+      });
+    }
+
+    async function recuperarPacienteArquivado(id, nome) {
+      let confirmar = false;
+      if (window.ModalConfirmacao && typeof window.ModalConfirmacao.confirmar === 'function') {
+        confirmar = await window.ModalConfirmacao.confirmar({
+          titulo: 'Recuperar Paciente',
+          mensagem: `Deseja recuperar o paciente "${nome}" para o status inativo? Ele voltará a constar na listagem de pacientes.`,
+          variante: 'sucesso',
+          textoConfirmar: 'Recuperar',
+          textoCancelar: 'Cancelar',
+          icone: 'recuperar'
+        });
+      }
+      if (!confirmar) return;
+
+      try {
+        const resposta = await fetch(`${API_URL}/api/arquivo/pacientes/${id}/recuperar`, {
+          method: 'POST'
+        });
+        const dados = await resposta.json();
+
+        if (!resposta.ok) {
+          notify.error(dados.message || 'Erro ao recuperar paciente arquivado.');
+          return;
+        }
+
+        notify.success(dados.message || 'Paciente recuperado com sucesso.');
+        await loadArchivedData();
+      } catch (erro) {
+        console.error('Erro ao recuperar paciente:', erro);
+        notify.error('Erro ao conectar com o servidor para recuperar paciente.');
+      }
+    }
+
+    async function confirmarExclusaoPermanentePaciente(id, nome) {
+      let confirmar = false;
+      if (window.ModalConfirmacao && typeof window.ModalConfirmacao.confirmar === 'function') {
+        confirmar = await window.ModalConfirmacao.confirmar({
+          titulo: 'Confirmar exclusão permanente',
+          mensagem: `Tem certeza que deseja excluir permanentemente o paciente "${nome}"? O registro deixará de aparecer em todas as listagens do sistema.`,
+          variante: 'perigo',
+          textoConfirmar: 'Excluir permanentemente',
+          textoCancelar: 'Cancelar',
+          icone: 'excluir'
+        });
+      }
+      if (!confirmar) return;
+
+      try {
+        const resposta = await fetch(`${API_URL}/api/arquivo/pacientes/${id}`, {
+          method: 'DELETE'
+        });
+        const dados = await resposta.json();
+
+        if (!resposta.ok) {
+          notify.error(dados.message || 'Erro ao excluir permanentemente o paciente.');
+          return;
+        }
+
+        notify.success(dados.message || 'Paciente excluído permanentemente da interface com sucesso.');
+        await loadArchivedData();
+      } catch (erro) {
+        console.error('Erro ao excluir permanentemente paciente:', erro);
+        notify.error('Erro ao conectar com o servidor.');
+      }
+    }
+
+    function renderArchivedUsers(items) {
+      const container = document.getElementById('users-archived-list');
+
+      if (!Array.isArray(items) || !items.length) {
+        container.innerHTML = '<p class="archive-empty lista-entidades__vazio"><span class="icone icone--md" data-icone="caixa-vazia" aria-hidden="true"></span><span>Nenhum usuário arquivado.</span></p>';
+        window.IconesCAIGE?.aplicar?.(container);
+        return;
+      }
+
+      container.innerHTML = items.map(item => `
+          <article class="archive-item archive-item--compact lista-entidades__item lista-entidades__item--suave lista-entidades__item--horizontal">
+            <div class="lista-entidades__conteudo archive-item__content">
+              <div class="archive-title lista-entidades__titulo archive-item__title-row">
+                <span class="archive-item__name">${item.email || 'Sem email'}</span>
+                <span class="status-badge inactive archive-item__status">Arquivado</span>
+              </div>
+              <div class="archive-meta lista-entidades__meta archive-item__details">
+                <span><strong>Perfil:</strong> ${item.role || '-'}</span>
+                <span><strong>Curso:</strong> ${item.course_name || '-'}</span>
+                <span><strong>Ativo:</strong> ${item.is_active ? 'Sim' : 'Não'}</span>
+                <span><strong>Oculto:</strong> ${item.is_hidden ? 'Sim' : 'Não'}</span>
+                <span><strong>Criado em:</strong> ${item.created_at || '-'}</span>
+              </div>
+            </div>
+            <div class="lista-entidades__acoes">
+              <button type="button" class="menu-acoes-trigger" data-arquivado-usuario-acoes="${item.id}" aria-label="Ações de ${item.email || 'usuário'}" aria-expanded="false">⋮</button>
+            </div>
+          </article>
+        `).join('');
+
+      container.querySelectorAll('[data-arquivado-usuario-acoes]').forEach((botao) => {
+        botao.addEventListener('click', () => {
+          const id = Number(botao.dataset.arquivadoUsuarioAcoes);
+          const item = items.find((usuario) => Number(usuario.id) === id);
+          if (!item || !window.MenuAcoes) return;
+
+          window.MenuAcoes.abrir(botao, [
+            { rotulo: 'Recuperar', acao: () => recuperarUsuarioArquivado(item.id) }
+          ]);
+        });
+      });
+    }
+
+    async function recuperarUsuarioArquivado(id) {
+      const confirmar = await window.ModalConfirmacao?.confirmar?.({
+        titulo: 'Recuperar Usuário',
+        mensagem: 'O usuário voltará para Usuários Cadastrados como inativo.',
+        variante: 'sucesso',
+        textoConfirmar: 'Recuperar',
+        textoCancelar: 'Cancelar',
+        icone: 'recuperar'
+      });
+      if (!confirmar) return;
+
+      try {
+        const resposta = await fetch(`${API_URL}/api/arquivo/usuarios/${id}/recuperar`, { method: 'POST' });
+        const dados = await resposta.json().catch(() => ({}));
+        if (!resposta.ok) return notify.error(dados.message || 'Erro ao recuperar usuário.');
+        notify.success(dados.message || 'Usuário recuperado com sucesso.');
+        await loadArchivedData();
+        window.gerenciadorUsuarios?.carregarUsuarios?.();
+      } catch (erro) {
+        console.error('Erro ao recuperar usuário:', erro);
+        notify.error('Erro ao conectar com o servidor.');
+      }
+    }
+
+    function normalizarBuscaArquivados(valor) {
+      return String(valor || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .trim();
+    }
+
+    function aplicarFiltrosArquivados() {
+      const buscaPacientes = normalizarBuscaArquivados(
+        document.getElementById('arquivados-pacientes-busca')?.value
+      );
+
+      const buscaUsuarios = normalizarBuscaArquivados(
+        document.getElementById('arquivados-usuarios-busca')?.value
+      );
+
+      const pacientesFiltrados = pacientesArquivadosTodos.filter((item) => {
+        if (!buscaPacientes) return true;
+
+        return [
+          item.name,
+          item.cpf,
+          item.phone,
+          item.phone2
+        ].some((valor) =>
+          normalizarBuscaArquivados(valor).includes(buscaPacientes)
+        );
+      });
+
+      const usuariosFiltrados = usuariosArquivadosTodos.filter((item) => {
+        if (!buscaUsuarios) return true;
+
+        return [
+          item.name,
+          item.email,
+          item.role,
+          item.course_name
+        ].some((valor) =>
+          normalizarBuscaArquivados(valor).includes(buscaUsuarios)
+        );
+      });
+
+      configurarPaginacaoArquivados();
+
+      paginacaoPacientesArquivados.definirItens(pacientesFiltrados);
+      paginacaoUsuariosArquivados.definirItens(usuariosFiltrados);
+    }
+
+    function configurarPaginacaoArquivados() {
+      if (!paginacaoPacientesArquivados) {
+        paginacaoPacientesArquivados = new PaginacaoLista({
+          seletorQuantidade: '#arquivados-pacientes-page-size',
+          seletorPaginacao: '#arquivados-pacientes-pagination',
+          seletorIndicador: '#arquivados-pacientes-indicator',
+          seletorPrimeira: '#arquivados-pacientes-first',
+          seletorAnterior: '#arquivados-pacientes-prev',
+          seletorProxima: '#arquivados-pacientes-next',
+          seletorUltima: '#arquivados-pacientes-last',
+          tamanhoPadrao: 10,
+          aoRenderizar: renderArchivedPatients
+        });
+      }
+
+      if (!paginacaoUsuariosArquivados) {
+        paginacaoUsuariosArquivados = new PaginacaoLista({
+          seletorQuantidade: '#arquivados-usuarios-page-size',
+          seletorPaginacao: '#arquivados-usuarios-pagination',
+          seletorIndicador: '#arquivados-usuarios-indicator',
+          seletorPrimeira: '#arquivados-usuarios-first',
+          seletorAnterior: '#arquivados-usuarios-prev',
+          seletorProxima: '#arquivados-usuarios-next',
+          seletorUltima: '#arquivados-usuarios-last',
+          tamanhoPadrao: 10,
+          aoRenderizar: renderArchivedUsers
+        });
+      }
+    }
+
+    async function loadArchivedData() {
+      document.getElementById('patient-archived-list').innerHTML =
+        '<p class="archive-empty">Carregando...</p>';
+
+      document.getElementById('users-archived-list').innerHTML =
+        '<p class="archive-empty">Carregando...</p>';
+
+      try {
+        const [patientsResponse, usersResponse] = await Promise.all([
+          fetch(`${API_URL}/api/arquivo/pacientes`),
+          fetch(`${API_URL}/api/arquivo/usuarios`)
+        ]);
+
+        const patientsData = await patientsResponse.json();
+        const usersData = await usersResponse.json();
+
+        if (!patientsResponse.ok || !usersResponse.ok) {
+          notify.error('Erro ao carregar registros arquivados.');
+          return;
+        }
+
+        pacientesArquivadosTodos =
+          patientsData.archived_patients || [];
+
+        usuariosArquivadosTodos =
+          usersData.archived_users || [];
+
+        aplicarFiltrosArquivados();
+      } catch (erro) {
+        console.error('Erro ao buscar arquivados:', erro);
+        notify.error('Erro de conexão ao buscar arquivados.');
+      }
+    }
+
+    window.loadArchivedData = loadArchivedData;
+
+    document
+      .getElementById('arquivados-pacientes-busca')
+      ?.addEventListener('input', aplicarFiltrosArquivados);
+
+    document
+      .getElementById('arquivados-usuarios-busca')
+      ?.addEventListener('input', aplicarFiltrosArquivados);
+
+    // -- SECTOR SELECTS --
+    async function loadCoursesIntoSelects() {
+      try {
+        const res = await fetch(`${API_URL}/api/cursos`);
+
+        if (!res.ok) return;
+
+        const courses = await res.json();
+        const activeCourses = Array.isArray(courses)
+          ? courses.filter((c) => c.ativo !== false && c.ativo !== 0)
+          : [];
+
+        const makeOptions = (emptyLabel) =>
+          `<option value="">${emptyLabel}</option>` +
+          activeCourses
+            .map((c) => `<option value="${c.id}">${c.nome}</option>`)
+            .join('');
+
+        const novoCursoSelect = document.getElementById('curso-novo');
+        const edicaoCursoSelect = document.getElementById('curso-edicao');
+
+        if (novoCursoSelect) {
+          novoCursoSelect.innerHTML = makeOptions('Selecione um curso');
+        }
+
+        if (edicaoCursoSelect) {
+          edicaoCursoSelect.innerHTML = makeOptions('Sem curso');
+        }
+      } catch (err) {
+        console.error('Erro ao carregar cursos para selects:', err);
+      }
+    }
+
+    // -- AUDIT --
+    let allAuditActivities = [];
+    let filteredAuditActivities = [];
+    let auditQueryApplied = false;
+    let auditTotal = 0;
+    let auditPage = 1;
+    let auditPageSize = 10;
+    let auditLastQuery = null;
+    const AUDIT_STATE_SCOPE = 'auditoria';
+    const AUDIT_STATE_KEY = 'consulta';
+
+    function parseAuditDate(rawDate) {
+      const value = String(rawDate || '').trim();
+      if (!value) return null;
+      const brDate = value.match(/^(\d{2})\/(\d{2})\/(\d{4})\s?(\d{2})?:?(\d{2})?/);
+      if (brDate) return new Date(Number(brDate[3]), Number(brDate[2])-1, Number(brDate[1]), Number(brDate[4]||0), Number(brDate[5]||0));
+      const parsed = new Date(value);
+      return Number.isNaN(parsed.getTime()) ? null : parsed;
+    }
+
+    function getRoleTag(role) {
+      if (role === 'SUPERVISOR') return '<span class="audit-role-tag supervisor">Supervisor</span>';
+      if (role === 'PROFESSOR') return '<span class="audit-role-tag professor">Professor</span>';
+      return '<span class="audit-role-tag sistema">Sistema</span>';
+    }
+
+    function renderAuditList(items, emptyMessage = 'Nenhuma ação encontrada para os filtros selecionados.') {
+      const container = document.getElementById('audit-list');
+      if (!Array.isArray(items) || !items.length) {
+        container.innerHTML = `<tr><td class="audit-empty" colspan="5">${emptyMessage}</td></tr>`;
+        return;
+      }
+      container.innerHTML = items.map((item) => `
+        <tr>
+          <td>${item.date || '-'}</td>
+          <td><span class="audit-type-tag">${item.type || '-'}</span></td>
+          <td class="audit-table__description-cell">${item.description || '-'}</td>
+          <td>${item.responsible || '-'}</td>
+          <td>${getRoleTag(item.role)}</td>
+        </tr>
+      `).join('');
+    }
+
+    function syncFilterInputVisibility(index) {
+      const field = document.getElementById(`audit-field-${index}`)?.value;
+      const textInput = document.getElementById(`audit-value-text-${index}`);
+      const dateInput = document.getElementById(`audit-value-date-${index}`);
+      const typeInput = document.getElementById(`audit-value-type-${index}`);
+      if (!textInput || !dateInput || !typeInput) return;
+
+      // Tipo usa campo textual para não consultar toda a auditoria apenas para montar opções.
+      textInput.style.display = field ? 'block' : 'none';
+      textInput.placeholder = field === 'type' ? 'Digite o tipo da ação' : 'Digite o valor do filtro';
+      dateInput.style.display = 'none';
+      typeInput.style.display = 'none';
+    }
+
+    function readCriterion(index) {
+      const field = document.getElementById(`audit-field-${index}`)?.value;
+      if (!field) return null;
+      const value = (document.getElementById(`audit-value-text-${index}`).value || '').trim();
+      return value ? { field, value } : null;
+    }
+
+    const auditDatePickers = {};
+    const auditDateInstances = window.initPtBrDatePicker
+      ? window.initPtBrDatePicker('#audit-date-from, #audit-date-to')
+      : [];
+
+    auditDateInstances.forEach((instance) => {
+      if (instance?.input?.id) {
+        auditDatePickers[instance.input.id] = instance;
+      }
+    });
+
+    function abrirCalendarioAuditoria(inputId) {
+      const picker = auditDatePickers[inputId];
+      if (picker && typeof picker.open === 'function') {
+        picker.open();
+        return;
+      }
+
+      document.getElementById(inputId)?.focus();
+    }
+
+    document.getElementById('audit-date-from-calendar')?.addEventListener(
+      'click',
+      () => abrirCalendarioAuditoria('audit-date-from')
+    );
+    document.getElementById('audit-date-to-calendar')?.addEventListener(
+      'click',
+      () => abrirCalendarioAuditoria('audit-date-to')
+    );
+
+    function collectAuditFilters() {
+      const secondEnabled = document.getElementById('audit-enable-second-filter').checked;
+      return {
+        c1: readCriterion(1),
+        c2: secondEnabled ? readCriterion(2) : null,
+        secondEnabled,
+        secondOperator: document.getElementById('audit-operator-2').value,
+        onlyProfessors: document.getElementById('audit-only-professors').checked,
+        dateFrom: document.getElementById('audit-date-from').value,
+        dateTo: document.getElementById('audit-date-to').value
+      };
+    }
+
+    function hasAuditFilter(filters = collectAuditFilters()) {
+      return Boolean(filters.c1 || filters.c2 || filters.onlyProfessors || filters.dateFrom || filters.dateTo);
+    }
+
+    function buildAuditParams(filters, limit = auditPageSize, offset = (auditPage - 1) * auditPageSize) {
+      const params = new URLSearchParams({ limit: String(limit), offset: String(offset) });
+      const applyCriterion = (criterion) => {
+        if (!criterion) return;
+        const map = { type: 'tipo', description: 'descricao', responsible: 'responsavel' };
+        if (map[criterion.field]) params.set(map[criterion.field], criterion.value);
+      };
+
+      // A API combina filtros por E. O segundo filtro com OU é tratado abaixo como não suportado
+      // para evitar resultado incorreto.
+      applyCriterion(filters.c1);
+      applyCriterion(filters.c2);
+      if (filters.onlyProfessors) params.set('somente_professores', '1');
+      if (filters.dateFrom) params.set('data_de', filters.dateFrom);
+      if (filters.dateTo) params.set('data_ate', filters.dateTo);
+      return params;
+    }
+
+    function auditHeaders() {
+      return {};
+    }
+
+    function mapAuditItem(item) {
+      const role = item.role || item.papel || item.roleUsuario || 'SISTEMA';
+      return {
+        date: item.dataFormatada || item.criadoEm || item.created_at || item.createdAt || item.date || '',
+        type: item.tipo || item.type || 'Movimentação',
+        description: item.descricao || item.description || 'Sem descrição',
+        responsible: String(item.nomUsuario || item.responsible || item.usuario || 'Sistema').trim(),
+        role
+      };
+    }
+
+    function updateAuditButtons() {
+      const hasResult = auditQueryApplied && allAuditActivities.length > 0;
+      document.getElementById('audit-refresh').disabled = !auditQueryApplied;
+      document.getElementById('audit-export-excel').disabled = !hasResult;
+      document.getElementById('audit-export-pdf').disabled = !hasResult;
+    }
+
+    function updateAuditPagination() {
+      const pagination = document.getElementById('audit-pagination');
+      const indicator = document.getElementById('audit-page-indicator');
+      const first = document.getElementById('audit-first-page');
+      const prev = document.getElementById('audit-prev-page');
+      const next = document.getElementById('audit-next-page');
+      const last = document.getElementById('audit-last-page');
+
+      const totalPages = Math.max(1, Math.ceil(auditTotal / auditPageSize));
+      auditPage = Math.min(Math.max(1, Number(auditPage) || 1), totalPages);
+
+      if (pagination) {
+        pagination.hidden = !auditQueryApplied;
+      }
+
+      if (indicator) {
+        const isMobilePagination = window.matchMedia('(max-width: 767px)').matches;
+        if (isMobilePagination) {
+          const firstRecord = auditTotal > 0 ? ((auditPage - 1) * auditPageSize) + 1 : 0;
+          const lastRecord = Math.min(auditPage * auditPageSize, auditTotal);
+          indicator.textContent = `${firstRecord}–${lastRecord} de ${auditTotal}`;
+        } else {
+          indicator.textContent = `Página ${auditPage} de ${totalPages} (${auditTotal} registros)`;
+        }
+      }
+
+      if (first) first.disabled = auditPage <= 1;
+      if (prev) prev.disabled = auditPage <= 1;
+      if (next) next.disabled = auditPage >= totalPages;
+      if (last) last.disabled = auditPage >= totalPages;
+
+      const navigation = indicator?.parentElement;
+      if (!navigation || !indicator) return;
+
+      let pagesContainer = navigation.querySelector('.pagination-numbered-pages');
+      if (!pagesContainer) {
+        pagesContainer = document.createElement('div');
+        pagesContainer.className = 'pagination-numbered-pages';
+        pagesContainer.setAttribute('aria-label', 'Escolher página');
+        indicator.insertAdjacentElement('beforebegin', pagesContainer);
+
+        pagesContainer.addEventListener('click', async (event) => {
+          const button = event.target.closest('.pagination-page-number');
+          if (!button || button.disabled) return;
+
+          const page = Number(button.dataset.page);
+          const maxPages = Math.max(1, Math.ceil(auditTotal / auditPageSize));
+          if (!Number.isFinite(page) || page < 1 || page > maxPages || page === auditPage) return;
+
+          auditPage = page;
+          await loadAuditData({ refresh: true });
+        });
+      }
+
+      const visiblePages = (() => {
+        if (totalPages <= 7) {
+          return Array.from({ length: totalPages }, (_, index) => index + 1);
+        }
+
+        const pages = new Set([1, totalPages, auditPage - 1, auditPage, auditPage + 1]);
+
+        if (auditPage <= 4) {
+          [2, 3, 4, 5].forEach((page) => pages.add(page));
+        }
+
+        if (auditPage >= totalPages - 3) {
+          [totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1]
+            .forEach((page) => pages.add(page));
+        }
+
+        const ordered = [...pages]
+          .filter((page) => page >= 1 && page <= totalPages)
+          .sort((a, b) => a - b);
+
+        const result = [];
+        ordered.forEach((page, index) => {
+          const previous = ordered[index - 1];
+          if (index > 0 && page - previous > 1) result.push('...');
+          result.push(page);
+        });
+        return result;
+      })();
+
+      pagesContainer.innerHTML = visiblePages.map((page) => {
+        if (page === '...') {
+          return '<span class="pagination-page-ellipsis" aria-hidden="true">…</span>';
+        }
+
+        const active = page === auditPage;
+        return `
+          <button
+            class="pagination-page-number${active ? ' is-active' : ''}"
+            type="button"
+            data-page="${page}"
+            ${active ? 'aria-current="page"' : ''}
+            aria-label="Página ${page}"
+          >${page}</button>
+        `;
+      }).join('');
+    }
+
+    function salvarEstadoAuditoria() {
+      window.EstadoSessao?.salvar?.(AUDIT_STATE_SCOPE, AUDIT_STATE_KEY, {
+        filtros: collectAuditFilters(),
+        consultaAplicada: auditQueryApplied,
+        pagina: auditPage,
+        tamanhoPagina: auditPageSize,
+        itens: allAuditActivities,
+        total: auditTotal
+      });
+    }
+
+    function preencherFiltrosAuditoria(filters = {}) {
+      const setCriterion = (idx, c) => {
+        document.getElementById(`audit-field-${idx}`).value = c?.field || '';
+        document.getElementById(`audit-value-text-${idx}`).value = c?.value || '';
+        document.getElementById(`audit-value-date-${idx}`).value = '';
+        syncFilterInputVisibility(idx);
+      };
+      setCriterion(1, filters.c1);
+      setCriterion(2, filters.c2);
+      document.getElementById('audit-enable-second-filter').checked = Boolean(filters.secondEnabled);
+      document.getElementById('audit-filter-secondary').style.display = filters.secondEnabled ? 'block' : 'none';
+      document.getElementById('audit-operator-2').value = filters.secondOperator || 'and';
+      document.getElementById('audit-only-professors').checked = Boolean(filters.onlyProfessors);
+      const auditDateFrom = filters.dateFrom || '';
+      const auditDateTo = filters.dateTo || '';
+
+      if (auditDatePickers['audit-date-from']) {
+        auditDatePickers['audit-date-from'].setDate(auditDateFrom, false, 'Y-m-d');
+      } else {
+        document.getElementById('audit-date-from').value = auditDateFrom;
+      }
+
+      if (auditDatePickers['audit-date-to']) {
+        auditDatePickers['audit-date-to'].setDate(auditDateTo, false, 'Y-m-d');
+      } else {
+        document.getElementById('audit-date-to').value = auditDateTo;
+      }
+    }
+
+    function restaurarEstadoAuditoria() {
+      const state = window.EstadoSessao?.obter?.(AUDIT_STATE_SCOPE, AUDIT_STATE_KEY);
+      if (!state) {
+        renderAuditList([], 'Defina pelo menos um filtro e clique em Aplicar filtros para consultar a auditoria.');
+        updateAuditButtons();
+        updateAuditPagination();
+        return;
+      }
+      preencherFiltrosAuditoria(state.filtros || {});
+      auditQueryApplied = Boolean(state.consultaAplicada);
+      auditPage = Number(state.pagina) || 1;
+      auditPageSize = Number(state.tamanhoPagina) || 10;
+      allAuditActivities = Array.isArray(state.itens) ? state.itens : [];
+      filteredAuditActivities = allAuditActivities;
+      auditTotal = Number(state.total) || 0;
+      const size = document.getElementById('audit-page-size');
+      if (size) size.value = String(auditPageSize);
+      renderAuditList(
+        allAuditActivities,
+        auditQueryApplied ? 'Nenhuma ação encontrada para os filtros selecionados.' : 'Defina pelo menos um filtro e clique em Aplicar filtros para consultar a auditoria.'
+      );
+      updateAuditButtons();
+      updateAuditPagination();
+    }
+
+    async function loadAuditData({ refresh = false } = {}) {
+      const filters = refresh && auditLastQuery ? auditLastQuery : collectAuditFilters();
+
+      if (!hasAuditFilter(filters)) {
+        notify.warning?.('Defina pelo menos um filtro antes de consultar a auditoria.');
+        renderAuditList([], 'Defina pelo menos um filtro e clique em Aplicar filtros para consultar a auditoria.');
+        auditQueryApplied = false;
+        allAuditActivities = [];
+        filteredAuditActivities = [];
+        auditTotal = 0;
+        updateAuditButtons();
+        updateAuditPagination();
+        salvarEstadoAuditoria();
+        return;
+      }
+
+      if (filters.secondEnabled && filters.c2 && filters.secondOperator === 'or') {
+        notify.warning?.('A combinação OU não está disponível para consulta paginada. Use a combinação E.');
+        return;
+      }
+
+      if (filters.dateFrom && filters.dateTo && filters.dateFrom > filters.dateTo) {
+        notify.warning?.('A data inicial não pode ser posterior à data final.');
+        return;
+      }
+
+      const list = document.getElementById('audit-list');
+      list.innerHTML = '<tr><td class="audit-empty" colspan="5">Consultando auditoria...</td></tr>';
+
+      try {
+        const params = buildAuditParams(filters);
+        const response = await fetch(`${API_URL}/api/movimentacoes/recentes?${params.toString()}`, { headers: auditHeaders() });
+        if (!response.ok) throw new Error(`Erro ao consultar auditoria (${response.status})`);
+
+        const payload = await response.json();
+        allAuditActivities = (Array.isArray(payload) ? payload : (payload.data || [])).map(mapAuditItem);
+        filteredAuditActivities = allAuditActivities;
+        auditTotal = Number(payload?.pagination?.total) || allAuditActivities.length;
+        auditQueryApplied = true;
+        auditLastQuery = filters;
+
+        renderAuditList(allAuditActivities);
+        updateAuditButtons();
+        updateAuditPagination();
+        salvarEstadoAuditoria();
+      } catch (error) {
+        console.error('Erro ao consultar auditoria:', error);
+        renderAuditList([], 'Erro ao consultar auditoria.');
+        notify.error('Não foi possível consultar a auditoria.');
+      }
+    }
+
+    async function applyAuditFilters() {
+      auditPage = 1;
+      auditLastQuery = collectAuditFilters();
+      await loadAuditData();
+    }
+
+    function clearAuditFilters() {
+      preencherFiltrosAuditoria({});
+      auditQueryApplied = false;
+      auditLastQuery = null;
+      auditPage = 1;
+      auditTotal = 0;
+      allAuditActivities = [];
+      filteredAuditActivities = [];
+      renderAuditList([], 'Defina pelo menos um filtro e clique em Aplicar filtros para consultar a auditoria.');
+      updateAuditButtons();
+      updateAuditPagination();
+      window.EstadoSessao?.remover?.(AUDIT_STATE_SCOPE, AUDIT_STATE_KEY);
+    }
+
+    async function fetchAllAuditRowsForExport() {
+      if (!auditQueryApplied || !auditLastQuery) return [];
+      const rows = [];
+      let offset = 0;
+      const limit = 100;
+      while (offset < auditTotal) {
+        const params = buildAuditParams(auditLastQuery, limit, offset);
+        const response = await fetch(`${API_URL}/api/movimentacoes/recentes?${params.toString()}`, { headers: auditHeaders() });
+        if (!response.ok) throw new Error(`Erro ao preparar exportação (${response.status})`);
+        const payload = await response.json();
+        const batch = (payload.data || []).map(mapAuditItem);
+        rows.push(...batch);
+        if (!payload?.pagination?.hasMore || batch.length === 0) break;
+        offset += limit;
+      }
+      return rows;
+    }
+
+    async function carregarImagemExcelComoDataUrl(url) {
+      try {
+        const resposta = await fetch(url);
+        if (!resposta.ok) return null;
+        const blob = await resposta.blob();
+        return await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => resolve(null);
+          reader.readAsDataURL(blob);
+        });
+      } catch (error) {
+        console.warn('Não foi possível carregar a logo para o Excel de auditoria:', error);
+        return null;
+      }
+    }
+
+    async function exportAuditExcel() {
+      const rows = await fetchAllAuditRowsForExport();
+      if (!rows.length) {
+        notify.info('Não há dados para exportar.');
+        return;
+      }
+
+      if (typeof window.ExcelJS === 'undefined') {
+        notify.error('Não foi possível carregar o gerador de Excel.');
+        return;
+      }
+
+      const agora = new Date();
+      const resumo = obterResumoFiltrosAuditoriaPdf();
+      const workbook = new ExcelJS.Workbook();
+      workbook.creator = 'CAIGE';
+      workbook.company = 'CAIGE - Univale';
+      workbook.subject = 'Relatório de Auditoria do Sistema';
+      workbook.title = 'Relatório de Auditoria - CAIGE';
+      workbook.created = agora;
+      workbook.modified = agora;
+
+      const azulCaige = 'FF2563EB';
+      const azulEscuro = 'FF1D4ED8';
+      const azulClaro = 'FFEFF6FF';
+      const cinzaTexto = 'FF334155';
+      const cinzaSuave = 'FFF8FAFC';
+      const cinzaBorda = 'FFE2E8F0';
+      const branco = 'FFFFFFFF';
+
+      const resumoSheet = workbook.addWorksheet('Resumo', {
+        views: [{ showGridLines: false }],
+        pageSetup: {
+          orientation: 'portrait',
+          fitToPage: true,
+          fitToWidth: 1,
+          fitToHeight: 1,
+          paperSize: 9,
+          margins: {
+            left: 0.5,
+            right: 0.5,
+            top: 0.5,
+            bottom: 0.5,
+            header: 0.2,
+            footer: 0.2
+          }
+        }
+      });
+
+      resumoSheet.properties.tabColor = { argb: azulCaige };
+      resumoSheet.columns = [
+        { width: 26 },
+        { width: 24 },
+        { width: 24 },
+        { width: 18 },
+        { width: 18 }
+      ];
+
+      // Área superior reservada para a marca.
+      for (let linha = 1; linha <= 4; linha += 1) {
+        resumoSheet.getRow(linha).height = 20;
+      }
+
+      const logoDataUrl = await carregarImagemExcelComoDataUrl('/recursos/images/logocaige.png');
+      let logoId = null;
+      if (logoDataUrl) {
+        try {
+          logoId = workbook.addImage({
+            base64: logoDataUrl,
+            extension: 'png'
+          });
+          resumoSheet.addImage(logoId, {
+            tl: { col: 0.25, row: 0.2 },
+            ext: { width: 250, height: 70 }
+          });
+        } catch (error) {
+          console.warn('Não foi possível inserir a logo no Excel de auditoria:', error);
+        }
+      }
+
+      resumoSheet.mergeCells('A5:E5');
+      const tituloResumo = resumoSheet.getCell('A5');
+      tituloResumo.value = 'RELATÓRIO DE AUDITORIA - CAIGE';
+      tituloResumo.font = { bold: true, size: 18, color: { argb: 'FF0F172A' } };
+      tituloResumo.alignment = { vertical: 'middle', horizontal: 'left' };
+      resumoSheet.getRow(5).height = 30;
+
+      resumoSheet.mergeCells('A6:E6');
+      const geradoResumo = resumoSheet.getCell('A6');
+      geradoResumo.value = `Gerado em ${agora.toLocaleDateString('pt-BR')} às ${agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
+      geradoResumo.font = { size: 10, color: { argb: 'FF64748B' } };
+      geradoResumo.alignment = { vertical: 'middle', horizontal: 'left' };
+
+      resumoSheet.mergeCells('A8:E8');
+      const secaoResumo = resumoSheet.getCell('A8');
+      secaoResumo.value = 'RESUMO DA EXPORTAÇÃO';
+      secaoResumo.font = { bold: true, size: 11, color: { argb: azulEscuro } };
+      secaoResumo.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: azulClaro } };
+      secaoResumo.alignment = { vertical: 'middle', horizontal: 'left' };
+      resumoSheet.getRow(8).height = 22;
+
+      const metadados = [
+        ['Período', resumo.periodo],
+        ['Filtros aplicados', resumo.filtros],
+        ['Responsáveis', resumo.professores],
+        ['Total de registros', rows.length]
+      ];
+
+      metadados.forEach(([rotulo, valor], index) => {
+        const linha = 9 + index;
+        const labelCell = resumoSheet.getCell(linha, 1);
+        const valueCell = resumoSheet.getCell(linha, 2);
+
+        resumoSheet.mergeCells(linha, 2, linha, 5);
+
+        labelCell.value = rotulo;
+        labelCell.font = { bold: true, color: { argb: cinzaTexto } };
+        labelCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: cinzaSuave } };
+        labelCell.alignment = { vertical: 'middle', horizontal: 'left', indent: 1 };
+
+        valueCell.value = valor;
+        valueCell.font = { color: { argb: 'FF0F172A' } };
+        valueCell.alignment = { vertical: 'middle', horizontal: 'left', wrapText: true, indent: 1 };
+
+        [labelCell, valueCell].forEach((cell) => {
+          cell.border = {
+            top: { style: 'thin', color: { argb: cinzaBorda } },
+            left: { style: 'thin', color: { argb: cinzaBorda } },
+            bottom: { style: 'thin', color: { argb: cinzaBorda } },
+            right: { style: 'thin', color: { argb: cinzaBorda } }
+          };
+        });
+
+        resumoSheet.getRow(linha).height = 26;
+      });
+
+      resumoSheet.mergeCells('A14:E15');
+      const observacao = resumoSheet.getCell('A14');
+      observacao.value = 'Os dados desta exportação respeitam os filtros aplicados na tela de Auditoria do CAIGE.';
+      observacao.font = { italic: true, size: 10, color: { argb: 'FF64748B' } };
+      observacao.alignment = { vertical: 'middle', horizontal: 'left', wrapText: true };
+      observacao.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF8FAFC' } };
+      observacao.border = {
+        top: { style: 'thin', color: { argb: cinzaBorda } },
+        left: { style: 'thin', color: { argb: cinzaBorda } },
+        bottom: { style: 'thin', color: { argb: cinzaBorda } },
+        right: { style: 'thin', color: { argb: cinzaBorda } }
+      };
+
+      resumoSheet.pageSetup.printArea = 'A1:E15';
+      resumoSheet.headerFooter.oddFooter = 'Relatório gerado pelo CAIGE &P de &N';
+
+      const auditSheet = workbook.addWorksheet('Auditoria', {
+        views: [{ state: 'frozen', ySplit: 5, showGridLines: false }],
+        pageSetup: {
+          orientation: 'landscape',
+          fitToPage: true,
+          fitToWidth: 1,
+          fitToHeight: 0,
+          paperSize: 9,
+          margins: {
+            left: 0.35,
+            right: 0.35,
+            top: 0.5,
+            bottom: 0.5,
+            header: 0.2,
+            footer: 0.2
+          }
+        }
+      });
+
+      auditSheet.properties.tabColor = { argb: 'FF60A5FA' };
+      auditSheet.columns = [
+        { key: 'data', width: 22 },
+        { key: 'tipo', width: 30 },
+        { key: 'acao', width: 70 },
+        { key: 'responsavel', width: 30 },
+        { key: 'papel', width: 18 }
+      ];
+
+      auditSheet.getRow(1).height = 28;
+      auditSheet.getRow(2).height = 22;
+      auditSheet.getRow(3).height = 8;
+      auditSheet.getRow(4).height = 8;
+
+      if (logoId !== null) {
+        auditSheet.addImage(logoId, {
+          tl: { col: 0.12, row: 0.05 },
+          ext: { width: 250, height: 70 }
+        });
+      }
+
+      auditSheet.mergeCells('C1:E1');
+      const tituloAuditoria = auditSheet.getCell('C1');
+      tituloAuditoria.value = 'AUDITORIA DE AÇÕES NO SISTEMA';
+      tituloAuditoria.font = { bold: true, size: 15, color: { argb: 'FF0F172A' } };
+      tituloAuditoria.alignment = { vertical: 'middle', horizontal: 'right' };
+
+      auditSheet.mergeCells('C2:E2');
+      const periodoAuditoria = auditSheet.getCell('C2');
+      periodoAuditoria.value = `${resumo.periodo} · ${rows.length} ${rows.length === 1 ? 'registro' : 'registros'}`;
+      periodoAuditoria.font = { size: 10, color: { argb: 'FF64748B' } };
+      periodoAuditoria.alignment = { vertical: 'middle', horizontal: 'right' };
+
+      const cabecalhos = ['Data', 'Tipo', 'Ação', 'Responsável', 'Papel'];
+      auditSheet.getRow(5).values = cabecalhos;
+      auditSheet.getRow(5).height = 24;
+      auditSheet.getRow(5).eachCell((cell) => {
+        cell.font = { bold: true, color: { argb: branco } };
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: azulCaige } };
+        cell.alignment = { vertical: 'middle', horizontal: 'left' };
+        cell.border = {
+          top: { style: 'thin', color: { argb: azulEscuro } },
+          left: { style: 'thin', color: { argb: azulEscuro } },
+          bottom: { style: 'thin', color: { argb: azulEscuro } },
+          right: { style: 'thin', color: { argb: azulEscuro } }
+        };
+      });
+
+      rows.forEach((item, index) => {
+        const linha = 6 + index;
+        const row = auditSheet.getRow(linha);
+        const dataInterpretada = parseAuditDate(item.date);
+
+        row.values = [
+          dataInterpretada || item.date || '-',
+          item.type || '-',
+          item.description || '-',
+          item.responsible || '-',
+          String(item.role || 'SISTEMA').toUpperCase()
+        ];
+
+        const fundo = index % 2 === 0 ? branco : cinzaSuave;
+        row.eachCell((cell, columnNumber) => {
+          cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: fundo } };
+          cell.font = { color: { argb: 'FF0F172A' }, size: 10 };
+          cell.alignment = {
+            vertical: 'top',
+            horizontal: columnNumber === 5 ? 'center' : 'left',
+            wrapText: columnNumber === 3 || columnNumber === 4
+          };
+          cell.border = {
+            top: { style: 'thin', color: { argb: cinzaBorda } },
+            left: { style: 'thin', color: { argb: cinzaBorda } },
+            bottom: { style: 'thin', color: { argb: cinzaBorda } },
+            right: { style: 'thin', color: { argb: cinzaBorda } }
+          };
+        });
+
+        if (dataInterpretada) {
+          row.getCell(1).numFmt = 'dd/mm/yyyy hh:mm';
+        }
+
+        row.height = 24;
+      });
+
+      const ultimaLinha = 5 + rows.length;
+
+      // Autofiltro simples, sem criar uma "Tabela" do Excel.
+      // Evita a estrutura table1.xml que estava fazendo o Excel reparar o arquivo.
+      auditSheet.autoFilter = {
+        from: 'A5',
+        to: `E${ultimaLinha}`
+      };
+
+      auditSheet.pageSetup.printArea = `A1:E${ultimaLinha}`;
+      auditSheet.headerFooter.oddFooter = 'Relatório gerado pelo CAIGE &P de &N';
+
+      try {
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob(
+          [buffer],
+          { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }
+        );
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        const stamp = `${agora.getFullYear()}${String(agora.getMonth() + 1).padStart(2, '0')}${String(agora.getDate()).padStart(2, '0')}_${String(agora.getHours()).padStart(2, '0')}${String(agora.getMinutes()).padStart(2, '0')}`;
+        link.href = url;
+        link.download = `auditoria_${stamp}.xlsx`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+        notify.success('Excel de auditoria exportado com sucesso!');
+      } catch (error) {
+        console.error('Erro ao exportar Excel de auditoria:', error);
+        notify.error('Não foi possível exportar o Excel.');
+      }
+    }
+
+    function obterDescricaoCampoAuditoria(field) {
+      const labels = {
+        type: 'Tipo de ação',
+        description: 'Ação',
+        responsible: 'Responsável',
+        date: 'Data'
+      };
+      return labels[field] || '';
+    }
+
+    function obterDescricaoCriterioAuditoria(index) {
+      const field = document.getElementById(`audit-field-${index}`)?.value || '';
+      if (!field) return '';
+
+      let value = '';
+      if (field === 'date') {
+        const raw = document.getElementById(`audit-value-date-${index}`)?.value || '';
+        value = raw ? formatarDataAuditoriaPdf(raw) : '';
+      } else if (field === 'type') {
+        const select = document.getElementById(`audit-value-type-${index}`);
+        value = select?.selectedOptions?.[0]?.textContent?.trim() || '';
+      } else {
+        value = document.getElementById(`audit-value-text-${index}`)?.value?.trim() || '';
+      }
+
+      if (!value) return '';
+      return `${obterDescricaoCampoAuditoria(field)}: ${value}`;
+    }
+
+    function formatarDataAuditoriaPdf(value) {
+      if (!value) return '';
+      const match = String(value).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (match) return `${match[3]}/${match[2]}/${match[1]}`;
+      return String(value);
+    }
+
+    function obterResumoFiltrosAuditoriaPdf() {
+      const criterio1 = obterDescricaoCriterioAuditoria(1);
+      const segundoAtivo = document.getElementById('audit-enable-second-filter')?.checked === true;
+      const criterio2 = segundoAtivo ? obterDescricaoCriterioAuditoria(2) : '';
+      const operador = document.getElementById('audit-operator-2')?.value === 'or' ? 'OU' : 'E';
+      const apenasProfessores = document.getElementById('audit-only-professors')?.checked === true;
+      const dataInicial = document.getElementById('audit-date-from')?.value || '';
+      const dataFinal = document.getElementById('audit-date-to')?.value || '';
+
+      let filtros = 'Sem filtro específico';
+      if (criterio1 && criterio2) filtros = `${criterio1} ${operador} ${criterio2}`;
+      else if (criterio1) filtros = criterio1;
+      else if (criterio2) filtros = criterio2;
+
+      let periodo = 'Todo o período disponível';
+      if (dataInicial && dataFinal) periodo = `${formatarDataAuditoriaPdf(dataInicial)} a ${formatarDataAuditoriaPdf(dataFinal)}`;
+      else if (dataInicial) periodo = `A partir de ${formatarDataAuditoriaPdf(dataInicial)}`;
+      else if (dataFinal) periodo = `Até ${formatarDataAuditoriaPdf(dataFinal)}`;
+
+      return {
+        filtros,
+        periodo,
+        professores: apenasProfessores ? 'Somente professores' : 'Todos os responsáveis'
+      };
+    }
+
+    async function exportAuditPdf() {
+      const rows = await fetchAllAuditRowsForExport();
+      if (!rows.length) {
+        notify.info('Não há dados para exportar.');
+        return;
+      }
+
+      const gerador = window.GeradorPdfCAIGE;
+      if (!gerador || !window.jspdf?.jsPDF) {
+        notify.error('Não foi possível carregar o gerador de PDF.');
+        return;
+      }
+
+      const doc = gerador.criarDocumento({ orientation: 'landscape' });
+      if (!doc || typeof doc.autoTable !== 'function') {
+        notify.error('Não foi possível carregar a tabela do PDF.');
+        return;
+      }
+
+      const agora = new Date();
+      const resumo = obterResumoFiltrosAuditoriaPdf();
+      const logo = await gerador.carregarImagemComoDataUrl('/recursos/images/logocaige.png');
+      const margemX = 10;
+      const paginasComCabecalho = new Set();
+
+      const corpo = rows.map((item) => [
+        item.date || '-',
+        item.type || '-',
+        item.description || '-',
+        item.responsible || '-',
+        String(item.role || 'SISTEMA').toUpperCase()
+      ]);
+
+      const desenharContexto = (pagina) => {
+        let y = gerador.desenharCabecalho(doc, {
+          logo,
+          titulo: 'Relatório de Auditoria',
+          subtitulo: 'Auditoria de ações no sistema',
+          pagina,
+          margemX
+        });
+
+        y = gerador.desenharMetadados(doc, {
+          itens: [
+            { rotulo: 'Período', valor: resumo.periodo },
+            { rotulo: 'Filtros', valor: resumo.filtros },
+            { rotulo: 'Responsáveis', valor: resumo.professores },
+            { rotulo: 'Registros', valor: String(rows.length) }
+          ],
+          y,
+          margemX,
+          colunas: 4
+        });
+
+        paginasComCabecalho.add(pagina);
+        return y;
+      };
+
+      const topoTabela = desenharContexto(1);
+      const estilosTabela = gerador.obterEstilosTabela({ fontSize: 8.2, cabecalhoEscuro: true });
+
+      doc.autoTable({
+        head: [['Data', 'Tipo', 'Ação', 'Responsável', 'Papel']],
+        body: corpo,
+        startY: topoTabela,
+        margin: { top: topoTabela, right: margemX, bottom: 16, left: margemX },
+        showHead: 'everyPage',
+        ...estilosTabela,
+        columnStyles: {
+          0: { cellWidth: 31 },
+          1: { cellWidth: 39 },
+          2: { cellWidth: 104 },
+          3: { cellWidth: 57 },
+          4: { cellWidth: 36 }
+        },
+        didDrawPage: () => {
+          const paginaAtual = doc.internal.getCurrentPageInfo().pageNumber;
+          if (!paginasComCabecalho.has(paginaAtual)) {
+            desenharContexto(paginaAtual);
+          }
+        }
+      });
+
+      gerador.adicionarRodapes(doc, {
+        agora,
+        margemX,
+        textoEsquerda: 'Relatório de Auditoria · CAIGE'
+      });
+
+      doc.save(`auditoria_${gerador.gerarStamp(agora)}.pdf`);
+      notify.success('PDF de auditoria exportado com sucesso!');
+    }
+
+    document.getElementById('audit-field-1').addEventListener('change', () => syncFilterInputVisibility(1));
+    document.getElementById('audit-field-2').addEventListener('change', () => syncFilterInputVisibility(2));
+
+    document.getElementById('audit-enable-second-filter').addEventListener('change', (event) => {
+      document.getElementById('audit-filter-secondary').style.display = event.target.checked ? 'block' : 'none';
+    });
+
+    document.getElementById('audit-apply-filters').addEventListener('click', applyAuditFilters);
+    document.getElementById('audit-clear-filters').addEventListener('click', clearAuditFilters);
+    document.getElementById('audit-refresh').addEventListener('click', async () => {
+      if (!auditQueryApplied) return;
+      await loadAuditData({ refresh: true });
+    });
+    document.getElementById('audit-export-excel').addEventListener('click', exportAuditExcel);
+    document.getElementById('audit-export-pdf').addEventListener('click', exportAuditPdf);
+
+    document.getElementById('audit-page-size').addEventListener('change', async (event) => {
+      auditPageSize = Number(event.target.value) || 10;
+      auditPage = 1;
+      if (auditQueryApplied) await loadAuditData({ refresh: true });
+    });
+
+
+    // Reutiliza o seletor global de quantidade por página do CAIGE.
+    if (typeof window.PaginacaoLista !== 'undefined' && !document.getElementById('audit-page-size')?.dataset.caigePickerReady) {
+      const auditPageSizeSelect = document.getElementById('audit-page-size');
+      if (auditPageSizeSelect) {
+        auditPageSizeSelect.dataset.caigePickerReady = 'true';
+        window.auditPageSizePicker = new window.PaginacaoLista({
+          seletorQuantidade: '#audit-page-size',
+          tamanhoPadrao: auditPageSize,
+          opcoesQuantidade: [10, 20, 30, 50, 100]
+        });
+      }
+    }
+    document.getElementById('audit-first-page').addEventListener('click', async () => {
+      if (auditPage <= 1) return;
+      auditPage = 1; await loadAuditData({ refresh: true });
+    });
+    document.getElementById('audit-prev-page').addEventListener('click', async () => {
+      if (auditPage <= 1) return;
+      auditPage -= 1; await loadAuditData({ refresh: true });
+    });
+    document.getElementById('audit-next-page').addEventListener('click', async () => {
+      const totalPages = Math.max(1, Math.ceil(auditTotal / auditPageSize));
+      if (auditPage >= totalPages) return;
+      auditPage += 1; await loadAuditData({ refresh: true });
+    });
+    document.getElementById('audit-last-page').addEventListener('click', async () => {
+      const totalPages = Math.max(1, Math.ceil(auditTotal / auditPageSize));
+      if (auditPage >= totalPages) return;
+      auditPage = totalPages; await loadAuditData({ refresh: true });
+    });
+
+    updateAuditButtons();
+    /* =====================================================
+       APRIMORAMENTOS MOBILE DA ÁREA ADMINISTRATIVA
+       ===================================================== */
+
+    const adminMobileMedia = window.matchMedia('(max-width: 767px)');
+
+    function prepararSecoesRetrateisMobile() {
+      document
+        .querySelectorAll('[data-mobile-collapse-target]')
+        .forEach((toggle) => {
+          if (toggle.dataset.mobileCollapseReady === 'true') return;
+
+          const target = document.getElementById(toggle.dataset.mobileCollapseTarget);
+          if (!target) return;
+
+          toggle.dataset.mobileCollapseReady = 'true';
+
+          const sincronizar = (expanded) => {
+            toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+            target.classList.toggle('admin-mobile-collapsible--open', expanded);
+          };
+
+          toggle.addEventListener('click', () => {
+            const expanded = toggle.getAttribute('aria-expanded') === 'true';
+            sincronizar(!expanded);
+          });
+
+          sincronizar(!adminMobileMedia.matches);
+        });
+    }
+
+    function prepararAuditoriaMobile() {
+      const auditSection = document.querySelector('.audit-filters');
+      const toggle = document.getElementById('admin-audit-toggle');
+      const actions = document.querySelector('.audit-filter-actions');
+
+      if (!auditSection || !toggle || !actions) return;
+
+      const setExpanded = (expanded) => {
+        toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+        auditSection.classList.toggle('admin-audit-filters--open', expanded);
+      };
+
+      if (toggle.dataset.auditToggleReady !== 'true') {
+        toggle.dataset.auditToggleReady = 'true';
+
+        toggle.addEventListener('click', () => {
+          if (!adminMobileMedia.matches) return;
+
+          const expanded = toggle.getAttribute('aria-expanded') === 'true';
+          setExpanded(!expanded);
+        });
+      }
+
+      if (actions.dataset.mobileActionsReady !== 'true') {
+        actions.dataset.mobileActionsReady = 'true';
+
+        const refresh = document.getElementById('audit-refresh');
+        const excel = document.getElementById('audit-export-excel');
+        const pdf = document.getElementById('audit-export-pdf');
+
+        if (refresh && excel && pdf) {
+          const more = document.createElement('div');
+          more.className = 'admin-audit-more';
+
+          const moreToggle = document.createElement('button');
+          moreToggle.type = 'button';
+          moreToggle.className = 'btn-small admin-audit-more__toggle';
+          moreToggle.setAttribute('aria-expanded', 'false');
+          moreToggle.innerHTML = '<span>Mais ações</span><span class="icone icone--sm" data-icone="chevron-baixo" aria-hidden="true"></span>';
+          window.IconesCAIGE?.aplicar?.(moreToggle);
+
+          const menu = document.createElement('div');
+          menu.className = 'admin-audit-more__menu';
+
+          [refresh, excel, pdf].forEach((button) => {
+            menu.appendChild(button);
+          });
+
+          moreToggle.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+
+            const open = more.classList.toggle('admin-audit-more--open');
+            moreToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+          });
+
+          menu.addEventListener('click', () => {
+            more.classList.remove('admin-audit-more--open');
+            moreToggle.setAttribute('aria-expanded', 'false');
+          });
+
+          more.appendChild(moreToggle);
+          more.appendChild(menu);
+          actions.appendChild(more);
+        }
+      }
+
+      setExpanded(!adminMobileMedia.matches);
+    }
+
+    function atualizarExperienciaAdministrativaMobile() {
+      prepararSecoesRetrateisMobile();
+      prepararAuditoriaMobile();
+
+    }
+
+    document.addEventListener('click', (event) => {
+
+      if (!event.target.closest('.admin-audit-more')) {
+        document
+          .querySelectorAll('.admin-audit-more--open')
+          .forEach((menu) => {
+            menu.classList.remove('admin-audit-more--open');
+            menu
+              .querySelector('.admin-audit-more__toggle')
+              ?.setAttribute('aria-expanded', 'false');
+          });
+      }
+    });
+
+    adminMobileMedia.addEventListener?.(
+      'change',
+      atualizarExperienciaAdministrativaMobile
+    );
+
+    atualizarExperienciaAdministrativaMobile();
+
+    document.addEventListener('input', (event) => {
+      if (CAMPOS_PERSISTENTES_GERENCIAMENTO.includes(event.target?.id)) salvarRascunhoGerenciamento();
+    });
+    document.addEventListener('change', (event) => {
+      if (CAMPOS_PERSISTENTES_GERENCIAMENTO.includes(event.target?.id)) salvarRascunhoGerenciamento();
+    });
+    document.querySelectorAll('[data-mobile-collapse-target]').forEach((toggle) => {
+      toggle.addEventListener('click', () => setTimeout(salvarRascunhoGerenciamento, 0));
+    });
+
+    // Initialize
+    const hash = window.location.hash.substring(1);
+    const tabsPermitidasHash = ['usuarios', 'cursos', 'periodos', 'auditoria', 'arquivados'];
+    const estadoGerenciamento = window.EstadoSessao?.obter?.('gerenciamento', 'navegacao');
+    let abaDireta = null;
+    try { abaDireta = sessionStorage.getItem('caige:gerenciamento:aba-ativa'); } catch {}
+    const abaSalva = tabsPermitidasHash.includes(abaDireta) ? abaDireta : estadoGerenciamento?.aba;
+    // A aba de trabalho salva tem prioridade. O hash é apenas fallback de navegação.
+    const abaInicial = tabsPermitidasHash.includes(abaSalva)
+      ? abaSalva
+      : (tabsPermitidasHash.includes(hash) ? hash : tabInicial);
+    switchTab(abaInicial);
+    loadCourses();
+    loadCoursesIntoSelects();
+    restaurarRascunhoGerenciamento();
+    setTimeout(restaurarModalAtividadesGerenciamento, 350);
+  </script>
+  <script src="/recursos/js/pwa.js"></script>
+</body>
+
+</html>

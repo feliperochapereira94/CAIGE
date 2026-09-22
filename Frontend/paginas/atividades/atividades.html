@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Movimentações Importantes</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+
+    <link rel="stylesheet" href="../../recursos/css/base.css" />
+    <link rel="stylesheet" href="../../recursos/css/componentes.css" />
+    <link rel="stylesheet" href="../../recursos/css/layout.css" />
+    <link rel="stylesheet" href="../../recursos/css/responsive.css" />
+    <link rel="stylesheet" href="../../recursos/css/paginas/movimentacoes.css" />
+
+    <script src="../../recursos/js/text-normalizer.js"></script>
+    <script src="../../recursos/js/formatador-texto.js"></script>
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#123a78" />
+    <meta name="application-name" content="CAIGE" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="CAIGE" />
+    <link rel="apple-touch-icon" href="/recursos/images/pwa/apple-touch-icon.png" />
+    <link rel="stylesheet" href="../../recursos/css/componentes-movimentacao.css" />
+  </head>
+
+  <body data-page-title="Movimentações Importantes" data-page-subtitle="Consulte um volume maior de registros relevantes para pacientes, presenças e prontuários.">
+
+    <div class="activities-page">
+      <div id="shell-sidebar"></div>
+
+      <main class="activities-content">
+        <div id="shell-header"></div>
+
+
+            <section class="stats-summary largura-pagina" id="stats-summary" aria-label="Resumo das movimentações"></section>
+
+
+            <section class="activities-filters card list-toolbar largura-pagina" aria-label="Filtros das movimentações">
+
+                <div class="filter-group">
+
+                    <label for="filter-date-start">
+                        Data inicial
+                    </label>
+
+                    <div class="activity-date-filter">
+                        <input type="text" id="filter-date-start" title="Selecione a data inicial" autocomplete="off" />
+                        <button class="activity-date-filter__calendar" type="button" id="filter-date-start-calendar" aria-label="Abrir calendário da data inicial" title="Abrir calendário">
+                            <span class="icone icone--sm" data-icone="calendario" aria-hidden="true"></span>
+                        </button>
+                    </div>
+
+                </div>
+
+
+                <div class="filter-group">
+
+                    <label for="filter-date-end">
+                        Data final
+                    </label>
+
+                    <div class="activity-date-filter">
+                        <input type="text" id="filter-date-end" title="Selecione a data final" autocomplete="off" />
+                        <button class="activity-date-filter__calendar" type="button" id="filter-date-end-calendar" aria-label="Abrir calendário da data final" title="Abrir calendário">
+                            <span class="icone icone--sm" data-icone="calendario" aria-hidden="true"></span>
+                        </button>
+                    </div>
+
+                </div>
+
+
+                <div class="filter-group">
+
+                    <label for="filter-type">
+                        Evento
+                    </label>
+
+                    <select id="filter-type">
+                        <option value="">
+                            Todos os eventos
+                        </option>
+                    </select>
+
+                </div>
+
+
+                <div class="filter-group">
+
+                    <label for="filter-responsible">
+                        Responsável
+                    </label>
+
+                    <input type="text" id="filter-responsible" placeholder="Buscar responsável..." autocomplete="off" />
+
+                </div>
+
+
+                <div class="filters-actions list-toolbar__actions">
+
+                    <button class="btn-filter" id="btn-apply-filters" type="button">
+                        <span class="icone icone--sm" data-icone="buscar" aria-hidden="true"></span>
+                        <span>Filtrar</span>
+                    </button>
+
+                    <button class="btn-filter btn-filter-clear" id="btn-clear-filters" type="button">
+                        <span class="icone icone--sm" data-icone="fechar" aria-hidden="true"></span>
+                        <span>Limpar</span>
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            <div class="card largura-pagina activities-table-card admin-list surface-primary">
+
+                <section class="activities-table data-grid admin-list__body" data-grid-redimensionavel="true" data-grid-id="movimentacoes" aria-label="Lista de movimentações">
+
+                    <div class="activities-table-header data-grid__header">
+                        <span class="data-grid__cell">Data/Hora</span>
+                        <span class="data-grid__cell">Evento</span>
+                        <span class="data-grid__cell">Detalhes</span>
+                        <span class="data-grid__cell activity-header--responsible">Responsável</span>
+                    </div>
+
+                    <div class="activities-table-body data-grid__body movimentacao-caige-lista" id="activities-list"></div>
+
+                </section>
+
+                <div
+                    class="pagination-bar--integrated admin-list__footer"
+                    id="activities-pagination"
+                    hidden
+                >
+                    <label class="pagination-page-size">
+                        <span>Registros por página</span>
+
+                        <select
+                            id="activities-page-size"
+                            aria-label="Registros por página"
+                        ></select>
+                    </label>
+
+                    <div class="pagination-navigation">
+                        <button
+                            class="pagination-nav-button"
+                            id="activities-first-page"
+                            type="button"
+                            aria-label="Primeira página"
+                            title="Primeira página"
+                        >
+                            <span class="icone icone--sm" data-icone="primeira-pagina" aria-hidden="true"></span>
+                        </button>
+
+                        <button
+                            class="pagination-nav-button"
+                            id="activities-prev-page"
+                            type="button"
+                            aria-label="Página anterior"
+                            title="Página anterior"
+                        >
+                            <span class="icone icone--sm" data-icone="chevron-esquerda" aria-hidden="true"></span>
+                        </button>
+
+                        <span
+                            class="pagination-page-info"
+                            id="activities-page-indicator"
+                        >
+                            Página 1 de 1 (0 registros)
+                        </span>
+
+                        <button
+                            class="pagination-nav-button"
+                            id="activities-next-page"
+                            type="button"
+                            aria-label="Próxima página"
+                            title="Próxima página"
+                        >
+                            <span class="icone icone--sm" data-icone="chevron-direita" aria-hidden="true"></span>
+                        </button>
+
+                        <button
+                            class="pagination-nav-button"
+                            id="activities-last-page"
+                            type="button"
+                            aria-label="Última página"
+                            title="Última página"
+                        >
+                            <span class="icone icone--sm" data-icone="ultima-pagina" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+    <script src="../../recursos/js/icones.js"></script>
+    <script src="../../recursos/js/notificacoes.js"></script>
+    <script src="../../recursos/js/modal-confirmacao.js"></script>
+    <script src="../../recursos/js/util-jwt.js"></script>
+    <script src="../../recursos/js/shell-global.js"></script>
+    <script src="../../recursos/js/sidebar-menu.js"></script>
+    <script src="../../recursos/js/menu-usuario.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
+
+    <script src="../../recursos/js/date-picker-ptbr.js"></script>
+
+    <script src="../../recursos/js/paginacao.js"></script>
+    <script src="../../recursos/js/estado-sessao.js"></script>
+
+
+    <script>
+
+        const statsSummary =
+            document.getElementById('stats-summary');
+
+        const activitiesList =
+            document.getElementById('activities-list');
+
+        const filterDateStart =
+            document.getElementById('filter-date-start');
+
+        const filterDateEnd =
+            document.getElementById('filter-date-end');
+
+        const filterType =
+            document.getElementById('filter-type');
+
+        const filterResponsible =
+            document.getElementById('filter-responsible');
+
+        const btnApplyFilters =
+            document.getElementById('btn-apply-filters');
+
+        const btnClearFilters =
+            document.getElementById('btn-clear-filters');
+
+
+        let paginacaoMovimentacoes = null;
+        let restaurandoEstadoMovimentacoes = true;
+        const ESTADO_MOVIMENTACOES_MODULO = 'movimentacoes';
+        const ESTADO_MOVIMENTACOES_ID = 'lista';
+
+        const obterEstadoMovimentacoes = () =>
+            window.EstadoSessao?.obter?.(
+                ESTADO_MOVIMENTACOES_MODULO,
+                ESTADO_MOVIMENTACOES_ID
+            ) || null;
+
+        const salvarEstadoMovimentacoes = () => {
+            if (restaurandoEstadoMovimentacoes) return;
+
+            window.EstadoSessao?.salvar?.(
+                ESTADO_MOVIMENTACOES_MODULO,
+                ESTADO_MOVIMENTACOES_ID,
+                {
+                    dataInicial: filterDateStart.value || '',
+                    dataFinal: filterDateEnd.value || '',
+                    tipo: filterType.value || '',
+                    responsavel: filterResponsible.value || '',
+                    paginaAtual: paginacaoMovimentacoes?.paginaAtual || 1,
+                    registrosPorPagina: paginacaoMovimentacoes?.tamanhoPagina || 10
+                }
+            );
+        };
+
+
+        const [filterDateStartPicker] =
+            window.initPtBrDatePicker
+                ? window.initPtBrDatePicker(
+                    '#filter-date-start'
+                )
+                : [];
+
+
+        const [filterDateEndPicker] =
+            window.initPtBrDatePicker
+                ? window.initPtBrDatePicker(
+                    '#filter-date-end'
+                )
+                : [];
+
+
+        if (!filterDateStartPicker) {
+            filterDateStart.type = 'date';
+            filterDateStart.lang = 'pt-BR';
+        }
+
+
+        if (!filterDateEndPicker) {
+            filterDateEnd.type = 'date';
+            filterDateEnd.lang = 'pt-BR';
+        }
+
+        const abrirCalendario = (picker, input) => {
+            if (picker && typeof picker.open === 'function') {
+                picker.open();
+                return;
+            }
+
+            if (typeof input?.showPicker === 'function') {
+                input.showPicker();
+                return;
+            }
+
+            input?.focus();
+        };
+
+        document.getElementById('filter-date-start-calendar')?.addEventListener(
+            'click',
+            () => abrirCalendario(filterDateStartPicker, filterDateStart)
+        );
+
+        document.getElementById('filter-date-end-calendar')?.addEventListener(
+            'click',
+            () => abrirCalendario(filterDateEndPicker, filterDateEnd)
+        );
+
+
+        let allActivities = [];
+
+
+        const normalizarTipoEvento = (tipoOriginal) => {
+
+            if (
+                window.FormatadorTexto &&
+                typeof window.FormatadorTexto.formatarTipoMovimentacao === 'function'
+            ) {
+                return window.FormatadorTexto.formatarTipoMovimentacao(tipoOriginal);
+            }
+
+            return String(tipoOriginal || 'Movimentação').trim() || 'Movimentação';
+        };
+
+
+        const getActivityClass = (type) => {
+
+            if (
+                window.FormatadorTexto &&
+                typeof window.FormatadorTexto.obterClasseTipoMovimentacao === 'function'
+            ) {
+                return window.FormatadorTexto.obterClasseTipoMovimentacao(type);
+            }
+
+            return 'sistema';
+        };
+
+
+        const getActivityRawDate = (activity) => {
+
+            if (
+                !activity ||
+                typeof activity !== 'object'
+            ) {
+                return '';
+            }
+
+
+            return (
+                activity.date ||
+                activity.created_at ||
+                activity.createdAt ||
+                ''
+            );
+        };
+
+
+        const parseActivityDate = (activityDate) => {
+
+            const raw =
+                String(activityDate || '').trim();
+
+
+            if (!raw) {
+                return null;
+            }
+
+
+            const brDateMatch =
+                raw.match(
+                    /^(\d{2})\/(\d{2})\/(\d{4})/
+                );
+
+
+            if (brDateMatch) {
+
+                const [
+                    ,
+                    day,
+                    month,
+                    year
+                ] = brDateMatch;
+
+
+                return new Date(
+                    Number(year),
+                    Number(month) - 1,
+                    Number(day)
+                );
+            }
+
+
+            const parsed =
+                new Date(raw);
+
+
+            if (
+                Number.isNaN(parsed.getTime())
+            ) {
+                return null;
+            }
+
+
+            return parsed;
+        };
+
+
+        const getActivityDateKey = (activityDate) => {
+
+            const parsed =
+                parseActivityDate(activityDate);
+
+
+            if (!parsed) {
+                return '';
+            }
+
+
+            const year =
+                parsed.getFullYear();
+
+
+            const month =
+                String(
+                    parsed.getMonth() + 1
+                ).padStart(
+                    2,
+                    '0'
+                );
+
+
+            const day =
+                String(
+                    parsed.getDate()
+                ).padStart(
+                    2,
+                    '0'
+                );
+
+
+            return `${year}-${month}-${day}`;
+        };
+
+
+        const formatActivityDateForTable = (activityDate) => {
+
+            const parsed = parseActivityDate(activityDate);
+
+            if (!parsed) {
+                const fallback = String(activityDate || 'Sem data').trim();
+                return `<span class="activity-date__date">${fallback}</span>`;
+            }
+
+            const data = parsed.toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+
+            const hora = parsed.toLocaleTimeString('pt-BR', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            return `
+                <span class="activity-date__date">${data}</span>
+                <span class="activity-date__separator">, </span>
+                <span class="activity-date__time">${hora}</span>
+            `;
+        };
+
+
+        const getTodayDateKey = () => {
+
+            const now =
+                new Date();
+
+
+            const year =
+                now.getFullYear();
+
+
+            const month =
+                String(
+                    now.getMonth() + 1
+                ).padStart(
+                    2,
+                    '0'
+                );
+
+
+            const day =
+                String(
+                    now.getDate()
+                ).padStart(
+                    2,
+                    '0'
+                );
+
+
+            return `${year}-${month}-${day}`;
+        };
+
+
+        const renderActivities = (activities) => {
+
+            activitiesList.innerHTML = '';
+
+
+            if (
+                activities.length === 0
+            ) {
+
+                activitiesList.innerHTML = `
+                    <div class="empty-state empty-state--movements">
+
+                        <div class="empty-state__icon icone" data-icone="caixa-vazia" aria-hidden="true"></div>
+
+                        <p>
+                            Nenhuma movimentação importante
+                            encontrada com esses filtros.
+                        </p>
+
+                    </div>
+                `;
+
+                if (window.IconesCAIGE) {
+                    window.IconesCAIGE.aplicar(activitiesList);
+                }
+
+                return;
+            }
+
+
+            activities.forEach(
+                activity => {
+
+                    const activityRawDate =
+                        getActivityRawDate(
+                            activity
+                        );
+
+
+                    const descFormatada = window.FormatadorTexto
+                        ? window.FormatadorTexto.formatarDescricaoMovimentacao(activity.description)
+                        : (activity.description || '');
+                    const respFormatado = window.FormatadorTexto
+                        ? window.FormatadorTexto.formatarNomePessoa(activity.responsible)
+                        : (activity.responsible || '');
+
+                    const row =
+                        document.createElement(
+                            'div'
+                        );
+
+
+                    row.className =
+                        'activities-row data-grid__row record-accent movimentacao-caige-item';
+
+
+                    row.innerHTML = `
+
+                        <span class="data-grid__cell activity-cell activity-cell--date movimentacao-caige-data">
+                            <span class="activity-date">
+                                ${formatActivityDateForTable(
+                            activityRawDate
+                        )
+                            }
+                            </span>
+                        </span>
+
+                        <span class="data-grid__cell activity-cell activity-cell--type movimentacao-caige-evento">
+                            <span
+                                class="
+                                    activity-type
+                                    event-badge
+                                    ${getActivityClass(
+                                activity.type
+                            )
+                            }
+                                "
+                            >
+                                ${normalizarTipoEvento(activity.type)}
+                            </span>
+                        </span>
+
+                        <span class="data-grid__cell activity-cell activity-cell--desc movimentacao-caige-detalhes">
+                            <span class="activity-description">
+                                ${descFormatada}
+                            </span>
+                        </span>
+
+                        <span class="data-grid__cell activity-cell activity-cell--resp movimentacao-caige-responsavel">
+                            <span class="activity-responsible">
+                                ${respFormatado}
+                            </span>
+                        </span>
+
+                    `;
+
+
+                    activitiesList.appendChild(
+                        row
+                    );
+                }
+            );
+        };
+
+
+        const inicializarPaginacaoMovimentacoes = () => {
+
+            if (
+                paginacaoMovimentacoes ||
+                typeof window.PaginacaoLista === 'undefined'
+            ) {
+                return;
+            }
+
+
+            paginacaoMovimentacoes =
+                new window.PaginacaoLista({
+                    seletorQuantidade:
+                        '#activities-page-size',
+
+                    seletorPaginacao:
+                        '#activities-pagination',
+
+                    seletorIndicador:
+                        '#activities-page-indicator',
+
+                    seletorPrimeira:
+                        '#activities-first-page',
+
+                    seletorAnterior:
+                        '#activities-prev-page',
+
+                    seletorProxima:
+                        '#activities-next-page',
+
+                    seletorUltima:
+                        '#activities-last-page',
+
+                    tamanhoPadrao: 10,
+
+                    rotuloSingular:
+                        'registro',
+
+                    rotuloPlural:
+                        'registros',
+
+                    aoRenderizar:
+                        (itensPagina, meta) => {
+                            renderActivities(
+                                itensPagina
+                            );
+
+                            if (!restaurandoEstadoMovimentacoes && meta) {
+                                salvarEstadoMovimentacoes();
+                            }
+                        }
+                });
+
+            const estado = obterEstadoMovimentacoes();
+            if (estado?.registrosPorPagina) {
+                const tamanho = Number(estado.registrosPorPagina);
+                if (paginacaoMovimentacoes.opcoesQuantidade.includes(tamanho)) {
+                    paginacaoMovimentacoes.tamanhoPagina = tamanho;
+                    const seletor = document.getElementById('activities-page-size');
+                    if (seletor) seletor.value = String(tamanho);
+                    paginacaoMovimentacoes._atualizarRotuloQuantidade?.();
+                    paginacaoMovimentacoes._renderizarOpcoesQuantidade?.();
+                }
+            }
+        };
+
+
+        const atualizarMovimentacoesPaginadas =
+            (activities) => {
+
+                inicializarPaginacaoMovimentacoes();
+
+
+                if (
+                    paginacaoMovimentacoes
+                ) {
+
+                    paginacaoMovimentacoes.definirItens(
+                        activities
+                    );
+
+                    return;
+                }
+
+
+                renderActivities(
+                    activities
+                );
+            };
+
+
+        const renderStats = (activities) => {
+
+            const normalizarTipo =
+                (tipo) =>
+                    String(tipo || '')
+                        .toLowerCase()
+                        .normalize('NFD')
+                        .replace(
+                            /[\u0300-\u036f]/g,
+                            ''
+                        );
+
+
+            const stats = [
+
+                {
+                    title: 'Total de registros',
+                    value: activities.length,
+                    icone: 'movimentacoes'
+                },
+
+                {
+                    title: 'Pacientes cadastrados',
+
+                    value:
+                        activities.filter(
+                            a => {
+
+                                const tipo =
+                                    normalizarTipo(
+                                        a.type
+                                    );
+
+
+                                return (
+                                    tipo.includes(
+                                        'paciente'
+                                    ) &&
+                                    (
+                                        tipo.includes(
+                                            'cadastrad'
+                                        ) ||
+                                        tipo.includes(
+                                            'novo'
+                                        )
+                                    )
+                                );
+                            }
+                        ).length,
+
+                    icone: 'pacientes'
+                },
+
+                {
+                    title: 'Frequências',
+
+                    value:
+                        activities.filter(
+                            a => {
+
+                                const tipo =
+                                    normalizarTipo(
+                                        a.type
+                                    );
+
+
+                                return (
+                                    tipo.includes(
+                                        'frequencia'
+                                    ) ||
+                                    tipo.includes(
+                                        'presenca'
+                                    )
+                                );
+                            }
+                        ).length,
+
+                    icone: 'frequencia'
+                },
+
+                {
+                    title: 'Avaliações',
+
+                    value:
+                        activities.filter(
+                            a => {
+
+                                const tipo =
+                                    normalizarTipo(
+                                        a.type
+                                    );
+
+
+                                return (
+                                    tipo.includes(
+                                        'avaliacao'
+                                    ) ||
+                                    tipo.includes(
+                                        'prontuario'
+                                    )
+                                );
+                            }
+                        ).length,
+
+                    icone: 'prontuarios'
+                },
+
+                {
+                    title: 'Hoje',
+
+                    value:
+                        activities.filter(
+                            a =>
+                                getActivityDateKey(
+                                    getActivityRawDate(a)
+                                ) ===
+                                getTodayDateKey()
+                        ).length,
+
+                    icone: 'calendario'
+                }
+
+            ];
+
+
+            statsSummary.innerHTML =
+                stats
+                    .map(
+                        stat => {
+                            const svgIcone = window.IconesCAIGE ? window.IconesCAIGE.obterSvg(stat.icone) : '';
+                            return `
+                                <div class="card card--kpi stat-card">
+                                    <div class="card__top">
+                                        <span class="card__icon icone" data-icone="${stat.icone}" aria-hidden="true">
+                                            ${svgIcone}
+                                        </span>
+                                    </div>
+                                    <div class="card__value">
+                                        ${stat.value}
+                                    </div>
+                                    <div class="card__title">
+                                        ${stat.title}
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    )
+                    .join('');
+
+            if (window.IconesCAIGE) {
+                window.IconesCAIGE.aplicar(statsSummary);
+            }
+        };
+
+
+        const applyFilters = () => {
+
+            let filtered =
+                allActivities;
+
+
+            if (
+                filterDateStart.value
+            ) {
+
+                const startDateKey =
+                    filterDateStart.value;
+
+
+                filtered =
+                    filtered.filter(
+                        a => {
+
+                            const activityDateKey =
+                                getActivityDateKey(
+                                    getActivityRawDate(
+                                        a
+                                    )
+                                );
+
+
+                            return (
+                                activityDateKey &&
+                                activityDateKey >=
+                                startDateKey
+                            );
+                        }
+                    );
+            }
+
+
+            if (
+                filterDateEnd.value
+            ) {
+
+                const endDateKey =
+                    filterDateEnd.value;
+
+
+                filtered =
+                    filtered.filter(
+                        a => {
+
+                            const activityDateKey =
+                                getActivityDateKey(
+                                    getActivityRawDate(
+                                        a
+                                    )
+                                );
+
+
+                            return (
+                                activityDateKey &&
+                                activityDateKey <=
+                                endDateKey
+                            );
+                        }
+                    );
+            }
+
+
+            if (
+                filterType.value
+            ) {
+
+                filtered =
+                    filtered.filter(
+                        a =>
+                            a.type ===
+                            filterType.value
+                    );
+            }
+
+
+            if (
+                filterResponsible.value
+            ) {
+
+                const responsibleSearch =
+                    filterResponsible.value
+                        .trim()
+                        .toLowerCase();
+
+
+                filtered =
+                    filtered.filter(
+                        a =>
+                            String(
+                                a.responsible ||
+                                ''
+                            )
+                                .toLowerCase()
+                                .includes(
+                                    responsibleSearch
+                                )
+                    );
+            }
+
+
+            atualizarMovimentacoesPaginadas(
+                filtered
+            );
+
+            renderStats(
+                filtered
+            );
+
+            salvarEstadoMovimentacoes();
+        };
+
+
+        const clearFilters = () => {
+
+            if (
+                filterDateStartPicker
+            ) {
+
+                filterDateStartPicker.clear();
+
+            } else {
+
+                filterDateStart.value = '';
+            }
+
+
+            if (
+                filterDateEndPicker
+            ) {
+
+                filterDateEndPicker.clear();
+
+            } else {
+
+                filterDateEnd.value = '';
+            }
+
+
+            filterType.value = '';
+
+            filterResponsible.value = '';
+
+
+            atualizarMovimentacoesPaginadas(
+                allActivities
+            );
+
+            renderStats(
+                allActivities
+            );
+
+            window.EstadoSessao?.remover?.(
+                ESTADO_MOVIMENTACOES_MODULO,
+                ESTADO_MOVIMENTACOES_ID
+            );
+        };
+
+
+        const loadActivities = async () => {
+
+            try {
+
+                if (!window.UtilJWT?.exigirSessao?.()) {
+                    return;
+                }
+
+
+                const response =
+                    await fetch(
+                        '/api/movimentacoes/recentes?limit=1000'
+                    );
+
+
+                if (response.status === 401) {
+                    window.UtilJWT?.redirecionarParaLogin?.(
+                        'Sua sessão expirou. Entre novamente.'
+                    );
+                    return;
+                }
+
+
+                if (
+                    !response.ok
+                ) {
+
+                    throw new Error(
+                        `Falha ao carregar movimentações (${response.status})`
+                    );
+                }
+
+
+                const payload =
+                    await response.json();
+
+
+                const entries =
+                    Array.isArray(payload)
+                        ? payload
+                        : (
+                            payload.data ||
+                            payload.activities ||
+                            []
+                        );
+
+
+                allActivities =
+                    entries.map(
+                        item => {
+
+                            const tipoOriginal =
+                                item.tipo ||
+                                item.type ||
+                                'Movimentação';
+
+
+                            return {
+
+                                type:
+                                    normalizarTipoEvento(
+                                        tipoOriginal
+                                    ),
+
+                                originalType:
+                                    tipoOriginal,
+
+                                description:
+                                    item.descricao ||
+                                    item.description ||
+                                    'Sem descrição',
+
+                                responsible:
+                                    item.nomUsuario ||
+                                    item.responsible ||
+                                    item.usuario ||
+                                    'Sistema',
+
+                                date:
+                                    item.criadoEm ||
+                                    item.created_at ||
+                                    item.createdAt ||
+                                    item.date ||
+                                    ''
+                            };
+                        }
+                    );
+
+
+                const eventTypes =
+                    [
+                        ...new Set(
+                            allActivities
+                                .map(
+                                    item =>
+                                        item.type
+                                )
+                                .filter(
+                                    Boolean
+                                )
+                        )
+                    ].sort();
+
+
+                filterType.innerHTML =
+                    '<option value="">Todos os eventos</option>'
+                    +
+                    eventTypes
+                        .map(
+                            type =>
+                                `
+                                    <option
+                                        value="${type.replace(
+                                    /"/g,
+                                    '&quot;'
+                                )}"
+                                    >
+                                        ${type}
+                                    </option>
+                                `
+                        )
+                        .join('');
+
+
+                atualizarMovimentacoesPaginadas(
+                    allActivities
+                );
+
+                renderStats(
+                    allActivities
+                );
+
+            } catch (error) {
+
+                console.error(
+                    'Erro ao carregar atividades:',
+                    error
+                );
+
+
+                activitiesList.innerHTML = `
+
+                    <div class="empty-state empty-state--movements">
+
+                        <div class="empty-state__icon icone" data-icone="alerta" aria-hidden="true"></div>
+
+                        <p>
+                            Erro ao carregar
+                            movimentações importantes.
+                        </p>
+
+                    </div>
+
+                `;
+
+                if (window.IconesCAIGE) {
+                    window.IconesCAIGE.aplicar(activitiesList);
+                }
+            }
+        };
+
+
+        btnApplyFilters.addEventListener(
+            'click',
+            applyFilters
+        );
+
+
+        btnClearFilters.addEventListener(
+            'click',
+            clearFilters
+        );
+
+
+        filterDateStart.addEventListener(
+            'change',
+            applyFilters
+        );
+
+
+        filterDateEnd.addEventListener(
+            'change',
+            applyFilters
+        );
+
+
+        filterType.addEventListener(
+            'change',
+            applyFilters
+        );
+
+
+        const userEmail =
+            localStorage.getItem(
+                'userEmail'
+            );
+
+
+        const token =
+            localStorage.getItem(
+                'jwtToken'
+            );
+
+
+        if (
+            !userEmail ||
+            !token
+        ) {
+
+            window.location.href =
+                '../autenticacao/entrar.html';
+        }
+
+
+        
+
+
+        const estadoMovimentacoes = obterEstadoMovimentacoes();
+        if (estadoMovimentacoes) {
+            if (estadoMovimentacoes.dataInicial) {
+                if (filterDateStartPicker) {
+                    filterDateStartPicker.setDate(estadoMovimentacoes.dataInicial, false, 'Y-m-d');
+                } else {
+                    filterDateStart.value = estadoMovimentacoes.dataInicial;
+                }
+            }
+            if (estadoMovimentacoes.dataFinal) {
+                if (filterDateEndPicker) {
+                    filterDateEndPicker.setDate(estadoMovimentacoes.dataFinal, false, 'Y-m-d');
+                } else {
+                    filterDateEnd.value = estadoMovimentacoes.dataFinal;
+                }
+            }
+            filterType.value = estadoMovimentacoes.tipo || '';
+            filterResponsible.value = estadoMovimentacoes.responsavel || '';
+        }
+
+        loadActivities().then(() => {
+            const estado = obterEstadoMovimentacoes();
+            if (estado?.paginaAtual && paginacaoMovimentacoes) {
+                paginacaoMovimentacoes.paginaAtual =
+                    Math.max(1, Number(estado.paginaAtual) || 1);
+                paginacaoMovimentacoes.renderizar();
+            }
+            restaurandoEstadoMovimentacoes = false;
+            salvarEstadoMovimentacoes();
+        });
+
+    </script>
+  <script src="/recursos/js/pwa.js"></script>
+</body>
+
+</html>
+

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Pacientes Cadastrados</title>
+
+  <link rel="stylesheet" href="../../recursos/css/base.css" />
+  <link rel="stylesheet" href="../../recursos/css/componentes.css" />
+  <link rel="stylesheet" href="../../recursos/css/layout.css" />
+  <link rel="stylesheet" href="../../recursos/css/responsive.css" />
+  <link rel="stylesheet" href="../../recursos/css/paginas/pacientes.css" />
+
+  <script src="../../recursos/js/text-normalizer.js"></script>
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#123a78" />
+    <meta name="application-name" content="CAIGE" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="CAIGE" />
+    <link rel="apple-touch-icon" href="/recursos/images/pwa/apple-touch-icon.png" />
+  </head>
+
+<body data-page-title="Pacientes Cadastrados"
+  data-page-subtitle="Gerencie e visualize os dados cadastrais dos pacientes">
+  <div class="dashboard pacientes-page">
+
+    <div id="shell-sidebar"></div>
+
+    <main class="content">
+
+      <div id="shell-header"></div>
+
+      <section class="section pacientes-section largura-pagina">
+        <div class="pacientes-section__header">
+          <div>
+            <h3>Todos os pacientes</h3>
+            <p id="patient-count">0 pacientes ativos</p>
+          </div>
+        </div>
+
+        <div class="pacientes-toolbar card list-toolbar">
+          <div class="pacientes-toolbar__filters list-toolbar__main">
+            <div class="search-box pacientes-search">
+              <input type="search" id="search-input" placeholder="Buscar paciente..." class="search-box__input"
+                autocomplete="off" aria-label="Buscar paciente por qualquer informação" />
+
+              <span class="search-box__icon icone icone--sm" data-icone="buscar" aria-hidden="true"></span>
+            </div>
+
+            <select class="filter-select" id="filter-status" aria-label="Filtrar por status">
+              <option value="ativo" selected>Ativos</option>
+              <option value="inativo">Inativos</option>
+              <option value="">Todos</option>
+            </select>
+
+            <select class="filter-select" id="sort-order" aria-label="Ordenar pacientes">
+              <option value="asc">Ordenar A-Z</option>
+              <option value="desc">Ordenar Z-A</option>
+              <option value="newest">Mais recentes</option>
+              <option value="oldest">Mais antigos</option>
+            </select>
+          </div>
+
+          <div class="pacientes-toolbar__actions list-toolbar__actions">
+            <a href="./novo.html" class="btn btn--primary pacientes-new-btn">
+              + Novo Paciente
+            </a>
+          </div>
+        </div>
+
+        <div class="pacientes-list card admin-list surface-primary">
+          <div class="table-wrap pacientes-table-wrap admin-list__body">
+            <table class="pacientes-table data-table" data-grid-redimensionavel="true" data-grid-id="pacientes">
+              <thead>
+                <tr>
+                  <th class="data-table__center">ID</th>
+                  <th>Paciente</th>
+                  <th>Endereço</th>
+                  <th class="data-table__center">Idade</th>
+                  <th class="data-table__center">Telefone</th>
+                  <th class="data-table__center">Status</th>
+                  <th class="pacientes-actions-col data-table__center">Ações</th>
+                </tr>
+              </thead>
+
+              <tbody id="patient-table-body"></tbody>
+            </table>
+          </div>
+
+          <div class="pagination-bar--integrated admin-list__footer" id="patients-pagination" hidden>
+            <label class="pagination-page-size">
+              <span>Registros por página</span>
+
+              <select id="patients-page-size" aria-label="Registros por página"></select>
+            </label>
+
+            <div class="pagination-navigation">
+              <button class="pagination-nav-button" id="patients-first-page" type="button" aria-label="Primeira página"
+                title="Primeira página">
+                <span class="icone icone--sm" data-icone="primeira-pagina" aria-hidden="true"></span>
+              </button>
+
+              <button class="pagination-nav-button" id="patients-prev-page" type="button" aria-label="Página anterior"
+                title="Página anterior">
+                <span class="icone icone--sm" data-icone="chevron-esquerda" aria-hidden="true"></span>
+              </button>
+
+              <span class="pagination-page-info" id="patients-page-indicator">
+                Página 1 de 1 (0 registros)
+              </span>
+
+              <button class="pagination-nav-button" id="patients-next-page" type="button" aria-label="Próxima página"
+                title="Próxima página">
+                <span class="icone icone--sm" data-icone="chevron-direita" aria-hidden="true"></span>
+              </button>
+
+              <button class="pagination-nav-button" id="patients-last-page" type="button" aria-label="Última página"
+                title="Última página">
+                <span class="icone icone--sm" data-icone="ultima-pagina" aria-hidden="true"></span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="../../recursos/js/redimensionar-grid.js"></script>
+  <script src="../../recursos/js/icones.js"></script>
+  <script src="../../recursos/js/notificacoes.js"></script>
+  <script src="../../recursos/js/modal-confirmacao.js"></script>
+  <script src="../../recursos/js/util-jwt.js"></script>
+  <script src="../../recursos/js/shell-global.js"></script>
+  <script src="../../recursos/js/sidebar-menu.js"></script>
+  <script src="../../recursos/js/menu-usuario.js"></script>
+  <script src="../../recursos/js/paginacao.js"></script>
+    <script src="../../recursos/js/estado-sessao.js"></script>
+  <script src="../../recursos/js/menu-acoes.js"></script>
+  <script src="../../recursos/js/formatador-texto.js"></script>
+  <script src="../../recursos/js/paciente-form-utils.js"></script>
+  <script src="../../recursos/js/pacientes-lista.js"></script>
+  <script src="/recursos/js/pwa.js"></script>
+</body>
+
+</html>

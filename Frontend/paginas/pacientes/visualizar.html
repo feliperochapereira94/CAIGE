@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Perfil</title>
+  <link rel="stylesheet" href="../../recursos/css/base.css" />
+  <link rel="stylesheet" href="../../recursos/css/componentes.css" />
+  <link rel="stylesheet" href="../../recursos/css/layout.css" />
+  <link rel="stylesheet" href="../../recursos/css/responsive.css" />
+  <link rel="stylesheet" href="../../recursos/css/paginas/pacientes.css" />
+  <script src="../../recursos/js/text-normalizer.js"></script>
+  <script src="../../recursos/js/formatador-texto.js"></script>
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#123a78" />
+    <meta name="application-name" content="CAIGE" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="CAIGE" />
+    <link rel="apple-touch-icon" href="/recursos/images/pwa/apple-touch-icon.png" />
+  </head>
+
+<body data-page-title="Perfil do Paciente" data-page-subtitle="Visualize e gerencie as informações cadastrais">
+  <div class="dashboard">
+    <div id="shell-sidebar"></div>
+
+    <main class="content">
+      <div id="shell-header"></div>
+
+      <!-- Barra superior em telas móveis -->
+      <div class="patient-mobile-topbar largura-pagina" aria-label="Navegação rápida do paciente">
+        <a href="./lista.html" class="patient-mobile-topbar__back" aria-label="Voltar para a lista de pacientes">
+          <span class="icone icone--sm" data-icone="seta-esquerda" aria-hidden="true"></span>
+          <span>Pacientes</span>
+        </a>
+        <button type="button" class="btn-alt menu-acoes-trigger patient-mobile-topbar__menu" id="patient-mobile-menu"
+          aria-label="Mais opções do paciente">
+          <span class="icone icone--sm" data-icone="menu" aria-hidden="true"></span>
+        </button>
+      </div>
+
+      <div class="profile-container largura-pagina">
+        <div class="profile-main">
+          <!-- Cabeçalho do paciente -->
+          <div class="profile-header">
+            <div class="patient-header__row">
+              <div class="profile-avatar" id="profile-avatar">MS</div>
+              <div class="patient-header__title-block">
+                <h1 class="profile-header__name" id="profile-name">Maria da Silva Santos</h1>
+                <div class="patient-header__status-row">
+                  <span id="patient-status-badge"><span class="status-badge status-badge--ativo">Ativo</span></span>
+                </div>
+              </div>
+              <!-- Ações em desktop integradas ao cabeçalho -->
+              <div class="patient-header__actions patient-header__actions--desktop-stack">
+                <button type="button" class="btn btn--secondary profile-prontuario-primary" id="btn-access-prontuario">
+                  <span class="icone icone--sm" data-icone="prontuario" aria-hidden="true"></span>
+                  Acessar Prontuário
+                </button>
+                <div class="patient-header__secondary-actions">
+                  <a class="btn btn--secondary" id="btn-edit-profile" href="./editar.html">
+                    <span class="icone icone--sm" data-icone="editar" aria-hidden="true"></span>
+                    Editar Cadastro
+                  </a>
+                  <a class="btn btn--secondary" href="./lista.html">
+                    <span class="icone icone--sm" data-icone="seta-esquerda" aria-hidden="true"></span>
+                    Voltar à Lista
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Grade de dados cadastrais principais -->
+            <div class="data-grid data-grid--3 data-grid--profile profile-header-data-grid">
+              <div class="profile-data-row">
+                <div class="data-field profile-main-field--idade">
+                  <span class="data-label">Idade</span>
+                  <span class="data-value" id="profile-age">70 anos</span>
+                </div>
+                <div class="data-field profile-main-field--nascimento profile-data-cell--mobile-right">
+                  <span class="data-label">Nascimento</span>
+                  <span class="data-value" id="profile-birth">15/03/1955</span>
+                </div>
+              </div>
+              <div class="profile-data-row">
+                <div class="data-field profile-main-field--sexo profile-data-cell--mobile-divider">
+                  <span class="data-label">Sexo</span>
+                  <span class="data-value" id="profile-gender">Feminino</span>
+                </div>
+                <div class="data-field profile-main-field--cpf profile-data-cell--mobile-right">
+                  <span class="data-label">CPF</span>
+                  <span class="data-value" id="profile-cpf">123.456.789-00</span>
+                </div>
+              </div>
+              <div class="profile-data-row">
+                <div class="data-field profile-main-field--telefone profile-data-cell--mobile-divider">
+                  <span class="data-label">Telefone</span>
+                  <span class="data-value">
+                    <a href="#" id="m-header-phone" class="profile-link"><span id="profile-phone">(33)
+                        99123-4567</span></a>
+                  </span>
+                </div>
+                <div class="data-field profile-main-field--responsavel profile-data-cell--mobile-right">
+                  <span class="data-label">Responsável</span>
+                  <span class="data-value" id="profile-responsible">Ana Maria Santos</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="profile-header-quick-desktop" aria-label="Informações rápidas do paciente">
+              <div class="profile-header-quick-item">
+                <span class="icone icone--sm" data-icone="calendario" aria-hidden="true"></span>
+                <span id="profile-quick-age">-</span>
+              </div>
+              <div class="profile-header-quick-item">
+                <span class="icone icone--sm" id="profile-quick-gender-icon" data-icone="usuario" aria-hidden="true"></span>
+                <span id="profile-quick-gender">-</span>
+              </div>
+              <div class="profile-header-quick-item">
+                <span class="icone icone--sm" data-icone="calendario" aria-hidden="true"></span>
+                <span id="profile-quick-birth">-</span>
+              </div>
+              <div class="profile-header-quick-item">
+                <span class="icone icone--sm" data-icone="telefone" aria-hidden="true"></span>
+                <span id="profile-quick-phone">-</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ação primária em telas móveis -->
+          <div class="patient-actions">
+            <button type="button" class="btn btn--primary patient-actions__primary" id="btn-mobile-prontuario">
+              <span class="icone icone--sm" data-icone="prontuario" aria-hidden="true"></span>
+              Acessar Prontuário
+            </button>
+          </div>
+
+          <section class="profile-clinical-summary profile-clinical-summary--mobile" aria-label="Resumo clínico">
+            <div class="profile-clinical-summary__body">
+              <div class="profile-alert profile-alert--allergy" id="m-profile-allergy" hidden>
+                <span class="icone icone--sm" data-icone="alerta" aria-hidden="true"></span>
+                <span>Atenção: alergia a <strong id="m-profile-allergy-value"></strong></span>
+              </div>
+              <p class="profile-clinical-summary__observation" id="m-profile-clinical-observation" hidden></p>
+            </div>
+          </section>
+
+          <!-- Painéis expansíveis em telas móveis -->
+          <div class="patient-info-accordions">
+            <!-- Endereço -->
+            <details class="patient-info-accordion" id="accordion-endereco">
+              <summary class="patient-info-accordion__summary">
+                <div class="patient-info-accordion__header">
+                  <span class="patient-info-accordion__title">
+                    <span class="icone icone--sm" data-icone="endereco" aria-hidden="true"></span>
+                    Endereço
+                  </span>
+                  <span class="patient-info-accordion__preview" id="preview-endereco">Carregando...</span>
+                </div>
+                <span class="icone icone--sm patient-info-accordion__icon" data-icone="chevron-baixo"
+                  aria-hidden="true"></span>
+              </summary>
+              <div class="patient-info-accordion__content">
+                <div class="data-grid data-grid--2 data-grid--profile">
+                  <div class="profile-data-row">
+                    <div class="data-field data-field--full">
+                      <span class="data-label">Rua</span>
+                      <span class="data-value" id="m-profile-street">Rua das Flores</span>
+                    </div>
+                  </div>
+                  <div class="profile-data-row">
+                    <div class="data-field">
+                      <span class="data-label">Número</span>
+                      <span class="data-value" id="m-profile-number">123</span>
+                    </div>
+                    <div class="data-field">
+                      <span class="data-label">Bairro</span>
+                      <span class="data-value" id="m-profile-neighborhood">Jardim Alice</span>
+                    </div>
+                  </div>
+                  <div class="profile-data-row">
+                    <div class="data-field">
+                      <span class="data-label">Cidade</span>
+                      <span class="data-value" id="m-profile-city">Governador Valadares</span>
+                    </div>
+                    <div class="data-field">
+                      <span class="data-label">Estado</span>
+                      <span class="data-value" id="m-profile-state">GV</span>
+                    </div>
+                  </div>
+                  <div class="profile-data-row">
+                    <div class="data-field">
+                      <span class="data-label">CEP</span>
+                      <span class="data-value" id="m-profile-cep">01234-567</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <!-- Contato -->
+            <details class="patient-info-accordion" id="accordion-contato">
+              <summary class="patient-info-accordion__summary">
+                <div class="patient-info-accordion__header">
+                  <span class="patient-info-accordion__title">
+                    <span class="icone icone--sm" data-icone="telefone" aria-hidden="true"></span>
+                    Contato
+                  </span>
+                  <span class="patient-info-accordion__preview" id="preview-contato">Carregando...</span>
+                </div>
+                <span class="icone icone--sm patient-info-accordion__icon" data-icone="chevron-baixo"
+                  aria-hidden="true"></span>
+              </summary>
+              <div class="patient-info-accordion__content">
+                <div class="data-grid data-grid--2 data-grid--profile">
+                  <div class="profile-data-row">
+                    <div class="data-field">
+                      <span class="data-label">Telefone Residencial</span>
+                      <span class="data-value" id="m-profile-phone">-</span>
+                    </div>
+                    <div class="data-field">
+                      <span class="data-label">Celular</span>
+                      <span class="data-value" id="m-profile-phone2">-</span>
+                    </div>
+                  </div>
+                  <div class="profile-data-row profile-data-row--actions">
+                    <div class="data-field data-field--full patient-contact-actions" id="m-contact-actions">
+                      <a href="#" id="m-btn-call" class="btn btn--secondary patient-contact-btn"><span class="icone icone--sm" data-icone="telefone" aria-hidden="true"></span> Ligar</a>
+                      <a href="#" id="m-btn-whatsapp" class="btn btn--secondary patient-contact-btn" target="_blank"
+                        rel="noopener"><span class="icone icone--sm" data-icone="mensagem" aria-hidden="true"></span> WhatsApp</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <!-- Responsável -->
+            <details class="patient-info-accordion" id="accordion-responsavel">
+              <summary class="patient-info-accordion__summary">
+                <div class="patient-info-accordion__header">
+                  <span class="patient-info-accordion__title">
+                    <span class="icone icone--sm" data-icone="usuarios" aria-hidden="true"></span>
+                    Responsável
+                  </span>
+                  <span class="patient-info-accordion__preview" id="preview-responsavel">Carregando...</span>
+                </div>
+                <span class="icone icone--sm patient-info-accordion__icon" data-icone="chevron-baixo"
+                  aria-hidden="true"></span>
+              </summary>
+              <div class="patient-info-accordion__content">
+                <div class="data-grid data-grid--2 data-grid--profile">
+                  <div class="profile-data-row">
+                    <div class="data-field data-field--full">
+                      <span class="data-label">Nome do Responsável</span>
+                      <span class="data-value" id="m-responsible-name">-</span>
+                    </div>
+                  </div>
+                  <div class="profile-data-row">
+                    <div class="data-field">
+                      <span class="data-label">Parentesco</span>
+                      <span class="data-value" id="m-responsible-relation">-</span>
+                    </div>
+                    <div class="data-field">
+                      <span class="data-label">Telefone</span>
+                      <span class="data-value" id="m-responsible-phone">-</span>
+                    </div>
+                  </div>
+                  <div class="profile-data-row profile-data-row--actions">
+                    <div class="data-field data-field--full patient-contact-actions patient-responsible-actions">
+                      <a href="#" id="m-responsible-call"
+                        class="btn btn--secondary patient-contact-btn patient-contact-btn--call">
+                        <span class="icone icone--sm" data-icone="telefone" aria-hidden="true"></span>
+                        Ligar
+                      </a>
+                      <a href="#" id="m-responsible-whatsapp"
+                        class="btn patient-contact-btn patient-contact-btn--whatsapp"
+                        target="_blank" rel="noopener">
+                        <span class="icone icone--sm" data-icone="mensagem" aria-hidden="true"></span>
+                        WhatsApp
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <!-- Observações Gerais -->
+            <details class="patient-info-accordion" id="accordion-observacoes">
+              <summary class="patient-info-accordion__summary">
+                <div class="patient-info-accordion__header">
+                  <span class="patient-info-accordion__title">
+                    <span class="icone icone--sm" data-icone="observacao" aria-hidden="true"></span>
+                    Observações Gerais
+                  </span>
+                  <span class="patient-info-accordion__preview" id="preview-observacoes">Carregando...</span>
+                </div>
+                <span class="icone icone--sm patient-info-accordion__icon" data-icone="chevron-baixo"
+                  aria-hidden="true"></span>
+              </summary>
+              <div class="patient-info-accordion__content">
+                <div class="profile-observations" id="m-profile-observations">-</div>
+              </div>
+            </details>
+          </div>
+
+          <!-- Composição em desktop -->
+          <div class="profile-desktop-columns">
+            <div class="profile-desktop-column profile-desktop-column--main">
+              <section class="profile-section profile-section--desktop profile-clinical-summary">
+                <div class="profile-section__header">
+                  <h3 class="profile-section__title">
+                    <span class="icone icone--sm" data-icone="clinico" aria-hidden="true"></span>
+                    Resumo Clínico
+                  </h3>
+                </div>
+                <div class="profile-clinical-summary__body">
+                  <div class="profile-alert profile-alert--allergy" id="profile-allergy" hidden>
+                    <span class="icone icone--sm" data-icone="alerta" aria-hidden="true"></span>
+                    <span>Atenção: alergia a <strong id="profile-allergy-value"></strong></span>
+                  </div>
+                  <p class="profile-clinical-summary__observation" id="profile-clinical-observation" hidden></p>
+                  <p class="profile-clinical-summary__empty" id="profile-clinical-summary-empty">Nenhum dado clínico
+                    informado.</p>
+                </div>
+              </section>
+
+              <section class="profile-section profile-section--desktop profile-recent-activities"
+                aria-labelledby="profile-recent-activities-title">
+                <div class="profile-section__header">
+                  <h3 class="profile-section__title" id="profile-recent-activities-title">
+                    <span class="icone icone--sm" data-icone="observacao" aria-hidden="true"></span>
+                    Atividades recentes
+                  </h3>
+                </div>
+                <div class="profile-recent-activities__list" id="profile-recent-activities-list">
+                  <p class="profile-recent-activities__empty">Carregando...</p>
+                </div>
+              </section>
+
+              <section class="profile-section profile-section--desktop profile-section--desktop--observacoes">
+                <div class="profile-section__header">
+                  <h3 class="profile-section__title" id="profile-alerts-title">
+                    <span class="icone icone--sm" data-icone="observacao" aria-hidden="true"></span>
+                    Observações
+                  </h3>
+                </div>
+                <div class="profile-observations" id="profile-observations">Nenhuma observação registrada.</div>
+              </section>
+            </div>
+
+            <div class="profile-desktop-column profile-desktop-column--aside">
+              <section class="profile-section profile-section--desktop profile-section--desktop--contato">
+                <div class="profile-section__header">
+                  <h3 class="profile-section__title">
+                    <span class="icone icone--sm" data-icone="telefone" aria-hidden="true"></span>
+                    Contato
+                  </h3>
+                </div>
+                <div class="profile-contact__phones">
+                  <div class="profile-contact__phone-row">
+                    <span class="profile-contact__label">Residencial</span>
+                    <span class="profile-contact__value" id="profile-contact-phone">-</span>
+                  </div>
+                  <div class="profile-contact__phone-row">
+                    <span class="profile-contact__label">Celular</span>
+                    <span class="profile-contact__value" id="profile-contact-phone2">-</span>
+                  </div>
+                </div>
+                <div class="profile-contact__actions" id="contact-actions">
+                  <a href="#" id="btn-whatsapp" class="btn profile-contact-btn profile-contact-btn--whatsapp"
+                    target="_blank" rel="noopener">
+                    <span class="icone icone--sm" data-icone="telefone" aria-hidden="true"></span>
+                    WhatsApp
+                  </a>
+                  <a href="#" id="btn-call" class="btn profile-contact-btn profile-contact-btn--call">
+                    <span class="icone icone--sm" data-icone="telefone" aria-hidden="true"></span>
+                    Ligar
+                  </a>
+                </div>
+              </section>
+
+              <section class="profile-section profile-section--desktop profile-section--desktop--responsavel">
+                <div class="profile-section__header">
+                  <h3 class="profile-section__title">
+                    <span class="icone icone--sm" data-icone="usuarios" aria-hidden="true"></span>
+                    Responsável
+                  </h3>
+                </div>
+                <div class="profile-responsible__layout">
+                  <div class="profile-responsible__info">
+                    <div class="profile-responsible__name" id="profile-responsible-name">-</div>
+                    <span id="profile-responsible-phone" class="profile-responsible__phone-value">-</span>
+                    <div class="profile-responsible-relation-value" id="profile-responsible-relation">-</div>
+                  </div>
+                  <div class="profile-responsible__actions">
+                    <a href="#" id="profile-responsible-whatsapp"
+                      class="btn profile-secondary-action profile-responsible__whatsapp" target="_blank" rel="noopener">
+                      <span class="icone icone--sm" data-icone="telefone" aria-hidden="true"></span>
+                      WhatsApp
+                    </a>
+                    <a href="#" id="profile-responsible-call"
+                      class="btn profile-secondary-action profile-responsible__call">
+                      <span class="icone icone--sm" data-icone="telefone" aria-hidden="true"></span>
+                      Ligar
+                    </a>
+                  </div>
+                </div>
+              </section>
+
+              <section class="profile-section profile-section--desktop profile-section--desktop--endereco">
+                <div class="profile-section__header">
+                  <h3 class="profile-section__title">
+                    <span class="icone icone--sm" data-icone="endereco" aria-hidden="true"></span>
+                    Endereço
+                  </h3>
+                </div>
+                <div class="profile-address-layout">
+                  <div class="profile-address" id="profile-address">
+                    <span id="profile-address-line">-</span>
+                    <span id="profile-address-neighborhood">-</span>
+                    <span id="profile-address-city-state">-</span>
+                  </div>
+                  <a href="#" id="profile-map-link" class="btn profile-secondary-action profile-map-link" target="_blank"
+                    rel="noopener" hidden>
+                    <span class="icone icone--sm" data-icone="endereco" aria-hidden="true"></span>
+                    Ver mapa
+                  </a>
+                </div>
+              </section>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="profile-photo-modal" id="profile-photo-modal" hidden role="dialog" aria-modal="true" aria-label="Foto do paciente">
+    <div class="profile-photo-modal__dialog">
+      <button type="button" class="profile-photo-modal__close" id="profile-photo-modal-close" aria-label="Fechar foto">×</button>
+      <img id="profile-photo-modal-image" alt="Foto ampliada do paciente">
+    </div>
+  </div>
+  <script src="../../recursos/js/icones.js"></script>
+  <script src="../../recursos/js/notificacoes.js"></script>
+  <script src="../../recursos/js/modal-confirmacao.js"></script>
+  <script src="../../recursos/js/util-jwt.js"></script>
+  <script src="../../recursos/js/shell-global.js"></script>
+  <script src="../../recursos/js/sidebar-menu.js"></script>
+  <script src="../../recursos/js/menu-usuario.js"></script>
+  <script src="../../recursos/js/menu-acoes.js"></script>
+  <script src="../../recursos/js/paciente-form-utils.js"></script>
+  <script>
+    const API_URL = '';
+    const accessProntuarioBtn = document.getElementById('btn-access-prontuario');
+    const btnMobileProntuario = document.getElementById('btn-mobile-prontuario');
+    const patientDesktopMenu = document.getElementById('patient-desktop-menu');
+    const patientMobileMenu = document.getElementById('patient-mobile-menu');
+    let patientId = null;
+
+    if (window.UtilJWT) {
+      window.UtilJWT.exigirSessao();
+    }
+
+    function getIdFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('id');
+    }
+
+    function getPhotoUrl(photo) {
+      if (!photo) return null;
+      if (photo.startsWith('data:') || photo.startsWith('http')) {
+        return photo;
+      }
+      if (photo.startsWith('/uploads/')) {
+        return `${API_URL}${photo}`;
+      }
+      return photo;
+    }
+
+    function getDateParts(dateValue) {
+      if (!dateValue) return null;
+      const raw = typeof dateValue === 'string' ? dateValue : new Date(dateValue).toISOString();
+      const dateOnly = raw.split('T')[0];
+      const [year, month, day] = dateOnly.split('-');
+      if (!year || !month || !day) return null;
+      return {
+        year: Number(year),
+        month: Number(month),
+        day: Number(day)
+      };
+    }
+
+    function formatBirthDate(dateValue) {
+      const parts = getDateParts(dateValue);
+      if (!parts) return '';
+      const day = String(parts.day).padStart(2, '0');
+      const month = String(parts.month).padStart(2, '0');
+      return `${day}/${month}/${parts.year}`;
+    }
+
+    function normalizePatientStatus(status) {
+      const normalized = String(status || '').trim().toLowerCase();
+      return normalized === 'inativo' ? 'inativo' : 'ativo';
+    }
+
+    function formatarValorPerfil(valor) {
+      const texto = String(valor || '').trim();
+      if (!texto) return '';
+      return texto.charAt(0).toLocaleUpperCase('pt-BR') + texto.slice(1);
+    }
+
+    function calculateAgeFromParts(parts) {
+      if (!parts) return null;
+      if (window.PatientFormUtils?.calcularIdade) {
+        return window.PatientFormUtils.calcularIdade(parts);
+      }
+      return null;
+    }
+
+    async function loadPatient() {
+      patientId = getIdFromURL();
+      if (!patientId) {
+        notify.error('ID do paciente não encontrado');
+        setTimeout(() => window.location.href = './lista.html', 1500);
+        return;
+      }
+
+      localStorage.setItem('selectedPatientId', String(patientId));
+
+      try {
+        const response = await fetch(`${API_URL}/api/pacientes/${patientId}`);
+        if (response.ok) {
+          const data = await response.json();
+          populateProfile(data);
+          loadRecentActivities();
+        } else {
+          notify.error('Paciente não encontrado');
+          setTimeout(() => window.location.href = './lista.html', 1500);
+        }
+      } catch (error) {
+        console.error('Erro:', error);
+        notify.error('Erro ao carregar dados do paciente');
+      }
+    }
+
+    function populateProfile(data) {
+      function buildWhatsappLink(rawPhone) {
+        if (!rawPhone) return null;
+        const digits = rawPhone.replace(/\D/g, '');
+        if (!digits) return null;
+        const message = encodeURIComponent('Olá, falamos do CAIGE – Centro de Atendimento Interdisciplinar de Geriatria e Gerontologia');
+        const number = digits.length >= 12 ? digits : `55${digits}`;
+        return `https://wa.me/${number}?text=${message}`;
+      }
+
+      const formatarNome = (val) => window.FormatadorTexto ? window.FormatadorTexto.formatarNomePessoa(val) : (val || '');
+      const formatarTitulo = (val) => window.FormatadorTexto ? window.FormatadorTexto.formatarTitulo(val) : (val || '');
+      const formatarEstado = (val) => window.FormatadorTexto ? window.FormatadorTexto.formatarEstado(val) : (val || '');
+
+      const nomeFormatado = formatarNome(data.name);
+      const responsavelFormatado = formatarNome(data.responsible);
+      const ruaFormatada = formatarTitulo(data.street);
+      const bairroFormatado = formatarTitulo(data.neighborhood);
+      const cidadeFormatada = formatarTitulo(data.city);
+      const estadoFormatado = formatarEstado(data.state);
+      const parentescoFormatado = formatarValorPerfil(
+        data.responsible_relationship ??
+        data.responsible_relation ??
+        data.relationship ??
+        data.parentesco_responsavel ??
+        data.parentesco
+      );
+
+      // 1. Identificação Principal
+      const nameEl = document.getElementById('profile-name');
+      if (nameEl) nameEl.textContent = nomeFormatado || '';
+
+      const avatarEl = document.getElementById('profile-avatar');
+      if (avatarEl) {
+        const initials = window.PatientFormUtils?.obterIniciaisPaciente?.(nomeFormatado, 'P') || 'P';
+        const photoUrl = getPhotoUrl(data.photo);
+
+        avatarEl.textContent = initials;
+        if (photoUrl) {
+          const photoEl = document.createElement('img');
+          photoEl.src = photoUrl;
+          photoEl.alt = 'Foto';
+          photoEl.className = 'profile-avatar-img';
+          photoEl.addEventListener('load', () => {
+            avatarEl.textContent = '';
+            avatarEl.appendChild(photoEl);
+            avatarEl.classList.add('profile-avatar--photo');
+            avatarEl.setAttribute('role', 'button');
+            avatarEl.setAttribute('tabindex', '0');
+            avatarEl.setAttribute('aria-label', 'Ampliar foto do paciente');
+            avatarEl.dataset.photoSrc = photoUrl;
+          }, { once: true });
+          photoEl.addEventListener('error', () => {
+            avatarEl.textContent = initials;
+          }, { once: true });
+        }
+      }
+
+      const normalizedStatus = normalizePatientStatus(data.status);
+      const statusClass = normalizedStatus === 'ativo' ? 'status-badge--ativo' : 'status-badge--inativo';
+      const statusText = normalizedStatus === 'ativo' ? 'Ativo' : 'Inativo';
+      const statusBadgeEl = document.getElementById('patient-status-badge');
+      if (statusBadgeEl) {
+        statusBadgeEl.innerHTML = `<span class="status-badge ${statusClass}">${statusText}</span>`;
+      }
+
+      // 2. Dados do Cabeçalho
+      const dateParts = getDateParts(data.birth_date);
+      const age = calculateAgeFromParts(dateParts);
+      const formattedBirth = formatBirthDate(data.birth_date);
+      const primaryPhone = data.phone || data.phone2 || '-';
+
+      const profileAgeEl = document.getElementById('profile-age');
+      if (profileAgeEl) profileAgeEl.textContent = age !== null ? `${age} anos` : '-';
+
+      const profileBirthEl = document.getElementById('profile-birth');
+      if (profileBirthEl) profileBirthEl.textContent = formattedBirth || '-';
+
+      const profileGenderEl = document.getElementById('profile-gender');
+      if (profileGenderEl) profileGenderEl.textContent = formatarValorPerfil(data.gender) || '-';
+
+      const profileCpfEl = document.getElementById('profile-cpf');
+      if (profileCpfEl) profileCpfEl.textContent = data.cpf || '-';
+
+      const profilePhoneEl = document.getElementById('profile-phone');
+      if (profilePhoneEl) profilePhoneEl.textContent = primaryPhone;
+
+      const quickAgeEl = document.getElementById('profile-quick-age');
+      if (quickAgeEl) quickAgeEl.textContent = age !== null ? `${age} anos` : '-';
+      const quickGenderEl = document.getElementById('profile-quick-gender');
+      if (quickGenderEl) quickGenderEl.textContent = formatarValorPerfil(data.gender) || '-';
+
+      const quickGenderIconEl = document.getElementById('profile-quick-gender-icon');
+      if (quickGenderIconEl) {
+        const generoNormalizado = String(data.gender || '').trim().toLocaleLowerCase('pt-BR');
+        let iconeGenero = 'usuario';
+
+        if (generoNormalizado === 'f' || generoNormalizado.startsWith('fem')) {
+          iconeGenero = 'feminino';
+        } else if (generoNormalizado === 'm' || generoNormalizado.startsWith('masc')) {
+          iconeGenero = 'masculino';
+        }
+
+        quickGenderIconEl.dataset.icone = iconeGenero;
+        window.IconesCAIGE?.aplicar(quickGenderIconEl.parentElement);
+      }
+      const quickBirthEl = document.getElementById('profile-quick-birth');
+      if (quickBirthEl) quickBirthEl.textContent = formattedBirth || '-';
+      const quickPhoneEl = document.getElementById('profile-quick-phone');
+      if (quickPhoneEl) quickPhoneEl.textContent = primaryPhone;
+
+      const headerPhoneLink = document.getElementById('m-header-phone');
+      if (headerPhoneLink) {
+        if (primaryPhone && primaryPhone !== '-') {
+          headerPhoneLink.href = `tel:${primaryPhone.replace(/\D/g, '')}`;
+        } else {
+          headerPhoneLink.removeAttribute('href');
+        }
+      }
+
+      const profileRespEl = document.getElementById('profile-responsible');
+      if (profileRespEl) profileRespEl.textContent = responsavelFormatado || '-';
+
+      // 3. Desktop Sections
+      const profileStreetEl = document.getElementById('profile-street');
+      if (profileStreetEl) profileStreetEl.textContent = ruaFormatada || '-';
+
+      const profileNumberEl = document.getElementById('profile-number');
+      if (profileNumberEl) profileNumberEl.textContent = data.number || '-';
+
+      const profileNeighEl = document.getElementById('profile-neighborhood');
+      if (profileNeighEl) profileNeighEl.textContent = bairroFormatado || '-';
+
+      const profileCityEl = document.getElementById('profile-city');
+      if (profileCityEl) profileCityEl.textContent = cidadeFormatada || '-';
+
+      const profileStateEl = document.getElementById('profile-state');
+      if (profileStateEl) profileStateEl.textContent = estadoFormatado || '-';
+
+      const profileCepEl = document.getElementById('profile-cep');
+      if (profileCepEl) profileCepEl.textContent = data.cep || '-';
+
+      const profileContactPhoneEl = document.getElementById('profile-contact-phone');
+      if (profileContactPhoneEl) profileContactPhoneEl.textContent = data.phone || '-';
+
+      const profileContactPhone2El = document.getElementById('profile-contact-phone2');
+      if (profileContactPhone2El) profileContactPhone2El.textContent = data.phone2 || '-';
+
+      const profileContactPrimaryEl = document.getElementById('profile-contact-primary');
+      if (profileContactPrimaryEl) profileContactPrimaryEl.textContent = primaryPhone;
+
+      const btnCallEl = document.getElementById('btn-call');
+      if (btnCallEl) {
+        const callPhone = data.phone2 || data.phone || '';
+        if (callPhone) {
+          btnCallEl.href = `tel:${String(callPhone).replace(/\D/g, '')}`;
+          btnCallEl.hidden = false;
+        } else {
+          btnCallEl.hidden = true;
+        }
+      }
+
+      const btnWaEl = document.getElementById('btn-whatsapp');
+      if (btnWaEl) {
+        const waLink = buildWhatsappLink(data.phone2 || data.phone || '');
+        if (waLink) {
+          btnWaEl.href = waLink;
+          btnWaEl.hidden = false;
+        } else {
+          btnWaEl.hidden = true;
+        }
+      }
+
+      const profileRespNameEl = document.getElementById('profile-responsible-name');
+      if (profileRespNameEl) profileRespNameEl.textContent = responsavelFormatado || '-';
+
+      const profileRespRelEl = document.getElementById('profile-responsible-relation');
+      if (profileRespRelEl) profileRespRelEl.textContent = parentescoFormatado || '-';
+
+      const profileRespPhoneEl = document.getElementById('profile-responsible-phone');
+      if (profileRespPhoneEl) {
+        profileRespPhoneEl.textContent = data.responsible_phone || '-';
+      }
+
+      const profileRespWhatsappEl = document.getElementById('profile-responsible-whatsapp');
+      if (profileRespWhatsappEl) {
+        const respWa = buildWhatsappLink(data.responsible_phone || '');
+        if (respWa) {
+          profileRespWhatsappEl.href = respWa;
+          profileRespWhatsappEl.hidden = false;
+        } else {
+          profileRespWhatsappEl.hidden = true;
+        }
+      }
+
+      const profileRespCallEl = document.getElementById('profile-responsible-call');
+      if (profileRespCallEl) {
+        if (data.responsible_phone) {
+          profileRespCallEl.href = `tel:${String(data.responsible_phone).replace(/\D/g, '')}`;
+          profileRespCallEl.hidden = false;
+        } else {
+          profileRespCallEl.hidden = true;
+        }
+      }
+
+      const profileCreatedEl = document.getElementById('profile-created');
+      if (profileCreatedEl && data.created_at) {
+        profileCreatedEl.textContent = new Date(data.created_at).toLocaleDateString('pt-BR');
+      }
+
+      const profileObsEl = document.getElementById('profile-observations');
+      if (profileObsEl) profileObsEl.textContent = data.observations || 'Nenhuma observação registrada';
+
+      const addressLine = [ruaFormatada, data.number].filter(Boolean).join(', ');
+      const addressNeighborhood = bairroFormatado;
+      const addressCityState = [cidadeFormatada, estadoFormatado].filter(Boolean).join(' - ');
+      const addressCep = data.cep || '';
+      const addressLineEl = document.getElementById('profile-address-line');
+      if (addressLineEl) addressLineEl.textContent = addressLine || '-';
+      const addressNeighborhoodEl = document.getElementById('profile-address-neighborhood');
+      if (addressNeighborhoodEl) addressNeighborhoodEl.textContent = addressNeighborhood || '-';
+      const addressCityStateEl = document.getElementById('profile-address-city-state');
+      if (addressCityStateEl) addressCityStateEl.textContent = addressCityState || '-';
+      const mapLinkEl = document.getElementById('profile-map-link');
+      const mapAddress = [addressLine, addressNeighborhood, addressCityState, addressCep].filter(Boolean).join(', ');
+      if (mapLinkEl) {
+        if (addressLine && addressCityState) {
+          mapLinkEl.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapAddress)}`;
+          mapLinkEl.hidden = false;
+        } else {
+          mapLinkEl.removeAttribute('href');
+          mapLinkEl.hidden = true;
+        }
+      }
+
+      const allergyItems = window.PatientFormUtils?.separarListaClinica
+        ? window.PatientFormUtils.separarListaClinica(data.allergies)
+        : String(data.allergies || '').split(/[,;]+/).map((item) => item.trim()).filter(Boolean);
+      const allergyEl = document.getElementById('profile-allergy');
+      const allergyValueEl = document.getElementById('profile-allergy-value');
+      if (allergyEl && allergyValueEl && allergyItems.length) {
+        allergyValueEl.textContent = allergyItems.join(', ');
+        allergyEl.hidden = false;
+      }
+
+      const clinicalObservation = String(data.clinical_observations || '').trim();
+      const clinicalObservationEls = [
+        document.getElementById('profile-clinical-observation'),
+        document.getElementById('m-profile-clinical-observation')
+      ];
+      clinicalObservationEls.forEach((element) => {
+        if (!element) return;
+        element.textContent = clinicalObservation;
+        element.hidden = !clinicalObservation;
+      });
+      const clinicalAllergyEls = [
+        [document.getElementById('profile-allergy'), document.getElementById('profile-allergy-value')],
+        [document.getElementById('m-profile-allergy'), document.getElementById('m-profile-allergy-value')]
+      ];
+      clinicalAllergyEls.forEach(([element, valueElement]) => {
+        if (!element || !valueElement) return;
+        valueElement.textContent = allergyItems.join(', ');
+        element.hidden = !allergyItems.length;
+      });
+      const clinicalEmptyEl = document.getElementById('profile-clinical-summary-empty');
+      if (clinicalEmptyEl) clinicalEmptyEl.hidden = Boolean(allergyItems.length || clinicalObservation);
+
+      // 4. Previews dos Acordeões Mobile
+      const previewEndereco = document.getElementById('preview-endereco');
+      if (previewEndereco) {
+        const locParts = [bairroFormatado, cidadeFormatada].filter(Boolean);
+        previewEndereco.textContent = locParts.length ? locParts.join(', ') : 'Não informado';
+      }
+
+      const previewContato = document.getElementById('preview-contato');
+      if (previewContato) {
+        previewContato.textContent = primaryPhone !== '-' ? primaryPhone : 'Não informado';
+      }
+
+      const previewResponsavel = document.getElementById('preview-responsavel');
+      if (previewResponsavel) {
+        const rel = parentescoFormatado ? ` (${parentescoFormatado})` : '';
+        previewResponsavel.textContent = responsavelFormatado ? `${responsavelFormatado}${rel}` : 'Não informado';
+      }
+
+      const previewObs = document.getElementById('preview-observacoes');
+      if (previewObs) {
+        const obs = (data.observations || '').trim();
+        previewObs.textContent = obs ? (obs.length > 40 ? obs.substring(0, 40) + '...' : obs) : 'Sem observações';
+      }
+
+      // 5. Campos Internos dos Acordeões Mobile
+      const mStreet = document.getElementById('m-profile-street');
+      if (mStreet) mStreet.textContent = ruaFormatada || '-';
+      const mNumber = document.getElementById('m-profile-number');
+      if (mNumber) mNumber.textContent = data.number || '-';
+      const mNeigh = document.getElementById('m-profile-neighborhood');
+      if (mNeigh) mNeigh.textContent = bairroFormatado || '-';
+      const mCity = document.getElementById('m-profile-city');
+      if (mCity) mCity.textContent = cidadeFormatada || '-';
+      const mState = document.getElementById('m-profile-state');
+      if (mState) mState.textContent = estadoFormatado || '-';
+      const mCep = document.getElementById('m-profile-cep');
+      if (mCep) mCep.textContent = data.cep || '-';
+
+      const mPhone = document.getElementById('m-profile-phone');
+      if (mPhone) mPhone.textContent = data.phone || '-';
+      const mPhone2 = document.getElementById('m-profile-phone2');
+      if (mPhone2) mPhone2.textContent = data.phone2 || '-';
+
+      const mCall = document.getElementById('m-btn-call');
+      if (mCall) {
+        if (primaryPhone && primaryPhone !== '-') {
+          mCall.href = `tel:${primaryPhone.replace(/\D/g, '')}`;
+          mCall.hidden = false;
+        } else {
+          mCall.hidden = true;
+        }
+      }
+
+      const mWa = document.getElementById('m-btn-whatsapp');
+      if (mWa) {
+        const waLink = buildWhatsappLink(data.phone2 || data.phone || '');
+        if (waLink) {
+          mWa.href = waLink;
+          mWa.hidden = false;
+        } else {
+          mWa.hidden = true;
+        }
+      }
+
+      const mRespName = document.getElementById('m-responsible-name');
+      if (mRespName) mRespName.textContent = responsavelFormatado || '-';
+      const mRespRel = document.getElementById('m-responsible-relation');
+      if (mRespRel) mRespRel.textContent = parentescoFormatado || '-';
+      const mRespPhone = document.getElementById('m-responsible-phone');
+      if (mRespPhone) {
+        mRespPhone.textContent = data.responsible_phone || '-';
+      }
+
+      const mRespCall = document.getElementById('m-responsible-call');
+      if (mRespCall) {
+        const numeroResponsavel = String(data.responsible_phone || '').replace(/\D/g, '');
+        if (numeroResponsavel) {
+          mRespCall.href = `tel:${numeroResponsavel}`;
+          mRespCall.hidden = false;
+        } else {
+          mRespCall.hidden = true;
+        }
+      }
+
+      const mRespWhatsapp = document.getElementById('m-responsible-whatsapp');
+      if (mRespWhatsapp) {
+        const respWa = buildWhatsappLink(data.responsible_phone || '');
+        if (respWa) {
+          mRespWhatsapp.href = respWa;
+          mRespWhatsapp.hidden = false;
+        } else {
+          mRespWhatsapp.hidden = true;
+        }
+      }
+
+      const mCpf = document.getElementById('m-profile-cpf');
+      if (mCpf) mCpf.textContent = data.cpf || '-';
+      const mBirth = document.getElementById('m-profile-birth');
+      if (mBirth) mBirth.textContent = formattedBirth || '-';
+      const mAge = document.getElementById('m-profile-age');
+      if (mAge) mAge.textContent = age !== null ? `${age} anos` : '-';
+      const mGender = document.getElementById('m-profile-gender');
+      if (mGender) mGender.textContent = formatarValorPerfil(data.gender) || '-';
+      const mCreated = document.getElementById('m-profile-created');
+      if (mCreated && data.created_at) {
+        mCreated.textContent = new Date(data.created_at).toLocaleDateString('pt-BR');
+      }
+
+      const mObs = document.getElementById('m-profile-observations');
+      if (mObs) mObs.textContent = data.observations || 'Nenhuma observação registrada';
+
+      // Reaplicar ícones após inserção dinâmica
+      window.IconesCAIGE?.aplicar();
+    }
+
+    async function loadRecentActivities() {
+      const listEl = document.getElementById('profile-recent-activities-list');
+      if (!listEl || !patientId) return;
+      try {
+        const response = await fetch(`${API_URL}/api/frequencia/historico?id_paciente=${encodeURIComponent(patientId)}&limit=3`);
+        if (!response.ok) throw new Error('Não foi possível carregar as atividades');
+        const payload = await response.json();
+        const activities = Array.isArray(payload) ? payload : (Array.isArray(payload.data) ? payload.data : []);
+        listEl.textContent = '';
+        if (!activities.length) {
+          listEl.innerHTML = '<p class="profile-recent-activities__empty">Nenhuma atividade recente registrada.</p>';
+          return;
+        }
+        activities.slice(0, 3).forEach((activity) => {
+          const item = document.createElement('div');
+          item.className = 'profile-recent-activity';
+
+          const calendarIcon = document.createElement('span');
+          calendarIcon.className = 'icone icone--sm profile-recent-activity__icon';
+          calendarIcon.dataset.icone = 'calendario';
+          calendarIcon.setAttribute('aria-hidden', 'true');
+
+          const date = activity.data || activity.registradoEm;
+          let formattedDate = 'Data não informada';
+          if (date) {
+            const dateOnly = String(date).split('T')[0];
+            const [year, month, day] = dateOnly.split('-');
+            formattedDate = year && month && day ? `${day}/${month}/${year}` : new Date(date).toLocaleDateString('pt-BR');
+          }
+
+          const dateEl = document.createElement('span');
+          dateEl.className = 'profile-recent-activity__date';
+          dateEl.textContent = formattedDate;
+
+          const title = document.createElement('strong');
+          title.className = 'profile-recent-activity__name';
+          title.textContent = activity.atividade || activity.nomeAtividade || 'Atividade';
+
+          const professional = document.createElement('span');
+          professional.className = 'profile-recent-activity__professional';
+          professional.textContent = activity.profissional || activity.nomeProfissional || 'Profissional não informado';
+
+          item.append(calendarIcon, dateEl, title, professional);
+          listEl.appendChild(item);
+        });
+        window.IconesCAIGE?.aplicar();
+      } catch (error) {
+        listEl.innerHTML = '<p class="profile-recent-activities__empty">Atividades recentes indisponíveis.</p>';
+        console.warn('Não foi possível carregar as atividades recentes:', error);
+      }
+    }
+
+    function abrirMenuMaisOpcoes(botao) {
+      if (!window.MenuAcoes) return;
+      MenuAcoes.abrir(botao, [
+        {
+          rotulo: 'Editar Cadastro',
+          icone: 'editar',
+          acao: () => { window.location.href = `./editar.html?id=${patientId}`; }
+        },
+        {
+          rotulo: 'Voltar à lista',
+          icone: 'seta-esquerda',
+          acao: () => { window.location.href = './lista.html'; }
+        }
+      ]);
+    }
+
+    const editProfileBtn = document.getElementById('btn-edit-profile');
+    if (editProfileBtn) {
+      editProfileBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        if (!patientId) {
+          notify.warning('Aguarde o carregamento do paciente.');
+          return;
+        }
+        window.location.href = `./editar.html?id=${encodeURIComponent(patientId)}`;
+      });
+    }
+
+    if (accessProntuarioBtn) {
+      accessProntuarioBtn.addEventListener('click', () => {
+        window.location.href = `./prontuario.html?id=${patientId}`;
+      });
+    }
+
+    if (patientDesktopMenu) {
+      patientDesktopMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
+        abrirMenuMaisOpcoes(patientDesktopMenu);
+      });
+    }
+
+    if (btnMobileProntuario) {
+      btnMobileProntuario.addEventListener('click', () => {
+        window.location.href = `./prontuario.html?id=${patientId}`;
+      });
+    }
+
+    if (patientMobileMenu) {
+      patientMobileMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
+        abrirMenuMaisOpcoes(patientMobileMenu);
+      });
+    }
+
+    const profileAvatar = document.getElementById('profile-avatar');
+    const profilePhotoModal = document.getElementById('profile-photo-modal');
+    const profilePhotoModalImage = document.getElementById('profile-photo-modal-image');
+    const profilePhotoModalClose = document.getElementById('profile-photo-modal-close');
+    function closeProfilePhoto() {
+      if (!profilePhotoModal) return;
+      profilePhotoModal.hidden = true;
+      if (profilePhotoModalImage) profilePhotoModalImage.removeAttribute('src');
+    }
+    function openProfilePhoto() {
+      const src = profileAvatar?.dataset.photoSrc;
+      if (!src || !profilePhotoModal || !profilePhotoModalImage) return;
+      profilePhotoModalImage.src = src;
+      profilePhotoModal.hidden = false;
+      profilePhotoModalClose?.focus();
+    }
+    profileAvatar?.addEventListener('click', openProfilePhoto);
+    profileAvatar?.addEventListener('keydown', (event) => {
+      if ((event.key === 'Enter' || event.key === ' ') && profileAvatar.dataset.photoSrc) {
+        event.preventDefault();
+        openProfilePhoto();
+      }
+    });
+    profilePhotoModalClose?.addEventListener('click', closeProfilePhoto);
+    profilePhotoModal?.addEventListener('click', (event) => {
+      if (event.target === profilePhotoModal) closeProfilePhoto();
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && profilePhotoModal && !profilePhotoModal.hidden) closeProfilePhoto();
+    });
+
+    loadPatient();
+  </script>
+  <script src="/recursos/js/pwa.js"></script>
+</body>
+
+</html>

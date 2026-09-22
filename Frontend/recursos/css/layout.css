@@ -1,0 +1,1111 @@
+/* =========================================================
+   CAIGE - LAYOUT
+   Estrutura compartilhada do frontend.
+
+   Este arquivo contém:
+   - estrutura principal das páginas;
+   - sidebar;
+   - navegação lateral;
+   - submenu;
+   - conteúdo principal;
+   - cabeçalho;
+   - seções e grids compartilhados.
+
+   NÃO colocar aqui:
+   - regras exclusivas de páginas;
+   - componentes como modal/input/card;
+   - regras mobile específicas;
+   - navegação inferior mobile.
+   ========================================================= */
+
+
+/* =========================================================
+   1. ESTRUTURA PRINCIPAL
+   ========================================================= */
+
+.dashboard,
+.activities-page,
+.app-page {
+    display: grid;
+
+    grid-template-columns:
+        228px minmax(0, 1fr);
+
+    width: 100%;
+
+    min-height: 100vh;
+    min-height: 100svh;
+
+    background: transparent;
+}
+
+
+/* =========================================================
+   1.1 TRANSIÇÃO GLOBAL ENTRE PÁGINAS
+   Cross-document View Transition para navegação interna.
+   A página atual desaparece com suavidade, revela por um instante
+   um fundo grafite e então a próxima página entra. O efeito foi
+   mantido curto o suficiente para não deixar a navegação pesada.
+   Navegadores sem suporte simplesmente ignoram estas regras.
+   ========================================================= */
+
+@view-transition {
+    navigation: auto;
+}
+
+/* Fundo intermediário visível entre o fade-out e o fade-in. */
+::view-transition {
+    background: #20242b;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation-duration: 520ms;
+    animation-fill-mode: both;
+}
+
+::view-transition-old(root) {
+    animation-name: caige-pagina-fade-out;
+    animation-timing-function: cubic-bezier(0.4, 0, 1, 1);
+}
+
+::view-transition-new(root) {
+    animation-name: caige-pagina-fade-in;
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+}
+
+@keyframes caige-pagina-fade-out {
+    0% {
+        opacity: 1;
+    }
+
+    58% {
+        opacity: 0.12;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes caige-pagina-fade-in {
+
+    0%,
+    34% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+        animation: none;
+    }
+}
+
+
+/* =========================================================
+   1.2 FALLBACK DE TRANSIÇÃO ENTRE PÁGINAS
+   Usado quando o navegador não executa a View Transition
+   entre documentos (principalmente Safari/iOS e navegadores
+   móveis mais antigos). Mantém o mesmo fundo grafite do
+   efeito aprovado no desktop.
+   ========================================================= */
+
+html.caige-transicao-manual {
+    background: #20242b;
+}
+
+html.caige-transicao-manual body.caige-pagina-entrando {
+    animation:
+        caige-pagina-manual-entrar 300ms
+        cubic-bezier(0, 0, 0.2, 1)
+        both;
+}
+
+html.caige-transicao-manual body.caige-pagina-saindo {
+    pointer-events: none;
+
+    animation:
+        caige-pagina-manual-sair 220ms
+        cubic-bezier(0.4, 0, 1, 1)
+        both;
+}
+
+/* Em telas touch, remove a transição entre páginas para navegação imediata. */
+@media (max-width: 1024px) {
+
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+        animation: none !important;
+    }
+
+    html.caige-transicao-manual body.caige-pagina-entrando,
+    html.caige-transicao-manual body.caige-pagina-saindo {
+        animation: none !important;
+    }
+}
+
+@keyframes caige-pagina-manual-sair {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes caige-pagina-manual-entrar {
+    0%,
+    24% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    html.caige-transicao-manual body.caige-pagina-entrando,
+    html.caige-transicao-manual body.caige-pagina-saindo {
+        animation: none;
+    }
+}
+
+
+/* =========================================================
+   2. SIDEBAR
+   ========================================================= */
+
+.sidebar {
+    position: sticky;
+
+    top: 0;
+
+    align-self: start;
+
+    width: 228px;
+
+    height: 100vh;
+    height: 100svh;
+
+    min-height: 100vh;
+
+    padding:
+        22px 16px 18px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 18px;
+
+    color: var(--white);
+
+    background: var(--fundo-cabecalho-destaque);
+
+    box-shadow:
+        inset -1px 0 0 rgba(255, 255, 255, 0.08),
+        14px 0 34px rgba(15, 23, 42, 0.08);
+
+    overflow-y: auto;
+
+    overflow-x: hidden;
+
+    z-index: 20;
+}
+
+
+/* =========================================================
+   3. MARCA DA SIDEBAR
+   ========================================================= */
+
+.sidebar__brand {
+    position: relative;
+
+    width: auto;
+    min-height: 68px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-left: -16px;
+    margin-right: -16px;
+
+    padding: 0 20px 6px;
+
+    box-sizing: border-box;
+}
+
+/* Linha abaixo da logo */
+.sidebar__brand::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+
+    bottom: 25px;
+
+    height: 1px;
+
+    background: rgba(255, 255, 255, 0.28);
+
+    pointer-events: none;
+}
+
+.sidebar__brand::after {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+
+    bottom: 18px;
+
+    height: 8px;
+
+    background: linear-gradient(
+        to bottom,
+        rgba(15, 45, 110, 0.14),
+        rgba(15, 45, 110, 0)
+    );
+
+    pointer-events: none;
+}
+
+.sidebar__logo {
+    width: 185px;
+    max-height: 62px;
+
+    object-fit: contain;
+
+    transform: translateY(-20px);
+}
+
+
+/* =========================================================
+   4. NAVEGAÇÃO DA SIDEBAR
+   ========================================================= */
+
+.sidebar__nav {
+    width: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+
+/* =========================================================
+   5. LINKS DA SIDEBAR
+   ========================================================= */
+
+.sidebar__link,
+.sidebar__menu-toggle {
+    position: relative;
+
+    width: 100%;
+
+    min-height: 40px;
+
+    padding: 9px 12px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    color:
+        rgba(255, 255, 255, 0.92);
+
+    background: transparent;
+
+    border: none;
+
+    border-radius: var(--radius-md);
+
+    font-family: inherit;
+    font-size: var(--fonte-navegacao);
+    line-height: 1.15;
+    font-weight: 500;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition:
+        background-color var(--transition-default),
+        color var(--transition-default),
+        transform var(--transition-default),
+        box-shadow var(--transition-default);
+}
+
+.sidebar__link:hover,
+.sidebar__menu-toggle:hover {
+    color: var(--white);
+
+    background:
+        rgba(255, 255, 255, 0.14);
+
+    transform:
+        translateX(2px);
+}
+
+.sidebar__link--active,
+.sidebar__menu-toggle--active {
+    color: var(--white);
+
+    background:
+        rgba(255, 255, 255, 0.20);
+
+    font-weight: 700;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        0 6px 14px rgba(15, 23, 42, 0.12);
+}
+
+.sidebar__link>span:first-child,
+.sidebar__menu-toggle>span:first-child {
+    width: 20px;
+
+    flex: 0 0 20px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 15px;
+}
+
+
+/* =========================================================
+   6. ITEM EXPANSÍVEL
+   ========================================================= */
+
+.sidebar__menu-item {
+    width: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+}
+
+.sidebar__menu-icon {
+    margin-left: auto;
+
+    font-size: var(--fonte-navegacao);
+
+    line-height: 1;
+
+    transition:
+        transform var(--transition-slow);
+}
+
+.sidebar__menu-toggle[aria-expanded="true"] .sidebar__menu-icon {
+    transform:
+        rotate(45deg);
+}
+
+
+/* =========================================================
+   7. SUBMENU
+   ========================================================= */
+
+.sidebar__submenu {
+    width: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+
+    max-height: 0;
+
+    padding: 0;
+
+    overflow: hidden;
+
+    transition:
+        max-height var(--transition-slow),
+        padding var(--transition-slow);
+}
+
+.sidebar__submenu.open {
+    max-height: 500px;
+
+    padding:
+        5px 0 6px;
+}
+
+.sidebar__submenu-link {
+    width: 100%;
+
+    min-height: 34px;
+
+    padding:
+        7px 12px 7px 26px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    color:
+        rgba(255, 255, 255, 0.80);
+
+    border-radius: var(--radius-md);
+
+    font-size: var(--fonte-navegacao);
+    line-height: 1.2;
+    font-weight: 500;
+
+    transition:
+        background-color var(--transition-default),
+        color var(--transition-default),
+        padding-left var(--transition-default);
+}
+
+.sidebar__submenu-link:hover {
+    color: var(--white);
+
+    background:
+        rgba(255, 255, 255, 0.12);
+
+    padding-left: 30px;
+}
+
+.sidebar__submenu-link--active {
+    color: var(--white);
+
+    background:
+        rgba(255, 255, 255, 0.10);
+
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   8. ÁREA PRINCIPAL
+   ========================================================= */
+
+.content,
+.activities-content,
+.app-content {
+    width: 100%;
+
+    min-width: 0;
+
+    display: grid;
+
+    grid-template-columns:
+        24px minmax(0, 1fr) 24px;
+
+    align-content: start;
+
+    padding:
+        0 0 24px;
+
+    background:
+        linear-gradient(135deg,
+            var(--blue-600) 0%,
+            var(--blue-500) 100%) top / 100% var(--altura-cabecalho-pagina) no-repeat,
+        var(--app-background);
+
+    overflow-x: hidden;
+}
+
+.content>*,
+.activities-content>*,
+.app-content>* {
+    grid-column: 2;
+}
+
+
+/* =========================================================
+   8.1 LARGURA PADRÃO DO CONTEÚDO
+   ========================================================= */
+
+.largura-pagina {
+    width: 100%;
+
+    max-width: 1640px;
+
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+/* =========================================================
+   9. CABEÇALHO DA PÁGINA
+   ========================================================= */
+
+.content__header,
+.activities-header,
+.dashboard-header,
+.page-header {
+    position: sticky;
+
+    top: 0;
+
+    z-index: var(--z-sticky);
+
+    width: 100%;
+
+    max-width: none;
+
+    min-width: 0;
+
+    grid-column: 1 / -1;
+
+    min-height: var(--altura-cabecalho-pagina);
+
+    margin:
+        0 0 var(--espaco-apos-cabecalho-pagina);
+
+    padding:
+        var(--padding-cabecalho-pagina-y) var(--padding-cabecalho-pagina-x);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 16px;
+
+    color: var(--white);
+
+    background-color: var(--blue-600);
+
+    background-image:
+        linear-gradient(135deg,
+            var(--blue-600) 0%,
+            var(--blue-500) 100%);
+
+    border: none;
+
+    border-radius: 0;
+
+    box-shadow: none;
+}
+
+.content__header>div:first-child,
+.activities-header>div:first-child,
+.dashboard-header>div:first-child,
+.page-header>div:first-child {
+    min-width: 0;
+}
+
+.content__header h1,
+.content__header h2,
+.activities-header h1,
+.activities-header h2,
+.dashboard-header h1,
+.dashboard-header h2,
+.page-header h1,
+.page-header h2 {
+    margin: 0;
+
+    font-size: var(--fonte-titulo-pagina);
+    line-height: 1.2;
+    font-weight: var(--peso-titulo-pagina);
+
+    color:
+        var(--white);
+}
+
+.content__header p,
+.activities-header p,
+.dashboard-header p,
+.page-header p {
+    margin-top: 3px;
+
+    font-size: var(--fonte-subtitulo-pagina);
+    line-height: 1.35;
+
+    color:
+        rgba(255, 255, 255, 0.82);
+}
+
+
+
+/* =========================================================
+   9.1 WORKSPACE - GUIAS
+   ========================================================= */
+
+.workspace-tabs-shell {
+    /* A barra ocupa toda a largura da área principal, inclusive os gutters
+       laterais do grid. O conteúdo das guias continua alinhado ao restante
+       da página através do padding interno. */
+    grid-column: 1 / -1;
+
+    width: 100%;
+    box-sizing: border-box;
+
+    margin-left: 0;
+    margin-right: 0;
+
+    margin-top: calc(-1 * var(--espaco-apos-cabecalho-pagina));
+    /* Mantém o mesmo respiro abaixo sem afastar as guias da linha-base. */
+    margin-bottom: 24px;
+
+    padding-left: 24px;
+    padding-right: 24px;
+    padding-bottom: 0;
+
+    background: transparent;
+
+    border-bottom: 1px solid var(--gray-300);
+}
+
+/* =========================================================
+   10. SEÇÕES
+   ========================================================= */
+
+.section {
+    width: 100%;
+
+    min-width: 0;
+
+    margin-bottom: 18px;
+}
+
+.section:last-child {
+    margin-bottom: 0;
+}
+
+.section>h2,
+.section>h3,
+.section-title {
+    margin-bottom: 10px;
+
+    font-size: var(--fonte-titulo-secao);
+    line-height: 1.25;
+    font-weight: 700;
+
+    color:
+        var(--text-primary);
+}
+
+
+/* =========================================================
+   11. GRID GENÉRICO
+   ========================================================= */
+
+.grid {
+    display: grid;
+
+    grid-template-columns: 1fr;
+
+    gap: 14px;
+}
+
+.grid-2 {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2,
+            minmax(0, 1fr));
+
+    gap: 14px;
+}
+
+.grid-3 {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3,
+            minmax(0, 1fr));
+
+    gap: 14px;
+}
+
+.grid-4 {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4,
+            minmax(0, 1fr));
+
+    gap: 14px;
+}
+
+
+/* =========================================================
+   12. GRID DE CARDS
+   ========================================================= */
+
+.cards,
+.stats-grid,
+.archive-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit,
+            minmax(210px, 1fr));
+
+    gap: 12px;
+}
+
+
+/* =========================================================
+   13. ÁREA DE LISTAGEM
+   ========================================================= */
+
+.list-shell,
+.table-wrap,
+.report-content {
+    width: 100%;
+
+    min-width: 0;
+}
+
+
+/* =========================================================
+   14. CABEÇALHO DE LISTAS / FERRAMENTAS
+   ========================================================= */
+
+.list-tools,
+.list-header,
+.toolbar {
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 12px;
+
+    margin-bottom: 12px;
+}
+
+.list-tools__left,
+.list-tools__right,
+.toolbar__left,
+.toolbar__right {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    min-width: 0;
+}
+
+
+/* =========================================================
+   15. LAYOUT DE FORMULÁRIOS
+   ========================================================= */
+
+.form-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2,
+            minmax(0, 1fr));
+
+    gap:
+        14px 16px;
+}
+
+.form-grid--single {
+    grid-template-columns: 1fr;
+}
+
+.form-grid--three {
+    grid-template-columns:
+        repeat(3,
+            minmax(0, 1fr));
+}
+
+
+/* =========================================================
+   16. PAINÉIS LADO A LADO
+   ========================================================= */
+
+.content-columns {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr) minmax(0, 1fr);
+
+    gap: 16px;
+}
+
+
+/* =========================================================
+   17. RODAPÉ DE CONTEÚDO
+   ========================================================= */
+
+.content-footer {
+    width: 100%;
+
+    margin-top: 18px;
+
+    padding-top: 14px;
+
+    border-top:
+        1px solid var(--border-light);
+
+    color:
+        var(--text-muted);
+
+    font-size: var(--fonte-texto-auxiliar);
+}
+
+
+/* =========================================================
+   18. LAYOUT COMPARTILHADO - CONTEÚDO PRINCIPAL + SIDEBAR
+   ========================================================= */
+
+.profile-container {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 7fr) minmax(280px, 3fr);
+
+    align-items: start;
+
+    gap: var(--space-4);
+}
+
+.profile-main,
+.profile-sidebar {
+    min-width: 0;
+}
+
+
+/* =========================================================
+   19. CONTROLE DE OVERFLOW
+   ========================================================= */
+
+.content,
+.activities-content,
+.app-content,
+.section,
+.panel,
+.card,
+.list-shell,
+.table-wrap {
+    min-width: 0;
+}
+
+
+/* =========================================================
+   20. DESKTOP
+   ========================================================= */
+
+@media screen and (min-width: 1025px) {
+
+    /*
+       Desktop com viewport virtual:
+       - 1366px é a referência visual do sistema;
+       - abaixo disso, o Shell inteiro é reduzido para caber;
+       - acima disso, sidebar + página recebem zoom conjunto;
+       - a largura virtual cresce lentamente para os cards não se alargarem
+         na mesma proporção do monitor;
+       - o body usa uma viewport virtual em pixels e transform: scale(),
+         preenchendo 100% da viewport sem faixas vazias;
+       - mobile/tablet não entram nesta regra.
+
+       As variáveis são calculadas pelo shell-global.js.
+    */
+    html.caige-ui-escalada {
+        overflow: hidden;
+    }
+
+    body.caige-ui-escalada {
+        width: var(--largura-ui-desktop, 100vw);
+        height: var(--altura-ui-desktop, 100vh);
+        min-height: var(--altura-ui-desktop, 100vh);
+
+        overflow: hidden;
+
+        transform: scale(var(--escala-ui-desktop, 1));
+        transform-origin: top left;
+    }
+
+    .dashboard,
+    .activities-page,
+    .app-page {
+        grid-template-columns:
+            228px minmax(0, 1fr);
+
+        width: 100%;
+        height: var(--altura-ui-desktop, 100vh);
+
+        min-height: 0;
+
+        overflow: hidden;
+    }
+
+    /*
+       No desktop escalado não centralizamos a aplicação dentro de um
+       max-width fixo. O próprio zoom controla a densidade e a página
+       permanece preenchendo toda a área disponível.
+    */
+    .largura-pagina,
+    .content__header,
+    .activities-header,
+    .dashboard-header,
+    .page-header {
+        max-width: none;
+
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+
+    body.caige-ui-escalada .dashboard,
+    body.caige-ui-escalada .activities-page,
+    body.caige-ui-escalada .app-page,
+    body.caige-ui-escalada .sidebar,
+    body.caige-ui-escalada .content,
+    body.caige-ui-escalada .activities-content,
+    body.caige-ui-escalada .app-content {
+        height: 100%;
+    }
+
+
+    .sidebar {
+        position: relative;
+
+        top: auto;
+
+        align-self: stretch;
+
+        height: var(--altura-ui-desktop, 100vh);
+
+        min-height: 0;
+
+        overflow-y: auto;
+
+        overflow-x: hidden;
+    }
+
+
+    .content,
+    .activities-content,
+    .app-content {
+        height: var(--altura-ui-desktop, 100vh);
+
+        min-height: 0;
+
+        overflow-y: auto;
+
+        overflow-x: hidden;
+    }
+}
+
+/* Desktop institucional: navegação mais sóbria e operacional. */
+@media (min-width: 1025px) {
+    .sidebar {
+        padding-left: 10px;
+        padding-right: 10px;
+        gap: 12px;
+        background: linear-gradient(180deg, var(--blue-800) 0%, var(--blue-900) 100%);
+        box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.08);
+    }
+
+    .sidebar__brand {
+        margin-left: -10px;
+        margin-right: -10px;
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    .sidebar__brand::after {
+        display: none;
+    }
+
+    .sidebar__nav {
+        gap: 2px;
+    }
+
+    .sidebar__link,
+    .sidebar__menu-toggle {
+        min-height: 38px;
+        padding: 8px 10px;
+        border-left: 3px solid transparent;
+        border-radius: var(--radius-xs);
+        transition: background-color var(--transition-default), color var(--transition-default), border-color var(--transition-default);
+    }
+
+    .sidebar__link:hover,
+    .sidebar__menu-toggle:hover {
+        background: rgba(255, 255, 255, 0.06);
+        transform: none;
+    }
+
+    .sidebar__link--active,
+    .sidebar__menu-toggle--active {
+        background: linear-gradient(90deg, rgba(120, 170, 255, 0.20) 0%, rgba(255, 255, 255, 0.06) 100%);
+        border-left-color: var(--blue-300);
+        box-shadow: none;
+    }
+
+    .sidebar__submenu-link:hover {
+        padding-left: 26px;
+    }
+
+    .content,
+    .activities-content,
+    .app-content {
+        background: var(--app-background);
+    }
+
+    .content__header,
+    .activities-header,
+    .dashboard-header,
+    .page-header {
+        background: linear-gradient(90deg, var(--blue-800) 0%, var(--blue-700) 58%, var(--blue-600) 100%);
+        border-bottom: 1px solid var(--blue-800);
+    }
+
+    .sidebar__link,
+    .sidebar__menu-toggle,
+    .sidebar__submenu-link {
+        font-weight: 600;
+        letter-spacing: 0;
+    }
+
+    .content__header h1,
+    .content__header h2,
+    .activities-header h1,
+    .activities-header h2,
+    .dashboard-header h1,
+    .dashboard-header h2,
+    .page-header h1,
+    .page-header h2 {
+        letter-spacing: -0.015em;
+    }
+
+    .workspace-tabs-shell {
+        margin-bottom: 18px;
+        background: var(--surface);
+        border-bottom-color: var(--border-default);
+    }
+}
+
